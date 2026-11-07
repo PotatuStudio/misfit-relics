@@ -11,8 +11,15 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 ## v0.2: Trompeta de cobre (en desarrollo)
 - **Cono de sonido** que **aturde** (efecto Aturdido: sin moverse, sin saltar, golpes sin daño; los mobs pierden su objetivo) y empuja un poco.
 - **Eco:** contra una pared el aturdimiento dura un 50 % más; bajo techo, un 25 % más.
-- **Oxidación:** cada uso tiene un 4 % de probabilidad de pasar a la siguiente etapa. Cobre brillante: alcance 10, cono 60°, 1 s de aturdimiento, enfriamiento 3 s. Oxidada: alcance 7, cono 90°, 2 s, enfriamiento 6 s. Cada etapa suena distinto (sonidos de trompeta de 26.1).
-- **Mantenimiento** (agachado, con la herramienta en la otra mano): panal para encerar (deja de oxidarse); hacha para quitar la cera o una etapa de óxido.
+- **Oxidación: mientras mejor cuidada, mejor funciona.** Cada uso tiene un 4 % de probabilidad de oxidarla. Como en un instrumento real, el óxido apaga el sonido: llega menos lejos, se dispersa más y aturde menos. Cada etapa suena distinto (sonidos de trompeta de 26.1).
+
+  | Etapa | Alcance | Cono | Aturdimiento | Enfriamiento |
+  |---|---|---|---|---|
+  | Cobre | 10 | 60° | 2 s | 3 s |
+  | Expuesto | 9 | 70° | 1,5 s | 3 s |
+  | Desgastado | 7 | 80° | 1 s | 3,5 s |
+  | Oxidado | 5 | 90° | 0,6 s | 4 s |
+- **Mantenimiento** (agachado, con la herramienta en la otra mano): el **hacha** raspa una etapa de óxido (o quita la cera) y la recupera; el **panal** la encera para que no se siga oxidando.
 - Receta: 4 lingotes de cobre y un bloque musical (`  C` / `CNC` / `  C`). 200 usos, se repara con cobre.
 
 ### Game rules
