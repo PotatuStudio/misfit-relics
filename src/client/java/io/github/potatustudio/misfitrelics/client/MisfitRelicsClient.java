@@ -18,7 +18,7 @@ public class MisfitRelicsClient implements ClientModInitializer {
 
 	/** Ecolocación del collar del murciélago. Por defecto: B. */
 	private static final KeyMapping ECHOLOCATE = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-			BatCollar.ECHOLOCATE_KEY, InputConstants.Type.KEYSYM, InputConstants.KEY_B, CATEGORY));
+			BatCollar.ECHOLOCATE_KEY, InputConstants.Type.KEYBOARD, InputConstants.KEY_B, CATEGORY));
 
 	@Override
 	public void onInitializeClient() {
