@@ -18,5 +18,11 @@
   "item.misfitrelics.exposed_copper_trumpet": "Exposed Copper Trumpet",
   "item.misfitrelics.weathered_copper_trumpet": "Weathered Copper Trumpet",
   "item.misfitrelics.oxidized_copper_trumpet": "Oxidized Copper Trumpet",
-  "gamerule.misfitrelics.trumpet_friendly_fire": "Copper trumpet stuns allies"
+  "gamerule.misfitrelics.trumpet_friendly_fire": "Copper trumpet stuns allies",
+  "item.misfitrelics.bat_collar": "Bat Collar",
+  "item.misfitrelics.bat_collar.tooltip.echolocation": "Echolocation [%s]: reveals nearby creatures through walls",
+  "item.misfitrelics.bat_collar.tooltip.lifesteal": "Melee hits restore %s%% of damage dealt",
+  "key.misfitrelics.echolocate": "Echolocation (Bat Collar)",
+  "key.category.misfitrelics.main": "Misfit Relics",
+  "message.misfitrelics.echolocation_cooldown": "Echolocation is recharging…"
 }

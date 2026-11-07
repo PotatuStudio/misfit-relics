@@ -18,5 +18,11 @@
   "item.misfitrelics.exposed_copper_trumpet": "Trompeta de cobre expuesto",
   "item.misfitrelics.weathered_copper_trumpet": "Trompeta de cobre desgastado",
   "item.misfitrelics.oxidized_copper_trumpet": "Trompeta de cobre oxidado",
-  "gamerule.misfitrelics.trumpet_friendly_fire": "La trompeta de cobre aturde a los aliados"
+  "gamerule.misfitrelics.trumpet_friendly_fire": "La trompeta de cobre aturde a los aliados",
+  "item.misfitrelics.bat_collar": "Collar del murciélago",
+  "item.misfitrelics.bat_collar.tooltip.echolocation": "Ecolocación [%s]: revela a las criaturas cercanas a través de las paredes",
+  "item.misfitrelics.bat_collar.tooltip.lifesteal": "Los golpes cuerpo a cuerpo recuperan un %s%% del daño",
+  "key.misfitrelics.echolocate": "Ecolocación (collar del murciélago)",
+  "key.category.misfitrelics.main": "Misfit Relics",
+  "message.misfitrelics.echolocation_cooldown": "La ecolocación se está recargando…"
 }

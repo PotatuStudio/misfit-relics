@@ -1,6 +1,7 @@
 package io.github.potatustudio.misfitrelics.registry;
 
 import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
 import io.github.potatustudio.misfitrelics.spud.SpudCannonItem;
 import io.github.potatustudio.misfitrelics.trumpet.CopperTrumpetItem;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetStage;
@@ -35,6 +36,9 @@ public final class ModItems {
 	public static final Item WEATHERED_COPPER_TRUMPET = registerTrumpet("weathered_copper_trumpet", TrumpetStage.WEATHERED);
 	public static final Item OXIDIZED_COPPER_TRUMPET = registerTrumpet("oxidized_copper_trumpet", TrumpetStage.OXIDIZED);
 
+	public static final Item BAT_COLLAR = register("bat_collar", BatCollarItem::new,
+			new Item.Properties().stacksTo(1));
+
 	private ModItems() {
 	}
 
@@ -65,6 +69,7 @@ public final class ModItems {
 			output.accept(EXPOSED_COPPER_TRUMPET);
 			output.accept(WEATHERED_COPPER_TRUMPET);
 			output.accept(OXIDIZED_COPPER_TRUMPET);
+			output.accept(BAT_COLLAR);
 		});
 	}
 }

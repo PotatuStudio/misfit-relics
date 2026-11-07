@@ -22,6 +22,13 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 - **Mantenimiento** (agachado, con la herramienta en la otra mano): el **hacha** raspa una etapa de óxido (o quita la cera) y la recupera; el **panal** la encera para que no se siga oxidando.
 - Receta: 4 lingotes de cobre y un bloque musical (`  C` / `CNC` / `  C`). 200 usos, se repara con cobre.
 
+## v0.3: Collar del murciélago (en desarrollo)
+Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: el collar va en el espacio *collar* (pecho).
+- **Ecolocación** (tecla **B**, configurable): un pulso que marca con contorno a todas las criaturas en 16 bloques durante 5 s, incluso a través de paredes. Enfriamiento de 10 s.
+- **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 6 % del daño hecho (no aplica a proyectiles, nubes ni efectos).
+- Receta: 5 cuerdas, 2 membranas de phantom y un fragmento de eco (`SSS` / `S S` / `MEM`).
+- Próximamente: invocar un murciélago aliado que ataque junto al jugador.
+
 ### Game rules
 | Regla | Por defecto | Qué hace |
 |---|---|---|
@@ -33,7 +40,7 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 | `misfitrelics:trumpet_friendly_fire` | `true` | La trompeta de cobre aturde a los aliados. |
 
 ## Requisitos
-Minecraft 26.3, Fabric Loader 0.20.1 o superior, Fabric API y Java 25.
+Minecraft 26.3, Fabric Loader 0.20.1 o superior, Fabric API, [Trinkets Updated](https://modrinth.com/mod/trinkets-updated) 4.2.1 o superior y Java 25.
 
 ## Desarrollo
 ```sh

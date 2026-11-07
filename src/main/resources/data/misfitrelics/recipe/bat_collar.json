@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:string",
+    "M": "minecraft:phantom_membrane",
+    "E": "minecraft:echo_shard"
+  },
+  "pattern": [
+    "SSS",
+    "S S",
+    "MEM"
+  ],
+  "result": {
+    "id": "misfitrelics:bat_collar"
+  }
+}

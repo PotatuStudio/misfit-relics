@@ -1,14 +1,37 @@
 package io.github.potatustudio.misfitrelics.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.bat.BatCollar;
+import io.github.potatustudio.misfitrelics.network.EcholocatePayload;
 import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 public class MisfitRelicsClient implements ClientModInitializer {
+	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MisfitRelics.id("main"));
+
+	/** Ecolocación del collar del murciélago. Por defecto: B. */
+	private static final KeyMapping ECHOLOCATE = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			BatCollar.ECHOLOCATE_KEY, InputConstants.Type.KEYSYM, InputConstants.KEY_B, CATEGORY));
+
 	@Override
 	public void onInitializeClient() {
 		// La papa disparada se dibuja como el ítem de su munición (papa o papa venenosa).
 		EntityRendererRegistry.register(ModEntityTypes.SPUD, ThrownItemRenderer::new);
+
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			while (ECHOLOCATE.consumeClick()) {
+				// El servidor comprueba si lleva el collar y el enfriamiento.
+				if (client.player != null && ClientPlayNetworking.canSend(EcholocatePayload.TYPE)) {
+					ClientPlayNetworking.send(EcholocatePayload.INSTANCE);
+				}
+			}
+		});
 	}
 }
