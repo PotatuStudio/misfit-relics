@@ -5,8 +5,29 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 ## v0.1: Hedor (en desarrollo)
 - **Efecto Hedor:** daño periódico que **se contagia en cadena** a las entidades cercanas, aliadas o enemigas. Puede matar.
 - **Poción de hedor:** se destila con papa venenosa, con versiones arrojadiza y persistente.
-- **Cañón de papas:** el efecto depende de la munición (papa normal: daño; papa venenosa: nube de Hedor).
-- **Portadores:** algunos zombis aparecen con Hedor.
+- **Cañón de papas:** modelo 3D con animación de carga. Se carga manteniendo clic derecho (0,5 s) y dispara al soltar, con retroceso. El efecto depende de la munición (papa: 6 de daño y empuje; papa venenosa: además, nube de Hedor de 3 bloques). Receta: 4 lingotes de cobre, pistón y pedernal (`CCC` / `CPF`). 250 usos, se repara con hierro.
+- **Portadores:** el 16 % de los zombis aparece con Hedor.
+
+## v0.2: Trompeta de cobre (en desarrollo)
+- **Cono de sonido** que **aturde** (efecto Aturdido: sin moverse, sin saltar, golpes sin daño; los mobs pierden su objetivo) y empuja un poco.
+- **Eco:** contra una pared el aturdimiento dura un 50 % más; bajo techo, un 25 % más.
+- **Oxidación: mientras mejor cuidada, mejor funciona.** Cada uso tiene un 4 % de probabilidad de oxidarla. Como en un instrumento real, el óxido apaga el sonido: llega menos lejos, se dispersa más y aturde menos. Cada etapa suena distinto (sonidos de trompeta de 26.1).
+
+  | Etapa | Alcance | Cono | Aturdimiento | Enfriamiento |
+  |---|---|---|---|---|
+  | Cobre | 10 | 60° | 2 s | 3 s |
+  | Expuesto | 9 | 70° | 1,5 s | 3 s |
+  | Desgastado | 7 | 80° | 1 s | 3,5 s |
+  | Oxidado | 5 | 90° | 0,6 s | 4 s |
+- **Mantenimiento** (agachado, con la herramienta en la otra mano): el **hacha** raspa una etapa de óxido (o quita la cera) y la recupera; el **panal** la encera para que no se siga oxidando.
+- Receta: 4 lingotes de cobre y un bloque musical (`  C` / `CNC` / `  C`). 200 usos, se repara con cobre.
+
+## v0.3: Collar del murciélago (en desarrollo)
+Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: el collar va en el espacio *collar* (pecho).
+- **Ecolocación** (tecla **B**, configurable): un pulso que marca con contorno a todas las criaturas en 16 bloques durante 5 s, incluso a través de paredes. Enfriamiento de 10 s.
+- **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 6 % del daño hecho (no aplica a proyectiles, nubes ni efectos).
+- Receta: 5 cuerdas, 2 membranas de phantom y un fragmento de eco (`SSS` / `S S` / `MEM`).
+- Próximamente: invocar un murciélago aliado que ataque junto al jugador.
 
 ### Game rules
 | Regla | Por defecto | Qué hace |
@@ -15,10 +36,11 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 | `misfitrelics:stench_affects_source` | `true` | El Hedor afecta a quien lo lanzó. |
 | `misfitrelics:stench_chain_contagion` | `true` | El contagio sigue en cadena (cada salto dura un 25 % menos). |
 | `misfitrelics:stench_can_kill` | `true` | El Hedor puede matar (si es `false`, deja con medio corazón). |
-| `misfitrelics:stench_carrier_chance` | `2` | Porcentaje de zombis, husks y drowned que aparecen como portadores. |
+| `misfitrelics:stench_carrier_chance` | `16` | Porcentaje de zombis, husks y drowned que aparecen como portadores. |
+| `misfitrelics:trumpet_friendly_fire` | `true` | La trompeta de cobre aturde a los aliados. |
 
 ## Requisitos
-Minecraft 26.3, Fabric Loader 0.20.1 o superior, Fabric API y Java 25.
+Minecraft 26.3, Fabric Loader 0.20.1 o superior, Fabric API, [Trinkets Updated](https://modrinth.com/mod/trinkets-updated) 4.2.1 o superior y Java 25.
 
 ## Desarrollo
 ```sh

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "P": "minecraft:piston",
+    "F": "minecraft:flint"
+  },
+  "pattern": [
+    "CCC",
+    "CPF"
+  ],
+  "result": {
+    "id": "misfitrelics:spud_cannon"
+  }
+}

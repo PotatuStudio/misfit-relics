@@ -16,6 +16,18 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	// Trinkets Updated (espacios de accesorios).
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Nucleoid"
+				url = "https://maven.nucleoid.xyz/releases"
+			}
+		}
+		filter {
+			includeGroup "eu.pb4"
+		}
+	}
 }
 
 loom {
@@ -37,9 +49,15 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
+	// Trinkets Updated: espacios de accesorios (collar del murciélago).
+	implementation "eu.pb4:trinkets:${project.trinkets_version}"
+
 	// Solo para desarrollo (runClient): no se publican ni van dentro del jar.
 	localRuntime "maven.modrinth:modmenu:${project.modmenu_version}"
 	localRuntime "maven.modrinth:placeholder-api:${project.placeholder_api_version}"
+	// JEI para buscar ítems por mod (@misfitrelics). IDs de versión de Modrinth (mismo número para cada loader).
+	localRuntime "maven.modrinth:jei:${project.jei_version_id}"
+	localRuntime "maven.modrinth:mezzconfig:${project.mezzconfig_version_id}"
 }
 
 processResources {
