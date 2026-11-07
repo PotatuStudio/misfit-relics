@@ -5,7 +5,7 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 ## v0.1: Hedor (en desarrollo)
 - **Efecto Hedor:** daño periódico que **se contagia en cadena** a las entidades cercanas, aliadas o enemigas. Puede matar.
 - **Poción de hedor:** se destila con papa venenosa, con versiones arrojadiza y persistente.
-- **Cañón de papas:** el efecto depende de la munición (papa normal: daño; papa venenosa: nube de Hedor).
+- **Cañón de papas:** se carga manteniendo clic derecho (1 s) y dispara al soltar. El efecto depende de la munición (papa: daño; papa venenosa: daño y nube de Hedor). Receta: 4 lingotes de cobre, pistón y pedernal (`CCC` / `CPF`). 250 usos, se repara con hierro.
 - **Portadores:** algunos zombis aparecen con Hedor.
 
 ### Game rules

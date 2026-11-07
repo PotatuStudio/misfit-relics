@@ -10,5 +10,7 @@
   "gamerule.misfitrelics.stench_affects_source": "Stench affects its source",
   "gamerule.misfitrelics.stench_chain_contagion": "Stench spreads in chains",
   "gamerule.misfitrelics.stench_can_kill": "Stench can kill",
-  "gamerule.misfitrelics.stench_carrier_chance": "Chance (%) of zombies spawning as Stench carriers"
+  "gamerule.misfitrelics.stench_carrier_chance": "Chance (%) of zombies spawning as Stench carriers",
+  "item.misfitrelics.spud_cannon": "Spud Cannon",
+  "entity.misfitrelics.spud": "Spud"
 }

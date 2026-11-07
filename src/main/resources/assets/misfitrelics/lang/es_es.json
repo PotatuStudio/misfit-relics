@@ -10,5 +10,7 @@
   "gamerule.misfitrelics.stench_affects_source": "El Hedor afecta a quien lo originó",
   "gamerule.misfitrelics.stench_chain_contagion": "El Hedor se contagia en cadena",
   "gamerule.misfitrelics.stench_can_kill": "El Hedor puede matar",
-  "gamerule.misfitrelics.stench_carrier_chance": "Probabilidad (%) de que un zombi aparezca como portador del Hedor"
+  "gamerule.misfitrelics.stench_carrier_chance": "Probabilidad (%) de que un zombi aparezca como portador del Hedor",
+  "item.misfitrelics.spud_cannon": "Cañón de papas",
+  "entity.misfitrelics.spud": "Papa"
 }

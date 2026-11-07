@@ -2,7 +2,9 @@ package io.github.potatustudio.misfitrelics;
 
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
+import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
+import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.registry.ModPotions;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
@@ -19,6 +21,8 @@ public class MisfitRelics implements ModInitializer {
 		ModAttachments.init();
 		ModEffects.init();
 		ModPotions.init();
+		ModEntityTypes.init();
+		ModItems.init();
 		LOGGER.info("Misfit Relics cargado");
 	}
 
