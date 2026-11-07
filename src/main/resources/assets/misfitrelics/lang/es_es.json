@@ -12,5 +12,11 @@
   "gamerule.misfitrelics.stench_can_kill": "El Hedor puede matar",
   "gamerule.misfitrelics.stench_carrier_chance": "Probabilidad (%) de que un zombi aparezca como portador del Hedor",
   "item.misfitrelics.spud_cannon": "Cañón de papas",
-  "entity.misfitrelics.spud": "Papa"
+  "entity.misfitrelics.spud": "Papa",
+  "effect.misfitrelics.stunned": "Aturdido",
+  "item.misfitrelics.copper_trumpet": "Trompeta de cobre",
+  "item.misfitrelics.exposed_copper_trumpet": "Trompeta de cobre expuesto",
+  "item.misfitrelics.weathered_copper_trumpet": "Trompeta de cobre desgastado",
+  "item.misfitrelics.oxidized_copper_trumpet": "Trompeta de cobre oxidado",
+  "gamerule.misfitrelics.trumpet_friendly_fire": "La trompeta de cobre aturde a los aliados"
 }

@@ -33,6 +33,11 @@ public final class ModGameRules {
 			.category(GameRuleCategory.SPAWNING)
 			.buildAndRegister(MisfitRelics.id("stench_carrier_chance"));
 
+	/** La trompeta aturde a aliados (mascotas, aldeanos, golems, jugadores del mismo equipo). */
+	public static final GameRule<Boolean> TRUMPET_FRIENDLY_FIRE = GameRuleBuilder.forBoolean(true)
+			.category(GameRuleCategory.MOBS)
+			.buildAndRegister(MisfitRelics.id("trumpet_friendly_fire"));
+
 	private ModGameRules() {
 	}
 
