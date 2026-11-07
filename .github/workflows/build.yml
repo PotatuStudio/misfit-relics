@@ -1,13 +1,26 @@
 name: build
-on: [push, pull_request]
+
+# Para ahorrar minutos de Actions, no compila en cada push:
+# solo en PRs hacia main, al etiquetar una release (v*) o a mano (Actions → build → Run workflow).
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore: ['**.md', 'docs/**']
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: gradle/actions/wrapper-validation@v6
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '25'
