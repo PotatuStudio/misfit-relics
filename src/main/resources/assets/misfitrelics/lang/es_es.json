@@ -24,5 +24,6 @@
   "item.misfitrelics.bat_collar.tooltip.lifesteal": "Los golpes cuerpo a cuerpo recuperan un %s%% del daño",
   "key.misfitrelics.echolocate": "Ecolocación (collar del murciélago)",
   "key.category.misfitrelics.main": "Misfit Relics",
-  "message.misfitrelics.echolocation_cooldown": "La ecolocación se está recargando…"
+  "message.misfitrelics.echolocation_cooldown": "La ecolocación se está recargando…",
+  "itemGroup.misfitrelics": "Misfit Relics"
 }

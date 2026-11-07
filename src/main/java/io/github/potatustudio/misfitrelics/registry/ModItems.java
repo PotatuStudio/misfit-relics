@@ -6,22 +6,27 @@ import io.github.potatustudio.misfitrelics.spud.SpudCannonItem;
 import io.github.potatustudio.misfitrelics.trumpet.CopperTrumpetItem;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetStage;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 
 public final class ModItems {
-	/** Pestaña "Combate" del inventario creativo (las constantes vanilla son privadas en 26.3). */
-	private static final ResourceKey<CreativeModeTab> COMBAT_TAB =
-			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("combat"));
+	/** Pestaña propia del mod en el inventario creativo. */
+	public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY =
+			ResourceKey.create(Registries.CREATIVE_MODE_TAB, MisfitRelics.id("main"));
 
 	public static final Item SPUD_CANNON = register("spud_cannon", SpudCannonItem::new,
 			new Item.Properties()
@@ -63,13 +68,23 @@ public final class ModItems {
 	}
 
 	public static void init() {
-		CreativeModeTabEvents.modifyOutputEvent(COMBAT_TAB).register(output -> {
-			output.accept(SPUD_CANNON);
-			output.accept(COPPER_TRUMPET);
-			output.accept(EXPOSED_COPPER_TRUMPET);
-			output.accept(WEATHERED_COPPER_TRUMPET);
-			output.accept(OXIDIZED_COPPER_TRUMPET);
-			output.accept(BAT_COLLAR);
-		});
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
+				.title(Component.translatable("itemGroup.misfitrelics"))
+				.icon(() -> new ItemStack(SPUD_CANNON))
+				.displayItems((parameters, output) -> {
+					output.accept(SPUD_CANNON);
+					output.accept(COPPER_TRUMPET);
+					output.accept(EXPOSED_COPPER_TRUMPET);
+					output.accept(WEATHERED_COPPER_TRUMPET);
+					output.accept(OXIDIZED_COPPER_TRUMPET);
+					output.accept(BAT_COLLAR);
+					// Pociones y flechas de hedor en todas sus variantes.
+					for (Holder<Potion> potion : List.of(ModPotions.STENCH, ModPotions.LONG_STENCH, ModPotions.STRONG_STENCH)) {
+						for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {
+							output.accept(PotionContents.createItemStack(container, potion));
+						}
+					}
+				})
+				.build());
 	}
 }

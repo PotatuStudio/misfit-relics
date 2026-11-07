@@ -24,5 +24,6 @@
   "item.misfitrelics.bat_collar.tooltip.lifesteal": "Melee hits restore %s%% of damage dealt",
   "key.misfitrelics.echolocate": "Echolocation (Bat Collar)",
   "key.category.misfitrelics.main": "Misfit Relics",
-  "message.misfitrelics.echolocation_cooldown": "Echolocation is recharging…"
+  "message.misfitrelics.echolocation_cooldown": "Echolocation is recharging…",
+  "itemGroup.misfitrelics": "Misfit Relics"
 }
