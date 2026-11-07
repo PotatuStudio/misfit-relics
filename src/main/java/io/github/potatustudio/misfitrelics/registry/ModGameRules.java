@@ -28,7 +28,7 @@ public final class ModGameRules {
 			.buildAndRegister(MisfitRelics.id("stench_can_kill"));
 
 	/** Porcentaje (0-100) de zombis que aparecen como portadores del Hedor. */
-	public static final GameRule<Integer> STENCH_CARRIER_CHANCE = GameRuleBuilder.forInteger(2)
+	public static final GameRule<Integer> STENCH_CARRIER_CHANCE = GameRuleBuilder.forInteger(16)
 			.range(0, 100)
 			.category(GameRuleCategory.SPAWNING)
 			.buildAndRegister(MisfitRelics.id("stench_carrier_chance"));

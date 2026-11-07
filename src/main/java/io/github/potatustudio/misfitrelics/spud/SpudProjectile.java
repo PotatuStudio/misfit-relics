@@ -9,6 +9,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
@@ -18,15 +19,18 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Papa disparada por el cañón. El efecto depende de la munición:
  * papa normal = solo daño; papa venenosa = además, nube de Hedor.
  */
 public class SpudProjectile extends ThrowableItemProjectile {
-	/** Daño por impacto directo (un corazón y medio). */
-	public static final float IMPACT_DAMAGE = 3.0f;
-	public static final float CLOUD_RADIUS = 2.5f;
+	/** Daño por impacto directo (tres corazones). */
+	public static final float IMPACT_DAMAGE = 6.0f;
+	/** Empuje horizontal al golpear. */
+	public static final double KNOCKBACK = 0.5;
+	public static final float CLOUD_RADIUS = 3.0f;
 	public static final int CLOUD_DURATION = 120;
 	/** Duración del Hedor que aplica la nube (10 s). */
 	public static final int CLOUD_EFFECT_DURATION = 200;
@@ -49,7 +53,12 @@ public class SpudProjectile extends ThrowableItemProjectile {
 	protected void onHitEntity(EntityHitResult hitResult) {
 		super.onHitEntity(hitResult);
 		if (level() instanceof ServerLevel level) {
-			hitResult.getEntity().hurtServer(level, damageSources().thrown(this, getOwner()), IMPACT_DAMAGE);
+			Entity target = hitResult.getEntity();
+			if (target.hurtServer(level, damageSources().thrown(this, getOwner()), IMPACT_DAMAGE)) {
+				Vec3 push = getDeltaMovement().multiply(1.0, 0.0, 1.0).normalize().scale(KNOCKBACK);
+				target.push(push.x, 0.15, push.z);
+				target.needsSync = true;
+			}
 		}
 	}
 

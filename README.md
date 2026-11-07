@@ -5,8 +5,8 @@ Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** pa
 ## v0.1: Hedor (en desarrollo)
 - **Efecto Hedor:** daño periódico que **se contagia en cadena** a las entidades cercanas, aliadas o enemigas. Puede matar.
 - **Poción de hedor:** se destila con papa venenosa, con versiones arrojadiza y persistente.
-- **Cañón de papas:** se carga manteniendo clic derecho (1 s) y dispara al soltar. El efecto depende de la munición (papa: daño; papa venenosa: daño y nube de Hedor). Receta: 4 lingotes de cobre, pistón y pedernal (`CCC` / `CPF`). 250 usos, se repara con hierro.
-- **Portadores:** algunos zombis aparecen con Hedor.
+- **Cañón de papas:** modelo 3D con animación de carga. Se carga manteniendo clic derecho (0,5 s) y dispara al soltar, con retroceso. El efecto depende de la munición (papa: 6 de daño y empuje; papa venenosa: además, nube de Hedor de 3 bloques). Receta: 4 lingotes de cobre, pistón y pedernal (`CCC` / `CPF`). 250 usos, se repara con hierro.
+- **Portadores:** el 16 % de los zombis aparece con Hedor.
 
 ## v0.2: Trompeta de cobre (en desarrollo)
 - **Cono de sonido** que **aturde** (efecto Aturdido: sin moverse, sin saltar, golpes sin daño; los mobs pierden su objetivo) y empuja un poco.
@@ -36,7 +36,7 @@ Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: el c
 | `misfitrelics:stench_affects_source` | `true` | El Hedor afecta a quien lo lanzó. |
 | `misfitrelics:stench_chain_contagion` | `true` | El contagio sigue en cadena (cada salto dura un 25 % menos). |
 | `misfitrelics:stench_can_kill` | `true` | El Hedor puede matar (si es `false`, deja con medio corazón). |
-| `misfitrelics:stench_carrier_chance` | `2` | Porcentaje de zombis, husks y drowned que aparecen como portadores. |
+| `misfitrelics:stench_carrier_chance` | `16` | Porcentaje de zombis, husks y drowned que aparecen como portadores. |
 | `misfitrelics:trumpet_friendly_fire` | `true` | La trompeta de cobre aturde a los aliados. |
 
 ## Requisitos
