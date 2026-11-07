@@ -1,8 +1,8 @@
 {
 	"required": true,
-	"package": "io.github.potatustudio.modtemplate.mixin",
+	"package": "io.github.potatustudio.misfitrelics.client.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"mixins": [
+	"client": [
 		
 	],
 	"injectors": {

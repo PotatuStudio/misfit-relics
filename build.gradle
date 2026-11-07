@@ -22,7 +22,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"modtemplate" {
+		"misfitrelics" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
