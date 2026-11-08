@@ -61,7 +61,7 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van
 
 | | **Anillo de la plaga** | **Anillo del festín** |
 |---|---|---|
-| Efecto | Al matar un enemigo, **25 %** de soltar 1 o 2 silverfish o endermites (al azar) **aliados**: pelean contra los enemigos cercanos 8 s, nunca contra ti ni tus aliados, vuelven a ti y se deshacen a los 20 s. | Al **tocar** un silverfish o un endermite (aliado o salvaje) lo **absorbes** y te cura **2 corazones**. |
+| Efecto | Al matar un enemigo, **25 %** de soltar de 1 a 3 bichos, cada uno al azar entre silverfish y endermite, **aliados**: pelean contra los enemigos cercanos 8 s, nunca contra ti ni tus aliados, vuelven a ti y se deshacen a los 20 s. | Al **tocar** un silverfish o un endermite (aliado o salvaje) lo **absorbes** y te cura **2 corazones**. |
 | Dónde | **Fortaleza:** biblioteca (15 %), pasillos y cruces (8 %) | **End:** tesoros de las ciudades del End (12 %) |
 
 ## Cómo se consiguen

@@ -47,7 +47,7 @@ import org.jspecify.annotations.Nullable;
 public final class PlagueRings {
 	/** Probabilidad de que un enemigo muerto suelte bichos (25 %). */
 	public static final float SPAWN_CHANCE = 0.25f;
-	public static final int MAX_BUGS = 2;
+	public static final int MAX_BUGS = 3;
 	/** Ticks que pelean antes de volver al dueño (8 s) y que viven en total (20 s). */
 	public static final int FIGHT_TICKS = 160;
 	public static final int LIFETIME_TICKS = 400;
