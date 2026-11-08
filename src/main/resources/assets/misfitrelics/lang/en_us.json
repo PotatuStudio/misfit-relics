@@ -72,5 +72,7 @@
   "item.misfitrelics.king_bat_collar": "Bat King's Collar",
   "entity.misfitrelics.king_bat": "Bat King",
   "item.misfitrelics.king_bat_collar.tooltip.bat": "Bat King: bites for %s, heals you %s%% of it. Revives in %s s",
-  "item.misfitrelics.king_bat_collar.tooltip.screech": "Screech every %s s: stuns nearby enemies for %s s"
+  "item.misfitrelics.king_bat_collar.tooltip.screech": "Screech every %s s: stuns nearby enemies for %s s",
+  "entity.misfitrelics.allied_bat.owned": "%s's Bat",
+  "entity.misfitrelics.king_bat.owned": "%s's Bat King"
 }

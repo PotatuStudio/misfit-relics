@@ -109,6 +109,9 @@ public final class BatCollar {
 			return;
 		}
 		bat.setOwner(player);
+		// En multijugador: al apuntarle se ve de quién es ("Murciélago de Steve"), como un mob con nombre.
+		bat.setCustomName(Component.translatable(king ? "entity.misfitrelics.king_bat.owned" : "entity.misfitrelics.allied_bat.owned",
+				player.getName()));
 		bat.snapTo(player.getX(), player.getEyeY() + 0.6, player.getZ(), player.getYRot(), 0f);
 		level.addFreshEntity(bat);
 		BATS.put(player.getUUID(), bat);

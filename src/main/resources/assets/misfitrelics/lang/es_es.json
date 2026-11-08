@@ -72,5 +72,7 @@
   "item.misfitrelics.king_bat_collar": "Collar del rey murciélago",
   "entity.misfitrelics.king_bat": "Rey murciélago",
   "item.misfitrelics.king_bat_collar.tooltip.bat": "Rey murciélago: muerde %s y te cura el %s%%. Revive en %s s",
-  "item.misfitrelics.king_bat_collar.tooltip.screech": "Chillido cada %s s: aturde %s s a los enemigos cercanos"
+  "item.misfitrelics.king_bat_collar.tooltip.screech": "Chillido cada %s s: aturde %s s a los enemigos cercanos",
+  "entity.misfitrelics.allied_bat.owned": "Murciélago de %s",
+  "entity.misfitrelics.king_bat.owned": "Rey murciélago de %s"
 }
