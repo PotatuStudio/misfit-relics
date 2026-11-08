@@ -52,7 +52,11 @@
   "trumpet.misfitrelics.song.blast": "♪ ¡PRAAAAAH!",
   "trumpet.misfitrelics.song.warmup": "♪ Escala de calentamiento",
   "item.misfitrelics.lucky_rabbit_foot": "Pata de conejo de la suerte",
-  "item.misfitrelics.lucky_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% de multiplicar el botín ×%s a ×%s",
   "item.misfitrelics.lucky_rabbit_foot.tooltip.sources": "Minerales, cultivos maduros, mobs que matas, cofres de estructuras y pesca",
-  "item.misfitrelics.lucky_rabbit_foot.jackpot": "¡JACKPOT! ×%s"
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.luck": "Suerte: %s%% de botín ×%s. Nunca pierde",
+  "item.misfitrelics.cursed_rabbit_foot": "Pata de conejo maldita",
+  "item.misfitrelics.cursed_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% de multiplicar el botín ×%s a ×%s",
+  "item.misfitrelics.cursed_rabbit_foot.tooltip.lose": "Maldición: %s%% de perderlo todo",
+  "item.misfitrelics.cursed_rabbit_foot.jackpot": "¡JACKPOT! ×%s",
+  "item.misfitrelics.cursed_rabbit_foot.lost": "La maldición se llevó tu botín..."
 }

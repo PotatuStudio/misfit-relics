@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "misfitrelics:lucky_rabbit_foot",
+    "minecraft:fermented_spider_eye",
+    "minecraft:soul_sand"
+  ],
+  "result": {
+    "id": "misfitrelics:cursed_rabbit_foot",
+    "count": 1
+  }
+}

@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,23 +30,29 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Pata de conejo de la suerte (espacio cinturón de Trinkets): cada botín tiene una probabilidad de "jackpot"
- * que multiplica todo lo que suelta. Nunca resta.
- * <p>
- * Aplica en cuatro fuentes, y en ninguna otra (recompensas de logros, trueques, regalos de gatos, etc.):
+ * Las dos patas de conejo (espacio cinturón de Trinkets, así que se lleva una u otra):
+ * <ul>
+ *   <li><b>De la suerte:</b> a menudo, un poco más de botín. Nunca resta.</li>
+ *   <li><b>Maldita:</b> la apuesta. A veces multiplica el botín muchísimo; a veces lo hace desaparecer.</li>
+ * </ul>
+ * Aplican en cuatro fuentes, y en ninguna otra (recompensas de logros, trueques, regalos de gatos, etc.):
  * <ul>
  *   <li>minería: minerales ({@code c:ores}) y cultivos maduros que rompe quien la lleva. Si el bloque suelta su
- *       propio ítem (toque de seda), no se multiplica, así no se puede colocar y romper para duplicar;</li>
+ *       propio ítem (toque de seda), no aplica, así no se puede colocar y romper para duplicar;</li>
  *   <li>mobs que mata quien la lleva;</li>
  *   <li>cofres de estructuras, la primera vez que se abren;</li>
  *   <li>pesca.</li>
  * </ul>
  */
 public final class LuckyRabbitFoot {
-	/** Probabilidad de jackpot por botín (8 %). */
-	public static final float JACKPOT_CHANCE = 0.08f;
-	public static final int MIN_MULTIPLIER = 3;
-	public static final int MAX_MULTIPLIER = 8;
+	/** De la suerte: probabilidad de duplicar el botín (25 %). */
+	public static final float LUCKY_CHANCE = 0.25f;
+	public static final int LUCKY_MULTIPLIER = 2;
+	/** Maldita: probabilidad de jackpot (15 %) y de perderlo todo (10 %). */
+	public static final float JACKPOT_CHANCE = 0.15f;
+	public static final float LOSE_CHANCE = 0.10f;
+	public static final int MIN_MULTIPLIER = 4;
+	public static final int MAX_MULTIPLIER = 10;
 
 	private LuckyRabbitFoot() {
 	}
@@ -54,8 +61,8 @@ public final class LuckyRabbitFoot {
 		LootTableEvents.MODIFY_DROPS.register(LuckyRabbitFoot::onDrops);
 	}
 
-	public static boolean isWearing(LivingEntity entity) {
-		return TrinketsApi.getAttachment(entity).findFirst(ModItems.LUCKY_RABBIT_FOOT).map(TrinketSlotAccess::get).isPresent();
+	public static boolean isWearing(LivingEntity entity, Item foot) {
+		return TrinketsApi.getAttachment(entity).findFirst(foot).map(TrinketSlotAccess::get).isPresent();
 	}
 
 	private static void onDrops(Holder<LootTable> table, LootContext context, List<ItemStack> drops) {
@@ -63,16 +70,24 @@ public final class LuckyRabbitFoot {
 			return;
 		}
 		Player player = luckyPlayer(table, context, drops);
-		if (player == null || !isWearing(player)) {
+		if (player == null) {
 			return;
 		}
 		RandomSource random = context.getRandom();
-		if (random.nextFloat() >= JACKPOT_CHANCE) {
-			return;
+		if (isWearing(player, ModItems.CURSED_RABBIT_FOOT)) {
+			float roll = random.nextFloat();
+			if (roll < LOSE_CHANCE) {
+				drops.clear();
+				curse(context, player);
+			} else if (roll < LOSE_CHANCE + JACKPOT_CHANCE) {
+				int multiplier = MIN_MULTIPLIER + random.nextInt(MAX_MULTIPLIER - MIN_MULTIPLIER + 1);
+				multiply(drops, multiplier);
+				jackpot(context, player, multiplier);
+			}
+		} else if (isWearing(player, ModItems.LUCKY_RABBIT_FOOT) && random.nextFloat() < LUCKY_CHANCE) {
+			multiply(drops, LUCKY_MULTIPLIER);
+			lucky(context, player);
 		}
-		int multiplier = MIN_MULTIPLIER + random.nextInt(MAX_MULTIPLIER - MIN_MULTIPLIER + 1);
-		multiply(drops, multiplier);
-		celebrate(context, player, multiplier);
 	}
 
 	/** Quién se lleva el botín, si viene de una de las cuatro fuentes con suerte; null en cualquier otro caso. */
@@ -115,15 +130,36 @@ public final class LuckyRabbitFoot {
 		drops.addAll(result);
 	}
 
-	private static void celebrate(LootContext context, Player player, int multiplier) {
-		ServerLevel level = context.getLevel();
+	private static Vec3 where(LootContext context, Player player) {
 		Vec3 origin = context.getOptional(LootContextParams.ORIGIN);
-		Vec3 at = origin != null ? origin : player.position();
+		return origin != null ? origin : player.position();
+	}
+
+	private static void lucky(LootContext context, Player player) {
+		ServerLevel level = context.getLevel();
+		Vec3 at = where(context, player);
+		level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8f, 1.5f);
+		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, at.x, at.y + 0.5, at.z, 8, 0.4, 0.4, 0.4, 0.0);
+	}
+
+	private static void jackpot(LootContext context, Player player, int multiplier) {
+		ServerLevel level = context.getLevel();
+		Vec3 at = where(context, player);
 		level.playSound(null, at.x, at.y, at.z, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8f, 1.6f);
 		level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, 1.2f);
 		level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, at.x, at.y + 0.5, at.z, 25, 0.4, 0.4, 0.4, 0.3);
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, at.x, at.y + 0.5, at.z, 12, 0.5, 0.5, 0.5, 0.0);
-		player.sendOverlayMessage(Component.translatable("item.misfitrelics.lucky_rabbit_foot.jackpot", multiplier)
+		player.sendOverlayMessage(Component.translatable("item.misfitrelics.cursed_rabbit_foot.jackpot", multiplier)
 				.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+	}
+
+	private static void curse(LootContext context, Player player) {
+		ServerLevel level = context.getLevel();
+		Vec3 at = where(context, player);
+		level.playSound(null, at.x, at.y, at.z, SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), SoundSource.PLAYERS, 0.8f, 0.8f);
+		level.sendParticles(ParticleTypes.SOUL, at.x, at.y + 0.5, at.z, 10, 0.3, 0.3, 0.3, 0.02);
+		level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.5, at.z, 8, 0.3, 0.3, 0.3, 0.01);
+		player.sendOverlayMessage(Component.translatable("item.misfitrelics.cursed_rabbit_foot.lost")
+				.withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
 	}
 }

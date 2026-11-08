@@ -17,8 +17,8 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
 - Efecto **Aturdido**: sin movimiento, salto ni daño; los mobs pierden su objetivo.
 - **Collar del murciélago** (espacio de collar de Trinkets; se ve puesto como amuleto en el pecho): ecolocación con tecla (B) a 32 bloques
   y robo de vida del 10 % en golpes cuerpo a cuerpo.
-- **Pata de conejo de la suerte** (espacio de cinturón de Trinkets): 8 % de jackpot que multiplica el botín ×3 a ×8
-  en minería, mobs, cofres de estructuras y pesca.
+- **Patas de conejo** (espacio de cinturón de Trinkets), en minería, mobs, cofres de estructuras y pesca:
+  la **de la suerte** (25 % de botín ×2, nunca pierde) y la **maldita** (15 % de jackpot ×4 a ×10, 10 % de perderlo todo).
 - Modelos 3D que referencian texturas vanilla (mismo modelo en inventario y mano) y herramientas en `tools/model-gen`.
 - Tooltips con las estadísticas de cada objeto y pestaña propia en el inventario creativo.
 - Game rules: `stench_friendly_fire`, `stench_affects_source`, `stench_chain_contagion`, `stench_can_kill`,

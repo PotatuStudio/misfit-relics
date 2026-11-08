@@ -52,7 +52,11 @@
   "trumpet.misfitrelics.song.blast": "♪ BWAAAAH!",
   "trumpet.misfitrelics.song.warmup": "♪ Warm-up scale",
   "item.misfitrelics.lucky_rabbit_foot": "Lucky Rabbit Foot",
-  "item.misfitrelics.lucky_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% chance to multiply loot ×%s to ×%s",
   "item.misfitrelics.lucky_rabbit_foot.tooltip.sources": "Ores, mature crops, mobs you kill, structure chests and fishing",
-  "item.misfitrelics.lucky_rabbit_foot.jackpot": "JACKPOT! ×%s"
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.luck": "Luck: %s%% chance of ×%s loot. Never loses",
+  "item.misfitrelics.cursed_rabbit_foot": "Cursed Rabbit Foot",
+  "item.misfitrelics.cursed_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% chance to multiply loot ×%s to ×%s",
+  "item.misfitrelics.cursed_rabbit_foot.tooltip.lose": "Curse: %s%% chance to lose all of it",
+  "item.misfitrelics.cursed_rabbit_foot.jackpot": "JACKPOT! ×%s",
+  "item.misfitrelics.cursed_rabbit_foot.lost": "The curse took your loot..."
 }

@@ -64,8 +64,10 @@ public final class ModItems {
 	public static final Item BAT_COLLAR = register("bat_collar", BatCollarItem::new,
 			new Item.Properties().stacksTo(1));
 
-	public static final Item LUCKY_RABBIT_FOOT = register("lucky_rabbit_foot", LuckyRabbitFootItem::new,
-			new Item.Properties().stacksTo(1));
+	public static final Item LUCKY_RABBIT_FOOT = register("lucky_rabbit_foot",
+			properties -> new LuckyRabbitFootItem(false, properties), new Item.Properties().stacksTo(1));
+	public static final Item CURSED_RABBIT_FOOT = register("cursed_rabbit_foot",
+			properties -> new LuckyRabbitFootItem(true, properties), new Item.Properties().stacksTo(1));
 
 	private ModItems() {
 	}
@@ -102,6 +104,7 @@ public final class ModItems {
 		// Trinkets: reacción al ponerse el collar (BatCollarItem#onEquip).
 		TrinketCallback.setCallback(BAT_COLLAR, (TrinketCallback) BAT_COLLAR);
 		TrinketCallback.setCallback(LUCKY_RABBIT_FOOT, (TrinketCallback) LUCKY_RABBIT_FOOT);
+		TrinketCallback.setCallback(CURSED_RABBIT_FOOT, (TrinketCallback) CURSED_RABBIT_FOOT);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
 				.icon(() -> new ItemStack(SPUD_CANNON))
@@ -117,6 +120,7 @@ public final class ModItems {
 					output.accept(OXIDIZED_COPPER_TRUMPET);
 					output.accept(BAT_COLLAR);
 					output.accept(LUCKY_RABBIT_FOOT);
+					output.accept(CURSED_RABBIT_FOOT);
 					// Pociones y flechas de hedor en todas sus variantes.
 					for (Holder<Potion> potion : List.of(ModPotions.STENCH, ModPotions.LONG_STENCH, ModPotions.STRONG_STENCH)) {
 						for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {
