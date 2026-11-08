@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.registry;
 
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.network.EcholocatePayload;
+import io.github.potatustudio.misfitrelics.network.EcholocationPulsePayload;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -13,6 +14,7 @@ public final class ModNetworking {
 
 	public static void init() {
 		PayloadTypeRegistry.serverboundPlay().register(EcholocatePayload.TYPE, EcholocatePayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(EcholocationPulsePayload.TYPE, EcholocationPulsePayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(EcholocatePayload.TYPE,
 				(payload, context) -> BatCollar.echolocate(context.player()));
 

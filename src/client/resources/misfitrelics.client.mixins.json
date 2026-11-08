@@ -3,7 +3,7 @@
 	"package": "io.github.potatustudio.misfitrelics.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		
+		"MinecraftMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

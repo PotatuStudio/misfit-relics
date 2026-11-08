@@ -6,12 +6,16 @@ import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
 import io.github.potatustudio.misfitrelics.registry.ModComponents;
 import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
+import io.github.potatustudio.misfitrelics.network.EcholocationPulsePayload;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -21,8 +25,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
@@ -170,10 +172,13 @@ public final class BatCollar {
 		}
 		ServerLevel level = player.level();
 		AABB area = player.getBoundingBox().inflate(ECHOLOCATION_RADIUS);
+		// El contorno lo dibuja solo el cliente de quien ecolocalizó: los demás jugadores no lo ven.
+		List<Integer> found = new ArrayList<>();
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
 				t -> t != player && t.isAlive() && t.distanceToSqr(player) <= ECHOLOCATION_RADIUS * ECHOLOCATION_RADIUS)) {
-			target.addEffect(new MobEffectInstance(MobEffects.GLOWING, ECHOLOCATION_GLOW, 0, false, false), player);
+			found.add(target.getId());
 		}
+		ServerPlayNetworking.send(player, new EcholocationPulsePayload(found, ECHOLOCATION_GLOW));
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BAT_AMBIENT,
 				SoundSource.PLAYERS, 1.0f, 1.6f);
 		level.sendParticles(ParticleTypes.SONIC_BOOM, player.getX(), player.getEyeY(), player.getZ(), 1, 0, 0, 0, 0);

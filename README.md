@@ -41,7 +41,7 @@ Arma cuerpo a cuerpo e instrumento.
 
 ## Collar del murciélago
 Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto: un amuleto del murciélago colgando de un cordón en el pecho.
-- **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. Recarga de 10 s.
+- **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. **Solo lo ves tú** (en multijugador, los demás no). Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
 - **Murciélago aliado:** mientras llevas el collar, un murciélago te acompaña con rutinas propias:
   - gira alrededor de tu cabeza y de vez en cuando sale a cazar insectos (de noche, más seguido);
