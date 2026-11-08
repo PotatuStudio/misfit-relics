@@ -4,6 +4,7 @@ import eu.pb4.trinkets.api.callback.TrinketCallback;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
+import io.github.potatustudio.misfitrelics.combat.CombatItem;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFootItem;
 import io.github.potatustudio.misfitrelics.mobility.Mobility;
 import io.github.potatustudio.misfitrelics.mobility.MobilityItem;
@@ -120,6 +121,19 @@ public final class ModItems {
 		return item;
 	}
 
+	public static final Item ELECTRIC_GAUNTLET = register("electric_gauntlet",
+			properties -> new CombatItem(CombatItem.Kind.ELECTRIC_GAUNTLET, properties), new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item CHARGED_CREEPER_HEART = register("charged_creeper_heart",
+			properties -> new CombatItem(CombatItem.Kind.CHARGED_CREEPER_HEART, properties), new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item FOREST_QUIVER = register("forest_quiver",
+			properties -> new CombatItem(CombatItem.Kind.FOREST_QUIVER, properties), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	public static final Item WATCHER_QUIVER = register("watcher_quiver",
+			properties -> new CombatItem(CombatItem.Kind.WATCHER_QUIVER, properties), new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item NAUTILUS_SHELL = register("nautilus_shell",
+			properties -> new CombatItem(CombatItem.Kind.NAUTILUS_SHELL, properties), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	public static final Item BERSERKER_RING = register("berserker_ring",
+			properties -> new CombatItem(CombatItem.Kind.BERSERKER_RING, properties), new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+
 	private static Item registerMobility(String path, MobilityItem.Kind kind, Rarity rarity) {
 		return register(path, properties -> new MobilityItem(kind, properties), new Item.Properties().stacksTo(1).rarity(rarity));
 	}
@@ -142,6 +156,12 @@ public final class ModItems {
 		TrinketCallback.setCallback(BREEZE_BOTTLE, (TrinketCallback) BREEZE_BOTTLE);
 		TrinketCallback.setCallback(MAGMA_BOOTS, (TrinketCallback) MAGMA_BOOTS);
 		TrinketCallback.setCallback(RAM_HORNS, (TrinketCallback) RAM_HORNS);
+		TrinketCallback.setCallback(ELECTRIC_GAUNTLET, (TrinketCallback) ELECTRIC_GAUNTLET);
+		TrinketCallback.setCallback(CHARGED_CREEPER_HEART, (TrinketCallback) CHARGED_CREEPER_HEART);
+		TrinketCallback.setCallback(FOREST_QUIVER, (TrinketCallback) FOREST_QUIVER);
+		TrinketCallback.setCallback(WATCHER_QUIVER, (TrinketCallback) WATCHER_QUIVER);
+		TrinketCallback.setCallback(NAUTILUS_SHELL, (TrinketCallback) NAUTILUS_SHELL);
+		TrinketCallback.setCallback(BERSERKER_RING, (TrinketCallback) BERSERKER_RING);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
 				.icon(() -> new ItemStack(SPUD_CANNON))
@@ -166,6 +186,12 @@ public final class ModItems {
 					output.accept(BREEZE_BOTTLE);
 					output.accept(MAGMA_BOOTS);
 					output.accept(RAM_HORNS);
+					output.accept(ELECTRIC_GAUNTLET);
+					output.accept(CHARGED_CREEPER_HEART);
+					output.accept(FOREST_QUIVER);
+					output.accept(WATCHER_QUIVER);
+					output.accept(NAUTILUS_SHELL);
+					output.accept(BERSERKER_RING);
 					// Pociones y flechas de hedor en todas sus variantes.
 					for (Holder<Potion> potion : List.of(ModPotions.STENCH, ModPotions.LONG_STENCH, ModPotions.STRONG_STENCH)) {
 						for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {

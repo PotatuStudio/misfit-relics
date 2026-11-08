@@ -88,6 +88,16 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**.
 | **Botas de magma** | zapatos | **Caminas sobre la lava** (quieta o que corre) sin quemarte; Shift para hundirte. En el Nether, +15 % de velocidad. | Fortalezas del Nether (10 %) |
 | **Cuernos del carnero** | sombrero | Tecla **R**: **dash en línea recta** de ~8 bloques, **invulnerable** mientras dura; lo que golpeas recibe 10 de daño, sale volando y queda aturdido. Recarga de 3 s. | Puestos de saqueadores (10 %) |
 
+## Reliquias de combate
+| Reliquia | Espacio | Qué hace | Dónde |
+|---|---|---|---|
+| **Guantelete eléctrico** | guantes | Cada golpe **te carga** (hasta 5; se pierde a los 3 s sin golpear) y **electrocuta** al objetivo; la descarga **salta en cadena** a 3 enemigos cercanos. Más carga, más daño. | Bóvedas de las cámaras de desafío (6 %) |
+| **Corazón de creeper cargado** | collar | Al recibir daño, 20 % de que **caiga un rayo** sobre quien te pegó: electrocuta y **aturde 2 s** a los enemigos alrededor, nunca a ti. Recarga de 5 s. | Mazmorras (6 %), pirámides (5 %) |
+| **Carcaj del bosque** | espalda | Tus flechas **enredan**: enredaderas con espinas inmovilizan al objetivo 2 s y lo pinchan. | Templos de la jungla (10 %) |
+| **Carcaj del vigilante** | espalda | Tus flechas **persiguen** al enemigo más cercano delante de ellas. | Mansiones del bosque (5 %) |
+| **Concha de nautilus** | collar | Bajo el agua respiras más, nadas y picas más rápido, y tus golpes empujan con una corriente. | Tesoros enterrados (15 %), naufragios (5 %) |
+| **Anillo del berserker** | anillo | **−60 % de vida máxima** (4 corazones) a cambio de **+80 % de daño**. | Bastiones (6 %) |
+
 ## Cómo se consiguen
 Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.
 

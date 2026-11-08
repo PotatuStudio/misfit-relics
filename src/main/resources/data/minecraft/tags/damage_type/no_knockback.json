@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "misfitrelics:stench"
+    "misfitrelics:stench",
+    "misfitrelics:electrocution"
   ]
 }

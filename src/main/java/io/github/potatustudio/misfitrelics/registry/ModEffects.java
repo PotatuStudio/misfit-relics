@@ -1,5 +1,7 @@
 package io.github.potatustudio.misfitrelics.registry;
 
+import io.github.potatustudio.misfitrelics.combat.EntangledEffect;
+
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.stench.StenchEffect;
 import io.github.potatustudio.misfitrelics.trumpet.StunnedEffect;
@@ -13,6 +15,9 @@ public final class ModEffects {
 			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MisfitRelics.id("stench"), new StenchEffect());
 	public static final Holder<MobEffect> STUNNED =
 			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MisfitRelics.id("stunned"), new StunnedEffect());
+
+	public static final Holder<MobEffect> ENTANGLED =
+			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, MisfitRelics.id("entangled"), new EntangledEffect());
 
 	private ModEffects() {
 	}

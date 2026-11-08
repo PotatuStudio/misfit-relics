@@ -121,4 +121,17 @@ dump({"parent": "minecraft:item/generated", "textures": {"layer0": "minecraft:it
                                                          "layer1": "misfitrelics:item/breeze_bottle_overlay"}},
      os.path.join(MODELS, "breeze_bottle.json"))
 dump({"model": model_ref("breeze_bottle")}, os.path.join(ITEMS, "breeze_bottle.json"))
+# Reliquias de combate: íconos 2D (los que brillan llevan su .mcmeta); la concha va sobre la concha vanilla.
+for item_id in ("electric_gauntlet", "charged_creeper_heart", "forest_quiver", "watcher_quiver", "berserker_ring"):
+    for ext in (".png", ".png.mcmeta"):
+        if os.path.exists(os.path.join(src, item_id + ext)):
+            shutil.copyfile(os.path.join(src, item_id + ext), os.path.join(TEXTURES, item_id + ext))
+    dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"misfitrelics:item/{item_id}"}},
+         os.path.join(MODELS, item_id + ".json"))
+    dump({"model": model_ref(item_id)}, os.path.join(ITEMS, item_id + ".json"))
+shutil.copyfile(os.path.join(src, "nautilus_shell_overlay.png"), os.path.join(TEXTURES, "nautilus_shell_overlay.png"))
+dump({"parent": "minecraft:item/generated", "textures": {"layer0": "minecraft:item/nautilus_shell",
+                                                         "layer1": "misfitrelics:item/nautilus_shell_overlay"}},
+     os.path.join(MODELS, "nautilus_shell.json"))
+dump({"model": model_ref("nautilus_shell")}, os.path.join(ITEMS, "nautilus_shell.json"))
 print("exportado: 8 cañones, 4 trompetas y el collar")

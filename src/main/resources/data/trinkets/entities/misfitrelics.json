@@ -10,6 +10,7 @@
     "hand/glove",
     "offhand/glove",
     "feet/shoes",
-    "head/hat"
+    "head/hat",
+    "chest/back"
   ]
 }

@@ -9,6 +9,7 @@ import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import io.github.potatustudio.misfitrelics.registry.ModNetworking;
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
+import io.github.potatustudio.misfitrelics.combat.CombatRelics;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFoot;
 import io.github.potatustudio.misfitrelics.mobility.Mobility;
 import io.github.potatustudio.misfitrelics.plague.PlagueRings;
@@ -41,6 +42,7 @@ public class MisfitRelics implements ModInitializer {
 		PlagueRings.init();
 		BatCollar.init();
 		Mobility.init();
+		CombatRelics.init();
 		LOGGER.info("Misfit Relics cargado");
 	}
 

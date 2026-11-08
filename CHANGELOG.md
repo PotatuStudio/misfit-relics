@@ -27,6 +27,9 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
 - **Anillo de la plaga** y **Anillo del festín** (espacios de anillo de Trinkets): la plaga suelta silverfish o endermites
   aliados al matar; el festín los absorbe al tocarlos y cura 2 corazones.
 - Las reliquias se encuentran en cofres de estructuras temáticas (solo el cañón rústico tiene receta).
+- Reliquias de combate: **guantelete eléctrico** (carga y electrocución en cadena), **corazón de creeper cargado**
+  (rayo que aturde al recibir daño), **carcaj del bosque** (flechas que enredan), **carcaj del vigilante** (flechas que
+  persiguen), **concha de nautilus** (bajo el agua) y **anillo del berserker** (menos vida, mucho más daño).
 - Reliquias de movilidad: **guantes de seda** y **de la viuda** (escalada), **breeze en una botella** (ráfaga en el aire),
   **botas de magma** (caminar sobre lava) y **cuernos del carnero** (embestida invulnerable).
 - Collar puesto: solo la cadena bajando del cuello y el dije (recorte del ícono).

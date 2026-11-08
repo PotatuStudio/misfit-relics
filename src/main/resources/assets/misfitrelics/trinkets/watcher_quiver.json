@@ -1,0 +1,45 @@
+{
+  "target": [
+    "misfitrelics:watcher_quiver"
+  ],
+  "render": [
+    {
+      "type": "item",
+      "model_part": "body",
+      "display_context": "none",
+      "offset": [
+        0,
+        0.1,
+        -1
+      ],
+      "transformation": {
+        "translation": [
+          0,
+          0,
+          -0.03
+        ],
+        "left_rotation": {
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "angle": 0
+        },
+        "scale": [
+          0.6,
+          0.6,
+          0.6
+        ],
+        "right_rotation": {
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "angle": 0
+        }
+      }
+    }
+  ]
+}

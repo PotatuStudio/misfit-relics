@@ -9,6 +9,10 @@ import net.minecraft.world.damagesource.DamageType;
 public final class ModDamageTypes {
 	public static final ResourceKey<DamageType> STENCH = ResourceKey.create(Registries.DAMAGE_TYPE, MisfitRelics.id("stench"));
 
+	/** Electrocución del guantelete eléctrico y del corazón de creeper cargado. */
+	public static final ResourceKey<DamageType> ELECTROCUTION =
+			ResourceKey.create(Registries.DAMAGE_TYPE, MisfitRelics.id("electrocution"));
+
 	private ModDamageTypes() {
 	}
 }
