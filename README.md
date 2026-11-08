@@ -45,6 +45,12 @@ Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va e
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
 - Receta: 5 cuerdas, 2 membranas de phantom y un fragmento de eco (`SSS` / `S S` / `MEM`).
 
+## Pata de conejo de la suerte
+Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *cinturón* y cuelga de la cadera.
+- **Jackpot:** cada botín tiene un **8 %** de probabilidad de multiplicarse **×3 a ×8**, con sonido, destellos y aviso en pantalla. Nunca resta.
+- Aplica en **minerales y cultivos maduros** que rompes (con toque de seda no se multiplica), **mobs que matas**, **cofres de estructuras** la primera vez que se abren y **pesca**.
+- Receta (sin forma): pata de conejo, cuerda, lingote de oro y esmeralda.
+
 ## Game rules
 | Regla | Por defecto | Qué hace |
 |---|---|---|

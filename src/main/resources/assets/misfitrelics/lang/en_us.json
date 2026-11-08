@@ -50,5 +50,9 @@
   "trumpet.misfitrelics.song.doot": "♪ Doot doot",
   "trumpet.misfitrelics.song.sad": "♪ Wah wah wah waaah",
   "trumpet.misfitrelics.song.blast": "♪ BWAAAAH!",
-  "trumpet.misfitrelics.song.warmup": "♪ Warm-up scale"
+  "trumpet.misfitrelics.song.warmup": "♪ Warm-up scale",
+  "item.misfitrelics.lucky_rabbit_foot": "Lucky Rabbit Foot",
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% chance to multiply loot ×%s to ×%s",
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.sources": "Ores, mature crops, mobs you kill, structure chests and fishing",
+  "item.misfitrelics.lucky_rabbit_foot.jackpot": "JACKPOT! ×%s"
 }

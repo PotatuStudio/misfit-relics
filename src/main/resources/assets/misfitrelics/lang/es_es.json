@@ -50,5 +50,9 @@
   "trumpet.misfitrelics.song.doot": "♪ Dut dut",
   "trumpet.misfitrelics.song.sad": "♪ Uá uá uá uaaa",
   "trumpet.misfitrelics.song.blast": "♪ ¡PRAAAAAH!",
-  "trumpet.misfitrelics.song.warmup": "♪ Escala de calentamiento"
+  "trumpet.misfitrelics.song.warmup": "♪ Escala de calentamiento",
+  "item.misfitrelics.lucky_rabbit_foot": "Pata de conejo de la suerte",
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% de multiplicar el botín ×%s a ×%s",
+  "item.misfitrelics.lucky_rabbit_foot.tooltip.sources": "Minerales, cultivos maduros, mobs que matas, cofres de estructuras y pesca",
+  "item.misfitrelics.lucky_rabbit_foot.jackpot": "¡JACKPOT! ×%s"
 }

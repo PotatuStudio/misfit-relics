@@ -7,6 +7,7 @@ import io.github.potatustudio.misfitrelics.registry.ModGameRules;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import io.github.potatustudio.misfitrelics.registry.ModNetworking;
+import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFoot;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetSongs;
 import io.github.potatustudio.misfitrelics.registry.ModParticles;
 import io.github.potatustudio.misfitrelics.registry.ModPotions;
@@ -31,6 +32,7 @@ public class MisfitRelics implements ModInitializer {
 		ModLoot.init();
 		ModNetworking.init();
 		TrumpetSongs.init();
+		LuckyRabbitFoot.init();
 		LOGGER.info("Misfit Relics cargado");
 	}
 

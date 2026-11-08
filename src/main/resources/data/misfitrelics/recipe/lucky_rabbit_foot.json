@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:rabbit_foot",
+    "minecraft:string",
+    "minecraft:gold_ingot",
+    "minecraft:emerald"
+  ],
+  "result": {
+    "id": "misfitrelics:lucky_rabbit_foot",
+    "count": 1
+  }
+}
