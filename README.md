@@ -48,7 +48,8 @@ Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va e
   - **de día busca la sombra** bajo un techo cercano y se **cuelga boca abajo**; si no hay sombra, se queda pegado a ti;
   - de noche se cuelga a descansar si te quedas quieto un rato;
   - **muerde a lo que golpeas o a quien te golpea** (3 de daño; cada mordisco te cura con el robo de vida) y deja lo que esté haciendo para pelear;
-  - no puedes herirlo tú. Si muere, el collar muestra una **barra morada** y vuelve a los **60 s**.
+  - no puedes herirlo tú. Si muere, vuelve a los **60 s** (una **barra morada** en el collar muestra cuánto falta).
+  - Es **un murciélago por jugador**. La espera para revivir y la recarga de la ecolocación son tuyas, no del collar: cambiar de collar no las salta.
 - **Dónde:** cofres de la ciudad antigua (10 %).
 
 ### Collar del rey murciélago (coleccionable)

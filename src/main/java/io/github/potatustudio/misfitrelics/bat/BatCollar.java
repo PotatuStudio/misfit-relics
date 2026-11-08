@@ -2,6 +2,8 @@ package io.github.potatustudio.misfitrelics.bat;
 
 import eu.pb4.trinkets.api.TrinketsApi;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
+import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.registry.ModAttachments;
 import io.github.potatustudio.misfitrelics.registry.ModComponents;
 import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
@@ -12,6 +14,7 @@ import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,6 +39,8 @@ public final class BatCollar {
 	public static final int ECHOLOCATION_GLOW = 120;
 	/** Enfriamiento de la ecolocación (10 s). */
 	public static final int ECHOLOCATION_COOLDOWN = 200;
+	/** Grupo de enfriamiento compartido por los dos collares (cambiar de collar no salta la recarga). */
+	public static final Identifier COOLDOWN_GROUP = MisfitRelics.id("bat_collar");
 	/** Fracción del daño cuerpo a cuerpo que se recupera como vida (10 %). */
 	public static final float LIFESTEAL = 0.10f;
 	/** Tiempo que tarda en revivir el murciélago aliado si muere (60 s). */
@@ -57,24 +62,29 @@ public final class BatCollar {
 	private static void tick(MinecraftServer server) {
 		BATS.values().removeIf(Entity::isRemoved);
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			// La espera corre aunque no lleve el collar puesto.
+			int revive = player.getAttachedOrElse(ModAttachments.BAT_REVIVE, 0);
+			if (revive > 0) {
+				if (revive == 1) {
+					player.removeAttached(ModAttachments.BAT_REVIVE);
+				} else {
+					player.setAttached(ModAttachments.BAT_REVIVE, revive - 1);
+				}
+			}
 			Optional<TrinketSlotAccess> access = findWornAccess(player);
 			if (access.isEmpty() || !player.isAlive() || player.isSpectator()) {
 				continue;
 			}
 			ItemStack collar = access.get().get();
-			Integer revive = collar.get(ModComponents.BAT_REVIVE);
-			if (revive != null) {
-				// Se actualiza una vez por segundo para no sincronizar el ítem en cada tick.
+			if (player.getAttachedOrElse(ModAttachments.BAT_REVIVE, 0) > 0) {
+				// La barra del collar se actualiza una vez por segundo para no sincronizar el ítem en cada tick.
 				if (server.getTickCount() % 20 == 0) {
-					int left = revive - 20;
-					if (left <= 0) {
-						collar.remove(ModComponents.BAT_REVIVE);
-					} else {
-						collar.set(ModComponents.BAT_REVIVE, left);
-					}
-					access.get().inventory().setChanged();
+					showRevive(access.get(), player.getAttachedOrElse(ModAttachments.BAT_REVIVE, 0));
 				}
 				continue;
+			}
+			if (collar.has(ModComponents.BAT_REVIVE)) {
+				showRevive(access.get(), 0);
 			}
 			boolean king = isKing(collar);
 			AlliedBat current = BATS.get(player.getUUID());
@@ -110,10 +120,21 @@ public final class BatCollar {
 		BATS.remove(player.getUUID());
 		findWornAccess(player).ifPresent(access -> {
 			int ticks = reviveTicks(access.get());
-			access.get().set(ModComponents.BAT_REVIVE, ticks);
-			access.inventory().setChanged();
+			player.setAttached(ModAttachments.BAT_REVIVE, ticks);
+			showRevive(access, ticks);
 			player.sendOverlayMessage(Component.translatable("message.misfitrelics.allied_bat_died", ticks / 20));
 		});
+	}
+
+	/** Muestra en el collar puesto cuánto falta (barra morada); 0 la quita. */
+	private static void showRevive(TrinketSlotAccess access, int ticks) {
+		ItemStack collar = access.get();
+		if (ticks > 0) {
+			collar.set(ModComponents.BAT_REVIVE, ticks);
+		} else {
+			collar.remove(ModComponents.BAT_REVIVE);
+		}
+		access.inventory().setChanged();
 	}
 
 	public static Optional<ItemStack> findWorn(LivingEntity entity) {
@@ -153,7 +174,7 @@ public final class BatCollar {
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BAT_AMBIENT,
 				SoundSource.PLAYERS, 1.0f, 1.6f);
 		level.sendParticles(ParticleTypes.SONIC_BOOM, player.getX(), player.getEyeY(), player.getZ(), 1, 0, 0, 0, 0);
-		player.getCooldowns().addCooldown(collar.get(), ECHOLOCATION_COOLDOWN);
+		player.getCooldowns().addCooldown(COOLDOWN_GROUP, ECHOLOCATION_COOLDOWN);
 	}
 
 	/** Robo de vida: solo golpes directos (no proyectiles, nubes ni efectos). */

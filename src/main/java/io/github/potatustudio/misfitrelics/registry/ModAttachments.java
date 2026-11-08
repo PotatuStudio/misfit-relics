@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.registry;
 
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.stench.StenchData;
+import com.mojang.serialization.Codec;
 import java.util.UUID;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -17,6 +18,14 @@ public final class ModAttachments {
 	public static final AttachmentType<UUID> PLAGUE_OWNER = AttachmentRegistry.create(
 			MisfitRelics.id("plague_owner"),
 			builder -> builder.persistent(UUIDUtil.CODEC));
+
+	/**
+	 * Ticks que faltan para que reviva el murciélago aliado. Va en el jugador (no en el collar) para que cambiar de
+	 * collar no salte la espera; se conserva al morir.
+	 */
+	public static final AttachmentType<Integer> BAT_REVIVE = AttachmentRegistry.create(
+			MisfitRelics.id("bat_revive"),
+			builder -> builder.persistent(Codec.INT).copyOnDeath());
 
 	private ModAttachments() {
 	}

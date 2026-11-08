@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.registry;
 
 import eu.pb4.trinkets.api.callback.TrinketCallback;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFootItem;
 import io.github.potatustudio.misfitrelics.plague.BugRingItem;
@@ -13,6 +14,7 @@ import io.github.potatustudio.misfitrelics.util.CopperStage;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Holder;
@@ -29,6 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.UseCooldown;
 import net.minecraft.world.item.component.Weapon;
 
 public final class ModItems {
@@ -64,9 +67,11 @@ public final class ModItems {
 	public static final Item OXIDIZED_COPPER_TRUMPET = registerTrumpet("oxidized_copper_trumpet", TrumpetStage.OXIDIZED);
 
 	public static final Item BAT_COLLAR = register("bat_collar",
-			properties -> new BatCollarItem(false, properties), new Item.Properties().stacksTo(1));
+			properties -> new BatCollarItem(false, properties), new Item.Properties().stacksTo(1)
+					.component(DataComponents.USE_COOLDOWN, new UseCooldown(0.05f, Optional.of(BatCollar.COOLDOWN_GROUP))));
 	public static final Item KING_BAT_COLLAR = register("king_bat_collar",
-			properties -> new BatCollarItem(true, properties), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+			properties -> new BatCollarItem(true, properties), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
+					.component(DataComponents.USE_COOLDOWN, new UseCooldown(0.05f, Optional.of(BatCollar.COOLDOWN_GROUP))));
 
 	public static final Item LUCKY_RABBIT_FOOT = register("lucky_rabbit_foot",
 			properties -> new LuckyRabbitFootItem(false, properties), new Item.Properties().stacksTo(1));

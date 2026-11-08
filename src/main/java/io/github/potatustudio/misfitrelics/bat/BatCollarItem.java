@@ -72,6 +72,12 @@ public class BatCollarItem extends Item implements TrinketCallback {
 		return 0x9A5FD0;
 	}
 
+	/** Al quitárselo, la barra de "reviviendo" queda en el jugador, no en este collar. */
+	@Override
+	public void onUnequip(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
+		stack.remove(ModComponents.BAT_REVIVE);
+	}
+
 	/** Al ponérselo: aleteo de murciélago y partículas, para que se note. */
 	@Override
 	public void onEquip(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity) {
