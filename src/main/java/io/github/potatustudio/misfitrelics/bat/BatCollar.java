@@ -27,8 +27,8 @@ public final class BatCollar {
 	public static final int ECHOLOCATION_GLOW = 120;
 	/** Enfriamiento de la ecolocación (10 s). */
 	public static final int ECHOLOCATION_COOLDOWN = 200;
-	/** Fracción del daño cuerpo a cuerpo que se recupera como vida (6 %). */
-	public static final float LIFESTEAL = 0.06f;
+	/** Fracción del daño cuerpo a cuerpo que se recupera como vida (10 %). */
+	public static final float LIFESTEAL = 0.10f;
 
 	private BatCollar() {
 	}

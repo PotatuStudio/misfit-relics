@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.Weapon;
 
 public final class ModItems {
 	/** Pestaña propia del mod en el inventario creativo. */
@@ -79,7 +81,10 @@ public final class ModItems {
 				new Item.Properties()
 						.stacksTo(1)
 						.durability(CopperTrumpetItem.DURABILITY)
-						.repairable(Items.COPPER_INGOT));
+						.repairable(Items.COPPER_INGOT)
+						.attributes(CopperTrumpetItem.attributes())
+						.component(DataComponents.WEAPON, new Weapon(1))
+						.enchantable(13));
 		TRUMPETS.put(stage, item);
 		return item;
 	}

@@ -1,0 +1,189 @@
+{
+ "textures": {
+  "t": "misfitrelics:block/bat_collar_details",
+  "iron": "minecraft:block/anvil",
+  "particle": "#t"
+ },
+ "elements": [
+  {
+   "name": "argolla",
+   "from": [
+    7.45,
+    10.1,
+    8.0
+   ],
+   "to": [
+    8.55,
+    11.0,
+    8.6
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      3,
+      1,
+      4,
+      2
+     ],
+     "texture": "#iron"
+    },
+    "south": {
+     "uv": [
+      3,
+      1,
+      4,
+      2
+     ],
+     "texture": "#iron"
+    },
+    "up": {
+     "uv": [
+      10,
+      14,
+      11,
+      15
+     ],
+     "texture": "#iron"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#iron"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#iron"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#iron"
+    }
+   }
+  },
+  {
+   "name": "murcielago",
+   "from": [
+    4.0,
+    5.5,
+    8.2
+   ],
+   "to": [
+    12.0,
+    10.5,
+    8.4
+   ],
+   "faces": {
+    "south": {
+     "uv": [
+      1.0,
+      0.0,
+      5.0,
+      2.5
+     ],
+     "texture": "#t"
+    },
+    "north": {
+     "uv": [
+      1.0,
+      0.0,
+      5.0,
+      2.5
+     ],
+     "texture": "#t"
+    }
+   }
+  },
+  {
+   "name": "gema",
+   "from": [
+    7.45,
+    4.55,
+    8.1
+   ],
+   "to": [
+    8.55,
+    5.65,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.25,
+      4.25,
+      10.5,
+      4.5
+     ],
+     "texture": "#t"
+    },
+    "south": {
+     "uv": [
+      10.25,
+      4.25,
+      10.5,
+      4.5
+     ],
+     "texture": "#t"
+    },
+    "up": {
+     "uv": [
+      10.75,
+      4.25,
+      11.0,
+      4.5
+     ],
+     "texture": "#t"
+    },
+    "down": {
+     "uv": [
+      11.25,
+      4.25,
+      11.5,
+      4.5
+     ],
+     "texture": "#t"
+    },
+    "east": {
+     "uv": [
+      10.25,
+      4.25,
+      10.5,
+      4.5
+     ],
+     "texture": "#t"
+    },
+    "west": {
+     "uv": [
+      10.25,
+      4.25,
+      10.5,
+      4.5
+     ],
+     "texture": "#t"
+    }
+   },
+   "rotation": {
+    "angle": 45,
+    "axis": "z",
+    "origin": [
+     8.0,
+     5.1,
+     8.3
+    ]
+   }
+  }
+ ]
+}

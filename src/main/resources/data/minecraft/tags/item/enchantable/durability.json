@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "misfitrelics:copper_trumpet",
+    "misfitrelics:exposed_copper_trumpet",
+    "misfitrelics:weathered_copper_trumpet",
+    "misfitrelics:oxidized_copper_trumpet",
+    "misfitrelics:spud_cannon",
+    "misfitrelics:exposed_spud_cannon",
+    "misfitrelics:weathered_spud_cannon",
+    "misfitrelics:oxidized_spud_cannon",
+    "misfitrelics:pressure_spud_cannon",
+    "misfitrelics:exposed_pressure_spud_cannon",
+    "misfitrelics:weathered_pressure_spud_cannon",
+    "misfitrelics:oxidized_pressure_spud_cannon"
+  ]
+}

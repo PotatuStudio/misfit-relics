@@ -29,11 +29,10 @@
   "item.misfitrelics.spud_cannon.tooltip.damage": "Damage: %s (%s ❤) + knockback",
   "item.misfitrelics.spud_cannon.tooltip.stench": "Poisonous potato: Stench cloud (%s blocks, %s s)",
   "item.misfitrelics.spud_cannon.tooltip.charge": "Charge: %s s · Ammo: potato or poisonous potato",
-  "item.misfitrelics.copper_trumpet.tooltip.stun": "Stun: %s s · Range: %s blocks · Cone: %s°",
+  "item.misfitrelics.copper_trumpet.tooltip.stun": "Passive: every hit stuns for %s s",
   "item.misfitrelics.copper_trumpet.tooltip.echo": "Echo: +%s%% against walls, +%s%% under a roof",
-  "item.misfitrelics.copper_trumpet.tooltip.cooldown": "Cooldown: %s s",
   "item.misfitrelics.copper_trumpet.tooltip.waxed": "Waxed: won't oxidize",
-  "item.misfitrelics.copper_trumpet.tooltip.oxidizes": "Oxidizes with use (%s%% per use) and loses power",
+  "item.misfitrelics.copper_trumpet.tooltip.oxidizes": "Oxidizes with use (%s%% per hit) and stuns for less",
   "item.misfitrelics.copper_trumpet.tooltip.maintenance": "Sneak + honeycomb: wax · Sneak + axe: scrape",
   "item.misfitrelics.bat_collar.tooltip.echolocation_stats": "Reveals creatures within %s blocks for %s s, through walls · Cooldown %s s",
   "item.misfitrelics.exposed_spud_cannon": "Exposed Spud Cannon",
@@ -45,5 +44,11 @@
   "item.misfitrelics.oxidized_pressure_spud_cannon": "Oxidized Pressure Spud Cannon",
   "item.misfitrelics.copper.tooltip.waxed": "Waxed: won't oxidize",
   "item.misfitrelics.copper.tooltip.oxidizes": "Oxidizes with use (%s%% per use) and loses power",
-  "item.misfitrelics.copper.tooltip.maintenance": "Sneak + honeycomb: wax · Sneak + axe: scrape"
+  "item.misfitrelics.copper.tooltip.maintenance": "Sneak + honeycomb: wax · Sneak + axe: scrape",
+  "item.misfitrelics.copper_trumpet.tooltip.play": "Right click: play a random tune",
+  "trumpet.misfitrelics.song.charge": "♪ Charge!",
+  "trumpet.misfitrelics.song.doot": "♪ Doot doot",
+  "trumpet.misfitrelics.song.sad": "♪ Wah wah wah waaah",
+  "trumpet.misfitrelics.song.blast": "♪ BWAAAAH!",
+  "trumpet.misfitrelics.song.warmup": "♪ Warm-up scale"
 }

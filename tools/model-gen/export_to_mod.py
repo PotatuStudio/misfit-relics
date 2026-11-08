@@ -71,9 +71,13 @@ for p in PREFIXES:
           "textures": {"copper": COPPER[p], "cut_copper": CUT_COPPER[p]}}, os.path.join(MODELS, item_id + ".json"))
     dump({"model": model_ref(item_id)}, os.path.join(ITEMS, item_id + ".json"))
 
-# Collar: modelo del ítem y versión puesta (la dibuja Trinkets en el pecho)
-dump(load("collar_base"), os.path.join(MODELS, "bat_collar.json"))
-dump(load("collar_worn"), os.path.join(MODELS, "bat_collar_worn.json"))
+# Collar: ícono 2D (como los ítems vanilla) y la versión puesta en dos piezas que dibuja Trinkets
+# (correa ajustada al torso y dije en el pecho, ver assets/misfitrelics/trinkets/bat_collar.json)
+shutil.copyfile(os.path.join(src, "bat_collar_icon.png"), os.path.join(TEXTURES, "bat_collar.png"))
+dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics:item/bat_collar"}},
+     os.path.join(MODELS, "bat_collar.json"))
+dump(load("collar_worn_strap"), os.path.join(MODELS, "bat_collar_worn_strap.json"))
+dump(load("collar_worn_pendant"), os.path.join(MODELS, "bat_collar_worn_pendant.json"))
 shutil.copyfile(os.path.join(src, "bat_collar_details.png"), os.path.join(BLOCK_TEXTURES, "bat_collar_details.png"))
 dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
 print("exportado: 8 cañones, 4 trompetas y el collar")

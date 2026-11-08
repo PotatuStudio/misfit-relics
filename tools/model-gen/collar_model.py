@@ -1,8 +1,9 @@
 """Modelo 3D del collar del murciélago: correa de cuero en anillo, argolla de hierro y un dije que es una placa
 delgada con la silueta de un murciélago en pixel art (alas abiertas festoneadas, orejas, ojos rojos y colmillos),
-recortada con transparencia. Colores del murciélago vanilla. Incluye la versión "puesta" para el pecho.
+recortada con transparencia. Colores del murciélago vanilla. Es la versión "puesta" que dibuja Trinkets; el ícono
+del inventario es 2D (collar_icon.py).
 
-Salida: collar_base.json, collar_worn.json, collar_model.png
+Salida: collar_worn_strap.json, collar_worn_pendant.json, bat_collar_details.png
 Uso: python collar_model.py <carpeta_salida>
 """
 import math
@@ -84,13 +85,24 @@ def build_item():
     return m.elements
 
 
-def build_worn():
-    """Versión puesta: correa en V desde el cuello y el murciélago en el pecho."""
+def build_strap():
+    """Correa puesta: anillo de cuero alrededor del cuello. Trinkets lo estira con scale_target xz_stretch, así que
+    en X y Z el cuadro 0-16 equivale al ancho y la profundidad del torso de Steve (sea el modelo ancho o delgado);
+    en Y una unidad es un píxel. El centro del modelo (y = 8) queda en el borde superior del torso."""
     m = ModelBuilder(UV)
-    for side in (-1, 1):
-        m.box([8 + side * 2.4 - 0.5, 9.6, 7.6], [8 + side * 2.4 + 0.5, 15.0, 8.4], 'leather', name="correa_v",
-              rotation={"angle": 22.5 * side, "axis": "z", "origin": [8 + side * 2.4, 12.3, 8.0]})
-    pendant(m, 8.0, 6.4, 8.0, 0.85)
+    y0, y1 = 6.5, 8.0
+    m.box([-0.8, y0, 16.0], [16.8, y1, 17.6], 'leather', name="correa_frente")
+    m.box([-0.8, y0, -1.6], [16.8, y1, 0.0], 'leather', name="correa_atras")
+    m.box([-0.8, y0, 0.0], [0.0, y1, 16.0], 'leather', name="correa_izq")
+    m.box([16.0, y0, 0.0], [16.8, y1, 16.0], 'leather', name="correa_der")
+    return m.elements
+
+
+def build_pendant():
+    """Dije puesto: argolla, placa del murciélago y gema. La parte de atrás queda en z = 8 (centro del modelo),
+    que Trinkets pone sobre el pecho."""
+    m = ModelBuilder(UV)
+    pendant(m, 8.0, 8.0, 8.3)
     return m.elements
 
 
@@ -107,16 +119,15 @@ ITEM_DISPLAY = {
 
 if __name__ == "__main__":
     from mclib import apply_vanilla
-    item, worn = build_item(), build_worn()
-    apply_vanilla(item + worn, UV, {'iron': 'iron'})
+    strap, pend = build_strap(), build_pendant()
+    apply_vanilla(strap + pend, UV, {'iron': 'iron'})
     t16 = make_texture()
     specials = {'bat': cut(t16, [0, 6, 16, 16])}
     painters = {'leather': LEATHER, 'gem': GEM}
-    paint = repaint(item + worn, UV, painters, specials, size=64)
+    paint = repaint(strap + pend, UV, painters, specials, size=64)
     tex_ref = {"t": "misfitrelics:block/bat_collar_details", "iron": "minecraft:block/anvil", "particle": "#t"}
-    dump({"textures": tex_ref, "gui_light": "front", "elements": item, "display": ITEM_DISPLAY},
-         os.path.join(OUT, "collar_base.json"))
-    dump({"textures": tex_ref, "gui_light": "front", "elements": worn}, os.path.join(OUT, "collar_worn.json"))
+    dump({"textures": tex_ref, "elements": strap}, os.path.join(OUT, "collar_worn_strap.json"))
+    dump({"textures": tex_ref, "elements": pend}, os.path.join(OUT, "collar_worn_pendant.json"))
     png(os.path.join(OUT, "bat_collar_details.png"), paint(painters, specials))
-    print("collar:", len(item), "piezas; puesto:", len(worn), "piezas; solapadas:",
-          len(coplanar_overlaps(item)), len(coplanar_overlaps(worn)))
+    print("correa:", len(strap), "piezas; dije:", len(pend), "piezas; solapadas:",
+          len(coplanar_overlaps(strap)), len(coplanar_overlaps(pend)))

@@ -29,11 +29,10 @@
   "item.misfitrelics.spud_cannon.tooltip.damage": "Daño: %s (%s ❤) + empuje",
   "item.misfitrelics.spud_cannon.tooltip.stench": "Papa venenosa: nube de Hedor (%s bloques, %s s)",
   "item.misfitrelics.spud_cannon.tooltip.charge": "Carga: %s s · Munición: papa o papa venenosa",
-  "item.misfitrelics.copper_trumpet.tooltip.stun": "Aturdimiento: %s s · Alcance: %s bloques · Cono: %s°",
+  "item.misfitrelics.copper_trumpet.tooltip.stun": "Pasiva: cada golpe aturde %s s",
   "item.misfitrelics.copper_trumpet.tooltip.echo": "Eco: +%s%% contra paredes, +%s%% bajo techo",
-  "item.misfitrelics.copper_trumpet.tooltip.cooldown": "Enfriamiento: %s s",
   "item.misfitrelics.copper_trumpet.tooltip.waxed": "Encerada: no se oxida",
-  "item.misfitrelics.copper_trumpet.tooltip.oxidizes": "Se oxida con el uso (%s%% por uso) y pierde fuerza",
+  "item.misfitrelics.copper_trumpet.tooltip.oxidizes": "Se oxida con el uso (%s%% por golpe) y aturde menos",
   "item.misfitrelics.copper_trumpet.tooltip.maintenance": "Agachado + panal: encerar · Agachado + hacha: raspar",
   "item.misfitrelics.bat_collar.tooltip.echolocation_stats": "Revela criaturas a %s bloques durante %s s, a través de paredes · Recarga %s s",
   "item.misfitrelics.exposed_spud_cannon": "Cañón de papas expuesto",
@@ -45,5 +44,11 @@
   "item.misfitrelics.oxidized_pressure_spud_cannon": "Cañón de papas a presión oxidado",
   "item.misfitrelics.copper.tooltip.waxed": "Encerado: no se oxida",
   "item.misfitrelics.copper.tooltip.oxidizes": "Se oxida con el uso (%s%% por uso) y pierde fuerza",
-  "item.misfitrelics.copper.tooltip.maintenance": "Agachado + panal: encerar · Agachado + hacha: raspar"
+  "item.misfitrelics.copper.tooltip.maintenance": "Agachado + panal: encerar · Agachado + hacha: raspar",
+  "item.misfitrelics.copper_trumpet.tooltip.play": "Clic derecho: toca una melodía al azar",
+  "trumpet.misfitrelics.song.charge": "♪ ¡A la carga!",
+  "trumpet.misfitrelics.song.doot": "♪ Dut dut",
+  "trumpet.misfitrelics.song.sad": "♪ Uá uá uá uaaa",
+  "trumpet.misfitrelics.song.blast": "♪ ¡PRAAAAAH!",
+  "trumpet.misfitrelics.song.warmup": "♪ Escala de calentamiento"
 }
