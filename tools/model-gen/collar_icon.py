@@ -1,4 +1,4 @@
-"""Ícono 2D (16x16) del collar del murciélago: correa de cuero, argolla de hierro y el murciélago colgando.
+"""Ícono 2D (16x16) del collar del murciélago: cordón delgado, argolla de hierro y el murciélago colgando.
 
 Salida: bat_collar_icon.png (16x16) y bat_collar_icon_x16.png (ampliada para revisar).
 Uso: python collar_icon.py <carpeta_salida>
@@ -11,8 +11,8 @@ from mclib import H, T, png  # noqa: E402
 
 C = {
     '.': T,
-    # cuero: contorno, sombra, base, brillo
-    'K': H('#2a1a12'), 'd': H('#4a2e1e'), 'l': H('#6a432b'), 'h': H('#8a5a3a'),
+    # cordón
+    's': H('#4a3a30'),
     # hierro
     'I': H('#5e636e'), 'i': H('#d6dae0'),
     # murciélago (colores vanilla): contorno, pelaje, pelaje claro, membrana, membrana clara, ojos, colmillos
@@ -21,22 +21,22 @@ C = {
 }
 
 ICON = [
-    "................",
-    "....KKKKKKKK....",
-    "..KKhhhhhhhhKK..",
-    ".KhhKKKKKKKKllK.",
-    ".KhK........KlK.",
-    "KhK..........KlK",
-    "KlK..........KdK",
-    ".KlK........KdK.",
-    ".KllKK....KKddK.",
-    "..KKddKKKKddKK..",
-    "....KKKiIKKK....",
+    ".s............s.",
+    "..s..........s..",
+    "...s........s...",
+    "....s......s....",
+    ".....s....s.....",
+    "......s..s......",
+    ".......iI.......",
     "......OIIO......",
-    "O....ObOObO....O",
+    ".....ObOObO.....",
+    "O....OBbbBO....O",
     "OwO..ORBBRO..OwO",
-    ".OWWWOBFFBOWWWO.",
+    "OWwOOOBBBBOOOwWO",
+    ".OWWWWOFFOWWWWO.",
+    ".OWWWWOBBOWWWWO.",
     "..OWOWOBBOWOWO..",
+    "...O.O.OO.O.O...",
 ]
 
 if __name__ == "__main__":

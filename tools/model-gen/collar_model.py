@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mclib import H, T, ModelBuilder, blank, coplanar_overlaps, cut, dump, png, repaint  # noqa: E402
 
 OUT = sys.argv[1]
-LEATHER = [H('#2a1a12'), H('#4a2e1e'), H('#6a432b'), H('#8a5a3a')]
+LEATHER = [H('#2a1f1a'), H('#3a2c24'), H('#4a3a30'), H('#5c4a3e')]  # cordón oscuro, como en el ícono
 IRON = [H('#2e3036'), H('#5e636e'), H('#9aa0aa'), H('#d6dae0')]
 GEM = [H('#0b3c44'), H('#1f9aa0'), H('#5fd6cc'), H('#c8fff4')]
 
@@ -86,15 +86,15 @@ def build_item():
 
 
 def build_strap():
-    """Correa puesta: anillo de cuero alrededor del cuello. Trinkets lo estira con scale_target xz_stretch, así que
+    """Cordón puesto: anillo delgado alrededor del cuello. Trinkets lo estira con scale_target xz_stretch, así que
     en X y Z el cuadro 0-16 equivale al ancho y la profundidad del torso de Steve (sea el modelo ancho o delgado);
     en Y una unidad es un píxel. El centro del modelo (y = 8) queda en el borde superior del torso."""
     m = ModelBuilder(UV)
-    y0, y1 = 6.5, 8.0
-    m.box([-0.8, y0, 16.0], [16.8, y1, 17.6], 'leather', name="correa_frente")
-    m.box([-0.8, y0, -1.6], [16.8, y1, 0.0], 'leather', name="correa_atras")
-    m.box([-0.8, y0, 0.0], [0.0, y1, 16.0], 'leather', name="correa_izq")
-    m.box([16.0, y0, 0.0], [16.8, y1, 16.0], 'leather', name="correa_der")
+    y0, y1 = 7.5, 8.0                                     # medio píxel de alto: cordón, no correa
+    m.box([-0.6, y0, 16.0], [16.6, y1, 17.2], 'leather', name="cordon_frente")
+    m.box([-0.6, y0, -1.2], [16.6, y1, 0.0], 'leather', name="cordon_atras")
+    m.box([-0.6, y0, 0.0], [0.0, y1, 16.0], 'leather', name="cordon_izq")
+    m.box([16.0, y0, 0.0], [16.6, y1, 16.0], 'leather', name="cordon_der")
     return m.elements
 
 

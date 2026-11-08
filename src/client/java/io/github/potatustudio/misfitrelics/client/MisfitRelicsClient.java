@@ -17,6 +17,9 @@ import net.minecraft.client.particle.FireflyParticle;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 public class MisfitRelicsClient implements ClientModInitializer {
+	/** De cada cuántas partículas de mosca que pide el efecto se crea una. */
+	private static final int FLY_KEEP_ONE_IN = 4;
+
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(MisfitRelics.id("main"));
 
 	/** Ecolocación del collar del murciélago. Por defecto: B. */
@@ -27,8 +30,14 @@ public class MisfitRelicsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// La papa disparada se dibuja como el ítem de su munición (papa o papa venenosa).
 		EntityRendererRegistry.register(ModEntityTypes.SPUD, ThrownItemRenderer::new);
-		// Moscas del Hedor: comportamiento errático de la luciérnaga vanilla con textura propia.
-		ParticleProviderRegistry.getInstance().register(ModParticles.FLY, FireflyParticle.FireflyProvider::new);
+		// Moscas del Hedor: comportamiento errático de la luciérnaga vanilla con textura propia. Los efectos sueltan
+		// partículas casi en cada tick y las luciérnagas viven mucho, así que solo se crea una de cada FLY_KEEP_ONE_IN.
+		ParticleProviderRegistry.getInstance().register(ModParticles.FLY, sprites -> {
+			FireflyParticle.FireflyProvider firefly = new FireflyParticle.FireflyProvider(sprites);
+			return (type, level, x, y, z, dx, dy, dz, random) -> random.nextInt(FLY_KEEP_ONE_IN) == 0
+					? firefly.createParticle(type, level, x, y, z, dx, dy, dz, random)
+					: null;
+		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (ECHOLOCATE.consumeClick()) {
