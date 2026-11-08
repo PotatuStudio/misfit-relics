@@ -3,7 +3,7 @@
 Las texturas vanilla (minecraft:block/...) se leen del jar local de Minecraft solo para la vista previa;
 el mod no las incluye, solo las referencia.
 
-Uso: python make_viewer.py <carpeta_modelo> <salida.html> <ruta al jar de Minecraft 26.3>
+Uso: python make_viewer.py <carpeta_modelo> <salida.html>
 """
 import base64
 import json
@@ -12,7 +12,7 @@ import sys
 import zipfile
 
 model_dir, out = sys.argv[1], sys.argv[2]
-JAR = sys.argv[3]
+JAR = os.path.join(os.path.dirname(model_dir), "jars", "mc-26.3.jar")
 jar = zipfile.ZipFile(JAR)
 STAGE_LABELS = {"": "Cobre", "exposed_": "Expuesto", "weathered_": "Desgastado", "oxidized_": "Oxidado"}
 CANNON_STAGE = {"spud_cannon": "", "exposed_spud_cannon": "exposed_", "weathered_spud_cannon": "weathered_",
@@ -67,7 +67,7 @@ ITEMS = {
                      "textures": stage_maps(trumpet["textures"], j("trumpet_stages"))},
     }},
     "collar": {"label": "Collar del murciélago", "variants": {
-        "collar": {"label": "Collar (dije puesto)", "base": collar, "worn": j("collar_worn_strap"),
+        "collar": {"label": "Collar (dije puesto)", "base": collar,
                    "textures": stage_maps(collar["textures"], {"": {}})},
     }},
 }

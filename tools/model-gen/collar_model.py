@@ -3,7 +3,7 @@ delgada con la silueta de un murciélago en pixel art (alas abiertas festoneadas
 recortada con transparencia. Colores del murciélago vanilla. Es la versión "puesta" que dibuja Trinkets; el ícono
 del inventario es 2D (collar_icon.py).
 
-Salida: collar_worn_strap.json, collar_worn_pendant.json, bat_collar_details.png
+Salida: collar_worn_pendant.json, bat_collar_details.png
 Uso: python collar_model.py <carpeta_salida>
 """
 import math
@@ -53,19 +53,78 @@ def make_texture():
 
 
 UV = {'leather': [0, 0, 16, 4], 'iron': [0, 4, 16, 5], 'gem': [0, 5, 16, 6], 'bat': [0.02, 6.02, 15.98, 15.98]}
+# Un material por color del murciélago y del rubí. La UV solo identifica el material; repaint la reemplaza.
+for _i, _ch in enumerate(BAT_COLORS):
+    UV['bat_' + _ch] = [0.1 * _i, 15.0, 0.1 * _i + 0.05, 15.05]
+UV.update({'ruby_dark': [2.0, 15.0, 2.05, 15.05], 'ruby': [2.1, 15.0, 2.15, 15.05],
+           'ruby_light': [2.2, 15.0, 2.25, 15.05], 'ruby_shine': [2.3, 15.0, 2.35, 15.05]})
+
+
+def ramp(hex_color):
+    """Rampa para shade_face: el frente y los costados quedan con el color real, arriba más claro y abajo más oscuro."""
+    r, g, b, _ = H(hex_color)
+
+    def mix(f):
+        if f < 1:
+            return (int(r * f), int(g * f), int(b * f), 255)
+        return (min(255, int(r + (255 - r) * (f - 1))), min(255, int(g + (255 - g) * (f - 1))),
+                min(255, int(b + (255 - b) * (f - 1))), 255)
+    return [mix(0.55), mix(0.75), mix(1.0), mix(1.25), mix(1.4)]
+
+
+BAT_HEX = {'O': '#120e0c', 'B': '#26211f', 'b': '#43372f', 'W': '#5a3f58', 'w': '#825f7f', 'R': '#d8352a', 'F': '#ece6d6'}
+# Rubí del rojo de los ojos del murciélago, en facetas: base oscura, cuerpo, cara frontal y un brillo.
+RUBY_HEX = {'ruby_dark': '#7a1410', 'ruby': '#b3241c', 'ruby_light': '#d8352a', 'ruby_shine': '#ffb0a0'}
+
+
+def bat_depth(ch, col):
+    """Grosor (hacia adelante) de cada píxel: el cuerpo sobresale, las alas son delgadas, ojos y colmillos más."""
+    if ch == 'R':
+        return 1.5
+    if ch == 'F':
+        return 1.35
+    if 6 <= col <= 9:
+        return 1.2
+    if col in (5, 10):
+        return 0.9
+    return 0.5
+
+
+def bat_relief(m, cx, cy, z0):
+    """Murciélago en relieve, como los ítems vanilla extruidos: cada fila del sprite se agrupa en tramos del mismo
+    color y grosor, y cada tramo es una caja. 1 píxel del sprite = 0,5 unidades."""
+    for row, line in enumerate(BAT[:9]):
+        col = 0
+        while col < 16:
+            ch = line[col]
+            if ch == '.':
+                col += 1
+                continue
+            depth = bat_depth(ch, col)
+            end = col
+            while end + 1 < 16 and line[end + 1] == ch and bat_depth(ch, end + 1) == depth:
+                end += 1
+            x0, x1 = cx - 4 + col * 0.5, cx - 4 + (end + 1) * 0.5
+            y1 = cy + 2.5 - row * 0.5
+            m.box([x0, y1 - 0.5, z0], [x1, y1, z0 + depth], 'bat_' + ch, name="murcielago")
+            col = end + 1
+
+
+def ruby(m, cx, cy, z0):
+    """Rubí tallado: base en rombo, cuerpo, tabla frontal más clara y un punto de brillo arriba a la izquierda."""
+    rot = {"angle": 45, "axis": "z", "origin": [cx, cy, z0]}
+    m.box([cx - 1.0, cy - 1.0, z0], [cx + 1.0, cy + 1.0, z0 + 0.5], 'ruby_dark', name="rubi_base", rotation=rot)
+    m.box([cx - 0.8, cy - 0.8, z0 + 0.5], [cx + 0.8, cy + 0.8, z0 + 0.9], 'ruby', name="rubi", rotation=rot)
+    m.box([cx - 0.45, cy - 0.45, z0 + 0.9], [cx + 0.45, cy + 0.45, z0 + 1.15], 'ruby_light', name="rubi_tabla", rotation=rot)
+    m.box([cx - 0.45, cy + 0.05, z0 + 1.15], [cx - 0.05, cy + 0.45, z0 + 1.25], 'ruby_shine', name="rubi_brillo", rotation=rot)
 
 
 def pendant(m, cx, cy, cz, s=1.0):
-    """Argolla + placa del murciélago (solo caras de frente y atrás, recortadas) + gema pequeña debajo."""
-    m.box([cx - 0.55 * s, cy + 2.1 * s, cz - 0.3], [cx + 0.55 * s, cy + 3.0 * s, cz + 0.3], 'iron', name="argolla")
-    w, h = 4.0 * s, 2.5 * s                               # la placa es 16x10 px de textura -> 8 x 5 unidades
-    plate = {"name": "murcielago", "from": [round(cx - w, 3), round(cy - h, 3), round(cz - 0.1, 3)],
-             "to": [round(cx + w, 3), round(cy + h, 3), round(cz + 0.1, 3)],
-             "faces": {"south": {"uv": UV['bat'], "texture": "#t"}, "north": {"uv": UV['bat'], "texture": "#t"}}}
-    m.elements.append(plate)
-    g = 0.55 * s
-    m.box([cx - g, cy - h - 0.4 * s - g, cz - 0.2], [cx + g, cy - h - 0.4 * s + g, cz + 0.2], 'gem', name="gema",
-          rotation={"angle": 45, "axis": "z", "origin": [cx, cy - h - 0.4 * s, cz]})
+    """Argolla + murciélago en relieve + rubí colgando debajo. La parte de atrás queda en z = cz - 0.3."""
+    z0 = cz - 0.3
+    m.box([cx - 0.45, cy + 2.1, z0 + 0.1], [cx + 0.45, cy + 3.0, z0 + 0.6], 'iron', name="argolla")
+    bat_relief(m, cx, cy, z0)
+    ruby(m, cx, cy - 2.5 - 1.3, z0)
 
 
 def build_item():
@@ -85,24 +144,22 @@ def build_item():
     return m.elements
 
 
-def build_strap():
-    """Cordón puesto: anillo delgado alrededor del cuello. Trinkets lo estira con scale_target xz_stretch, así que
-    en X y Z el cuadro 0-16 equivale al ancho y la profundidad del torso de Steve (sea el modelo ancho o delgado);
-    en Y una unidad es un píxel. El centro del modelo (y = 8) queda en el borde superior del torso."""
-    m = ModelBuilder(UV)
-    y0, y1 = 7.5, 8.0                                     # medio píxel de alto: cordón, no correa
-    m.box([-0.6, y0, 16.0], [16.6, y1, 17.2], 'leather', name="cordon_frente")
-    m.box([-0.6, y0, -1.2], [16.6, y1, 0.0], 'leather', name="cordon_atras")
-    m.box([-0.6, y0, 0.0], [0.0, y1, 16.0], 'leather', name="cordon_izq")
-    m.box([16.0, y0, 0.0], [16.6, y1, 16.0], 'leather', name="cordon_der")
-    return m.elements
-
-
 def build_pendant():
-    """Dije puesto: argolla, placa del murciélago y gema. La parte de atrás queda en z = 8 (centro del modelo),
-    que Trinkets pone sobre el pecho."""
+    """Amuleto puesto, plano sobre el pecho: dos cordones en diagonal que bajan desde los lados del cuello hasta la
+    argolla, y el murciélago colgando. La parte de atrás queda en z = 8 (centro del modelo), que Trinkets pone
+    sobre el pecho. Con la escala 0,5 del render, 2 unidades = 1 píxel de Steve; el borde superior del torso
+    queda en y = 14,4 (ver assets/misfitrelics/trinkets/bat_collar.json)."""
     m = ModelBuilder(UV)
     pendant(m, 8.0, 8.0, 8.3)
+    top_y, ring_y = 14.3, 10.9
+    for side in (-1, 1):
+        x0, x1 = 8 + side * 5.0, 8 + side * 0.45           # del lado del cuello a la argolla
+        cx, cy = (x0 + x1) / 2, (top_y + ring_y) / 2
+        length = math.hypot(x0 - x1, top_y - ring_y)
+        angle = math.degrees(math.atan2(top_y - ring_y, abs(x0 - x1)))
+        m.box([round(cx - length / 2, 3), round(cy - 0.3, 3), 8.05], [round(cx + length / 2, 3), round(cy + 0.3, 3), 8.35],
+              'leather', name="cordon",
+              rotation={"angle": round(side * angle, 3), "axis": "z", "origin": [round(cx, 3), round(cy, 3), 8.2]})
     return m.elements
 
 
@@ -119,15 +176,15 @@ ITEM_DISPLAY = {
 
 if __name__ == "__main__":
     from mclib import apply_vanilla
-    strap, pend = build_strap(), build_pendant()
-    apply_vanilla(strap + pend, UV, {'iron': 'iron'})
+    pend = build_pendant()
+    apply_vanilla(pend, UV, {'iron': 'iron'})
     t16 = make_texture()
-    specials = {'bat': cut(t16, [0, 6, 16, 16])}
-    painters = {'leather': LEATHER, 'gem': GEM}
-    paint = repaint(strap + pend, UV, painters, specials, size=64)
+    specials = {}
+    painters = {'leather': LEATHER}
+    painters.update({'bat_' + ch: ramp(hx) for ch, hx in BAT_HEX.items()})
+    painters.update({k: ramp(hx) for k, hx in RUBY_HEX.items()})
+    paint = repaint(pend, UV, painters, specials, size=64)
     tex_ref = {"t": "misfitrelics:block/bat_collar_details", "iron": "minecraft:block/anvil", "particle": "#t"}
-    dump({"textures": tex_ref, "elements": strap}, os.path.join(OUT, "collar_worn_strap.json"))
     dump({"textures": tex_ref, "elements": pend}, os.path.join(OUT, "collar_worn_pendant.json"))
     png(os.path.join(OUT, "bat_collar_details.png"), paint(painters, specials))
-    print("correa:", len(strap), "piezas; dije:", len(pend), "piezas; solapadas:",
-          len(coplanar_overlaps(strap)), len(coplanar_overlaps(pend)))
+    print("amuleto puesto:", len(pend), "piezas; solapadas:", len(coplanar_overlaps(pend)))

@@ -21,7 +21,7 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
 - Tooltips con las estadísticas de cada objeto y pestaña propia en el inventario creativo.
 - Game rules: `stench_friendly_fire`, `stench_affects_source`, `stench_chain_contagion`, `stench_can_kill`,
   `stench_carrier_chance` y `trumpet_friendly_fire` (prefijo `misfitrelics:`).
-- Traducciones en inglés y español.
+- Traducciones en inglés y español (todas las variantes: España, Chile, México, Argentina, etc.).
 
 ### Dependencias
 - Fabric API y Trinkets Updated 4.2.1+26.3.
