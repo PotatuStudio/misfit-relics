@@ -11,6 +11,9 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import json  # noqa: E402
+
+from glint import glint  # noqa: E402
 from mclib import H, T, png  # noqa: E402
 
 C = {'.': T, '1': H('#7a4a0c'), '2': H('#c08a1a'), '3': H('#ecc23e'), '4': H('#fff0a0')}
@@ -55,8 +58,11 @@ if __name__ == "__main__":
     assert len(OVERLAY) == 16 and all(len(r) == 16 for r in OVERLAY)
     over = [[C[ch] for ch in row] for row in OVERLAY]
     cursed = [[CURSED[ch] for ch in row] for row in OVERLAY]
-    png(os.path.join(out, "lucky_rabbit_foot_overlay.png"), over)
-    png(os.path.join(out, "cursed_rabbit_foot_overlay.png"), cursed)
+    for name, img in (("lucky_rabbit_foot_overlay", over), ("cursed_rabbit_foot_overlay", cursed)):
+        strip, meta = glint(img, lambda x, y: OVERLAY[y][x] != ".")
+        png(os.path.join(out, name + ".png"), strip)
+        with open(os.path.join(out, name + ".png.mcmeta"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump(meta, f)
     if len(sys.argv) > 2:
         from read_png import read_rgba  # noqa: E402
         base = read_rgba(sys.argv[2])

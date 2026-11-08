@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mclib import H, T, ModelBuilder, blank, coplanar_overlaps, cut, dump, png, repaint  # noqa: E402
 
 OUT = sys.argv[1]
-LEATHER = [H('#2a1f1a'), H('#3a2c24'), H('#4a3a30'), H('#5c4a3e')]  # cordón oscuro, como en el ícono
+LEATHER = [H('#4a4d55'), H('#6a6e78'), H('#a3a8b1'), H('#d0d4da')]  # cadena de plata, como en el ícono
 IRON = [H('#2e3036'), H('#5e636e'), H('#9aa0aa'), H('#d6dae0')]
 GEM = [H('#0b3c44'), H('#1f9aa0'), H('#5fd6cc'), H('#c8fff4')]
 
@@ -116,13 +116,45 @@ def ruby(m, cx, cy, z0):
     m.box([cx - 0.45, cy + 0.05, z0 + 1.15], [cx - 0.05, cy + 0.45, z0 + 1.25], 'ruby_shine', name="rubi_brillo", rotation=rot)
 
 
+# Dije del collar (el mismo del ícono, collar_icon.py): rubí con dos alitas de murciélago. Sutil, como Artifacts.
+CHARM = [
+    ".......kk.......",
+    "..wW..kHRk..Ww..",
+    "..wwwkRRRrkwww..",
+    "...wwwkRrkwww...",
+    ".......kk.......",
+]
+CHARM_HEX = {'k': '#221f19', 'H': '#ffb3a6', 'R': '#d8352a', 'r': '#7a1410', 'w': '#3a2d3c', 'W': '#5a4258'}
+for _i, _ch in enumerate(CHARM_HEX):
+    UV['charm_' + _ch] = [3.0 + 0.1 * _i, 15.0, 3.05 + 0.1 * _i, 15.05]
+
+
+def charm_relief(m, cx, cy, z0):
+    """Relieve del dije: 1 píxel = 0,5 unidades; el rubí sobresale y las alitas son delgadas."""
+    top = cy + len(CHARM) * 0.25
+    for row, line in enumerate(CHARM):
+        col = 0
+        while col < 16:
+            ch = line[col]
+            if ch == '.':
+                col += 1
+                continue
+            depth = 0.5 if ch in 'wW' else 1.0
+            end = col
+            while end + 1 < 16 and line[end + 1] == ch:
+                end += 1
+            x0, x1 = cx - 4 + col * 0.5, cx - 4 + (end + 1) * 0.5
+            y1 = top - row * 0.5
+            m.box([x0, y1 - 0.5, z0], [x1, y1, z0 + depth], 'charm_' + ch, name="dije")
+            col = end + 1
+
+
 def pendant(m, cx, cy, cz, s=1.0):
-    """Argolla + murciélago en relieve + rubí colgando debajo. La parte de atrás queda en z = cz - 0.3."""
+    """Argolla + dije en relieve. La parte de atrás queda en z = cz - 0.3."""
     z0 = cz - 0.3
-    m.box([cx - 0.45, cy + 2.1, z0 + 0.1], [cx + 0.45, cy + 3.0, z0 + 0.6], 'iron', name="argolla")
-    bat_relief(m, cx, cy, z0)
-    # El rubí cuelga pegado a las patas: su punta superior entra un poco en la última fila del murciélago.
-    ruby(m, cx, cy - 2.0 - 1.15, z0 + 0.05)
+    top = cy + len(CHARM) * 0.25
+    m.box([cx - 0.45, top, z0 + 0.1], [cx + 0.45, top + 0.8, z0 + 0.6], 'iron', name="argolla")
+    charm_relief(m, cx, cy, z0)
 
 
 def build_item():
@@ -149,7 +181,7 @@ def build_pendant():
     queda en y = 14,4 (ver assets/misfitrelics/trinkets/bat_collar.json)."""
     m = ModelBuilder(UV)
     pendant(m, 8.0, 8.0, 8.3)
-    top_y, ring_y = 14.3, 10.9
+    top_y, ring_y = 14.3, 8.0 + len(CHARM) * 0.25 + 0.7
     for side in (-1, 1):
         x0, x1 = 8 + side * 5.0, 8 + side * 0.45           # del lado del cuello a la argolla
         cx, cy = (x0 + x1) / 2, (top_y + ring_y) / 2
@@ -179,8 +211,7 @@ if __name__ == "__main__":
     t16 = make_texture()
     specials = {}
     painters = {'leather': LEATHER}
-    painters.update({'bat_' + ch: ramp(hx) for ch, hx in BAT_HEX.items()})
-    painters.update({k: ramp(hx) for k, hx in RUBY_HEX.items()})
+    painters.update({'charm_' + ch: ramp(hx) for ch, hx in CHARM_HEX.items()})
     paint = repaint(pend, UV, painters, specials, size=64)
     tex_ref = {"t": "misfitrelics:block/bat_collar_details", "iron": "minecraft:block/anvil", "particle": "#t"}
     dump({"textures": tex_ref, "elements": pend}, os.path.join(OUT, "collar_worn_pendant.json"))

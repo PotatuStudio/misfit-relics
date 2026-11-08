@@ -1,13 +1,16 @@
 """Íconos 2D (16x16) del Anillo de la plaga y del Anillo del festín, al estilo de Rings of Ascension.
 Misma silueta, distinto color y piedra, para que se lean como par.
 
-Salida: plague_ring.png, feast_ring.png y sus vistas previas *_x16.png.
+Salida: plague_ring.png, feast_ring.png (animadas, con su .mcmeta) y sus vistas previas *_x16.png.
 Uso: python ring_icons.py <carpeta_salida>
 """
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import json  # noqa: E402
+
+from glint import glint  # noqa: E402
 from mclib import H, T, png  # noqa: E402
 
 # Estilo de los anillos de Rings of Ascension: aro redondo visto de frente, contorno oscuro, brillo arriba a la
@@ -52,6 +55,9 @@ if __name__ == "__main__":
     assert len(SHAPE) == 16 and all(len(r) == 16 for r in SHAPE), [len(r) for r in SHAPE]
     for name, pal in (("plague_ring", PLAGUE), ("feast_ring", FEAST)):
         img = [[pal[ch] for ch in row] for row in SHAPE]
-        png(os.path.join(out, name + ".png"), img)
+        strip, meta = glint(img, lambda x, y: SHAPE[y][x] in "bcdGH")
+        png(os.path.join(out, name + ".png"), strip)
+        with open(os.path.join(out, name + ".png.mcmeta"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump(meta, f)
         png(os.path.join(out, name + "_x16.png"), preview(img))
     print("ok")

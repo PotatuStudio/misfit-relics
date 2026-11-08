@@ -80,6 +80,7 @@ for p in PREFIXES:
 # Collar: ícono 2D (como los ítems vanilla) y la versión puesta que dibuja Trinkets en el pecho
 # (cordones en diagonal y el murciélago, ver assets/misfitrelics/trinkets/bat_collar.json)
 shutil.copyfile(os.path.join(src, "bat_collar_icon.png"), os.path.join(TEXTURES, "bat_collar.png"))
+shutil.copyfile(os.path.join(src, "bat_collar_icon.png.mcmeta"), os.path.join(TEXTURES, "bat_collar.png.mcmeta"))
 dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics:item/bat_collar"}},
      os.path.join(MODELS, "bat_collar.json"))
 dump(load("collar_worn_pendant"), os.path.join(MODELS, "bat_collar_worn_pendant.json"))
