@@ -5,7 +5,9 @@
   "mixins": [
     "LivingEntityMixin",
     "ZombieMixin",
-    "LivingEntityMobilityMixin"
+    "LivingEntityMobilityMixin",
+    "LiquidBlockMixin",
+    "EntityFireMixin"
   ],
   "injectors": {
     "defaultRequire": 1

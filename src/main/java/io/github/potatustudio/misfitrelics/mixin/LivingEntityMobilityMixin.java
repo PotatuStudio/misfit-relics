@@ -35,8 +35,7 @@ public abstract class LivingEntityMobilityMixin {
 	 */
 	@Inject(method = "getLiquidCollisionShape", at = @At("HEAD"), cancellable = true)
 	private void misfitrelics$magmaSurface(CallbackInfoReturnable<VoxelShape> cir) {
-		if ((Object) this instanceof Player player && !player.isShiftKeyDown()
-				&& Mobility.isWearing(player, ModItems.MAGMA_BOOTS)) {
+		if ((Object) this instanceof Player player && Mobility.walksOnLava(player)) {
 			cir.setReturnValue(Mobility.LAVA_SURFACE);
 		}
 	}

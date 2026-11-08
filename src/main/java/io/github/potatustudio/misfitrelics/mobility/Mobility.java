@@ -112,6 +112,23 @@ public final class Mobility {
 		return TrinketsApi.getAttachment(entity).findFirst(item).map(TrinketSlotAccess::get).isPresent();
 	}
 
+	/** Lleva las botas de magma y no se está hundiendo a propósito (Shift). */
+	public static boolean walksOnLava(Player player) {
+		return !player.isShiftKeyDown() && isWearing(player, ModItems.MAGMA_BOOTS);
+	}
+
+	/** Superficie de lava que corre: a la altura de su propia superficie, como mucho la media altura de la fuente. */
+	public static VoxelShape lavaSurface(float ownHeight) {
+		double top = Math.max(2.0, Math.min(8.0, ownHeight * 16.0 - 1.0));
+		return top >= 8.0 ? LAVA_SURFACE : Block.column(16.0, 0.0, top);
+	}
+
+	/** Con las botas de magma: inmune al fuego tocando lava y durante la gracia al salir (la gracia solo la conoce el servidor). */
+	public static boolean magmaProtected(Player player) {
+		return isWearing(player, ModItems.MAGMA_BOOTS)
+				&& (player.isInLava() || MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
+	}
+
 	public static boolean hasSilk(LivingEntity entity) {
 		return isWearing(entity, ModItems.SILK_GLOVES) || isWearing(entity, ModItems.WIDOW_GLOVES);
 	}

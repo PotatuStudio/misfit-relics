@@ -14,6 +14,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -91,8 +92,9 @@ public final class MobilityClient {
 		if (player.getAbilities().flying) {
 			return;
 		}
-		if (player.isInLava() && !player.isShiftKeyDown() && Mobility.isWearing(player, ModItems.MAGMA_BOOTS)) {
-			// Hundido en la lava con las botas de magma: flota hacia la superficie, como el strider.
+		if (player.getFluidHeight(FluidTags.LAVA) > 0.5 && Mobility.walksOnLava(player)) {
+			// Hundido en la lava con las botas de magma (más de medio bloque): flota hacia la superficie, como el
+			// strider. Parado en la superficie no empuja, para no dar brincos.
 			Vec3 v = player.getDeltaMovement();
 			player.setDeltaMovement(v.x, Math.max(v.y, 0.12), v.z);
 		}
