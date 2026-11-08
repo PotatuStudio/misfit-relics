@@ -64,5 +64,9 @@
   "item.misfitrelics.plague_ring.tooltip.spawn": "Al matar: %s%% de soltar hasta %s silverfish o endermites aliados",
   "item.misfitrelics.plague_ring.tooltip.fight": "Pelean %s s, vuelven a ti y se deshacen a los %s s",
   "item.misfitrelics.feast_ring.tooltip.absorb": "Al tocar un silverfish o endermite lo absorbes: cura %s corazones",
-  "item.misfitrelics.bug_ring.tooltip.combo": "Con los dos: matas, sueltas, devoras"
+  "item.misfitrelics.bug_ring.tooltip.combo": "Con los dos: matas, sueltas, devoras",
+  "entity.misfitrelics.allied_bat": "Murciélago aliado",
+  "item.misfitrelics.bat_collar.tooltip.bat": "Murciélago aliado: muerde a lo que peleas (%s de daño). Revive en %s s",
+  "item.misfitrelics.bat_collar.tooltip.reviving": "Tu murciélago revive en %s s",
+  "message.misfitrelics.allied_bat_died": "Tu murciélago cayó... volverá en %s s"
 }

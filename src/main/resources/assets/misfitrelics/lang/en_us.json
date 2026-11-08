@@ -64,5 +64,9 @@
   "item.misfitrelics.plague_ring.tooltip.spawn": "Kills: %s%% chance to release up to %s allied silverfish or endermites",
   "item.misfitrelics.plague_ring.tooltip.fight": "They fight for %s s, return to you and vanish after %s s",
   "item.misfitrelics.feast_ring.tooltip.absorb": "Touching a silverfish or endermite absorbs it: heals %s hearts",
-  "item.misfitrelics.bug_ring.tooltip.combo": "Wear both: kill, release, devour"
+  "item.misfitrelics.bug_ring.tooltip.combo": "Wear both: kill, release, devour",
+  "entity.misfitrelics.allied_bat": "Allied Bat",
+  "item.misfitrelics.bat_collar.tooltip.bat": "Allied bat: bites what you fight (%s damage). Revives in %s s",
+  "item.misfitrelics.bat_collar.tooltip.reviving": "Your bat revives in %s s",
+  "message.misfitrelics.allied_bat_died": "Your bat fell... it will return in %s s"
 }

@@ -1,12 +1,14 @@
 package io.github.potatustudio.misfitrelics;
 
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
+import io.github.potatustudio.misfitrelics.registry.ModComponents;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import io.github.potatustudio.misfitrelics.registry.ModNetworking;
+import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFoot;
 import io.github.potatustudio.misfitrelics.plague.PlagueRings;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetSongs;
@@ -26,6 +28,7 @@ public class MisfitRelics implements ModInitializer {
 		ModGameRules.init();
 		ModParticles.init();
 		ModAttachments.init();
+		ModComponents.init();
 		ModEffects.init();
 		ModPotions.init();
 		ModEntityTypes.init();
@@ -35,6 +38,7 @@ public class MisfitRelics implements ModInitializer {
 		TrumpetSongs.init();
 		LuckyRabbitFoot.init();
 		PlagueRings.init();
+		BatCollar.init();
 		LOGGER.info("Misfit Relics cargado");
 	}
 

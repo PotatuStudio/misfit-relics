@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.particle.FireflyParticle;
+import net.minecraft.client.renderer.entity.BatRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 public class MisfitRelicsClient implements ClientModInitializer {
@@ -30,6 +31,7 @@ public class MisfitRelicsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// La papa disparada se dibuja como el ítem de su munición (papa o papa venenosa).
 		EntityRendererRegistry.register(ModEntityTypes.SPUD, ThrownItemRenderer::new);
+		EntityRendererRegistry.register(ModEntityTypes.ALLIED_BAT, BatRenderer::new);
 		// Moscas del Hedor: comportamiento errático de la luciérnaga vanilla con textura propia. Los efectos sueltan
 		// partículas casi en cada tick y las luciérnagas viven mucho, así que solo se crea una de cada FLY_KEEP_ONE_IN.
 		ParticleProviderRegistry.getInstance().register(ModParticles.FLY, sprites -> {

@@ -43,6 +43,7 @@ Arma cuerpo a cuerpo e instrumento.
 Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto: un amuleto del murciélago colgando de un cordón en el pecho.
 - **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
+- **Murciélago aliado:** mientras llevas el collar, un murciélago revolotea sobre tu cabeza y **muerde a lo que golpeas o a quien te golpea** (3 de daño por mordisco; cada mordisco te cura con el robo de vida). No puedes herirlo tú. Si muere, el collar muestra una **barra morada** y vuelve a los **60 s**.
 - **Dónde:** cofres de la ciudad antigua (10 %).
 
 ## Patas de conejo

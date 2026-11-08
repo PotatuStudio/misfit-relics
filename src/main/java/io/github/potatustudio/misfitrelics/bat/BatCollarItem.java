@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.bat;
 
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
+import io.github.potatustudio.misfitrelics.registry.ModComponents;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,6 +35,30 @@ public class BatCollarItem extends Item implements TrinketCallback {
 				BatCollar.ECHOLOCATION_COOLDOWN / 20).withStyle(ChatFormatting.GRAY));
 		tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.lifesteal",
 				Math.round(BatCollar.LIFESTEAL * 100)).withStyle(ChatFormatting.GOLD));
+		tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.bat",
+				(int) AlliedBat.BITE_DAMAGE, BatCollar.REVIVE_TICKS / 20).withStyle(ChatFormatting.GOLD));
+		Integer revive = stack.get(ModComponents.BAT_REVIVE);
+		if (revive != null) {
+			tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.reviving", (revive + 19) / 20)
+					.withStyle(ChatFormatting.DARK_PURPLE));
+		}
+	}
+
+	/** Mientras el murciélago revive, una barra morada se va llenando. */
+	@Override
+	public boolean isBarVisible(ItemStack stack) {
+		return stack.has(ModComponents.BAT_REVIVE);
+	}
+
+	@Override
+	public int getBarWidth(ItemStack stack) {
+		int left = stack.getOrDefault(ModComponents.BAT_REVIVE, 0);
+		return Math.round(13.0f * (1.0f - (float) left / BatCollar.REVIVE_TICKS));
+	}
+
+	@Override
+	public int getBarColor(ItemStack stack) {
+		return 0x9A5FD0;
 	}
 
 	/** Al ponérselo: aleteo de murciélago y partículas, para que se note. */

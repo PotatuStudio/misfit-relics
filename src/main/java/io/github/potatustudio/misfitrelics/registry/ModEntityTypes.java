@@ -1,7 +1,9 @@
 package io.github.potatustudio.misfitrelics.registry;
 
 import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.bat.AlliedBat;
 import io.github.potatustudio.misfitrelics.spud.SpudProjectile;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -21,10 +23,20 @@ public final class ModEntityTypes {
 					.updateInterval(10)
 					.build(SPUD_KEY));
 
+	private static final ResourceKey<EntityType<?>> ALLIED_BAT_KEY =
+			ResourceKey.create(Registries.ENTITY_TYPE, MisfitRelics.id("allied_bat"));
+
+	/** Murciélago aliado del collar. */
+	public static final EntityType<AlliedBat> ALLIED_BAT = Registry.register(BuiltInRegistries.ENTITY_TYPE, ALLIED_BAT_KEY,
+			EntityType.Builder.<AlliedBat>of(AlliedBat::new, MobCategory.MISC)
+					.sized(0.5f, 0.9f)
+					.clientTrackingRange(8)
+					.build(ALLIED_BAT_KEY));
+
 	private ModEntityTypes() {
 	}
 
 	public static void init() {
-		// Fuerza la carga de la clase para registrar las entidades.
+		FabricDefaultAttributeRegistry.register(ALLIED_BAT, AlliedBat.createAttributes());
 	}
 }

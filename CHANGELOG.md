@@ -16,7 +16,8 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
 - **Oxidación** de cañones y trompeta en 4 etapas: pierden fuerza con el óxido; panal para encerar y hacha para raspar.
 - Efecto **Aturdido**: sin movimiento, salto ni daño; los mobs pierden su objetivo.
 - **Collar del murciélago** (espacio de collar de Trinkets; se ve puesto como amuleto en el pecho): ecolocación con tecla (B) a 32 bloques
-  y robo de vida del 10 % en golpes cuerpo a cuerpo.
+  robo de vida del 10 % en golpes cuerpo a cuerpo y **murciélago aliado** que muerde a tus enemigos
+  (revive a los 60 s si muere, con barra en el collar).
 - **Patas de conejo** (espacio de cinturón de Trinkets), en minería, mobs, cofres de estructuras y pesca:
   la **de la suerte** (25 % de botín ×2, nunca pierde) y la **maldita** (15 % de jackpot ×4 a ×10, 10 % de perderlo todo).
 - **Anillo de la plaga** y **Anillo del festín** (espacios de anillo de Trinkets): la plaga suelta silverfish o endermites
