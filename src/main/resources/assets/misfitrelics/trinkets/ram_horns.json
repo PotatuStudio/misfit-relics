@@ -1,0 +1,45 @@
+{
+  "target": [
+    "misfitrelics:ram_horns"
+  ],
+  "render": [
+    {
+      "type": "item",
+      "model_part": "head",
+      "display_context": "none",
+      "offset": [
+        0,
+        0.6,
+        1
+      ],
+      "transformation": {
+        "translation": [
+          0,
+          0.05,
+          0.02
+        ],
+        "left_rotation": {
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "angle": 3.141
+        },
+        "scale": [
+          0.75,
+          0.75,
+          0.75
+        ],
+        "right_rotation": {
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "angle": 0
+        }
+      }
+    }
+  ]
+}

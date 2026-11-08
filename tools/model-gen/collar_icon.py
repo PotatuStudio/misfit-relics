@@ -44,6 +44,8 @@ ICON = [
     "................",
 ]
 SHINY = set("cCiHRr")
+# Fila desde la que se ve la cadena puesta (la vuelta de atrás queda oculta por el cuello).
+WORN_TOP = 4
 
 # Collar del rey murciélago: cadena de oro, coronita sobre el rubí y alas rojo oscuro.
 KING_C = dict(C)
@@ -79,6 +81,10 @@ def write_icon(out, name, icon, palette, shiny):
     big = [[img[y // 16][x // 16] if img[y // 16][x // 16][3] else (H('#8b8b8b') if (x // 64 + y // 64) % 2 else H('#c6c6c6'))
             for x in range(256)] for y in range(256)]
     png(os.path.join(out, name + "_x16.png"), big)
+    # Versión puesta: solo la parte que se ve sobre el pecho (la cadena bajando desde el cuello y el dije),
+    # sin la vuelta de atrás. Se recorta desde la fila WORN_TOP y queda arriba de la textura.
+    worn = [row[:] for row in img[WORN_TOP:]] + [[T] * 16 for _ in range(WORN_TOP)]
+    png(os.path.join(out, name.replace("_icon", "_worn") + ".png"), worn)
 
 
 if __name__ == "__main__":

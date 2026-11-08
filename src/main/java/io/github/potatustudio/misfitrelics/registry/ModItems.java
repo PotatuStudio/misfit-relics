@@ -5,6 +5,8 @@ import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFootItem;
+import io.github.potatustudio.misfitrelics.mobility.Mobility;
+import io.github.potatustudio.misfitrelics.mobility.MobilityItem;
 import io.github.potatustudio.misfitrelics.plague.BugRingItem;
 import io.github.potatustudio.misfitrelics.spud.CannonDesign;
 import io.github.potatustudio.misfitrelics.spud.SpudCannonItem;
@@ -83,6 +85,15 @@ public final class ModItems {
 	public static final Item FEAST_RING = register("feast_ring",
 			properties -> new BugRingItem(true, properties), new Item.Properties().stacksTo(1));
 
+	public static final Item SILK_GLOVES = registerMobility("silk_gloves", MobilityItem.Kind.SILK_GLOVES, Rarity.UNCOMMON);
+	public static final Item WIDOW_GLOVES = registerMobility("widow_gloves", MobilityItem.Kind.WIDOW_GLOVES, Rarity.RARE);
+	public static final Item BREEZE_BOTTLE = registerMobility("breeze_bottle", MobilityItem.Kind.BREEZE_BOTTLE, Rarity.UNCOMMON);
+	public static final Item MAGMA_BOOTS = registerMobility("magma_boots", MobilityItem.Kind.MAGMA_BOOTS, Rarity.UNCOMMON);
+	public static final Item RAM_HORNS = register("ram_horns",
+			properties -> new MobilityItem(MobilityItem.Kind.RAM_HORNS, properties), new Item.Properties().stacksTo(1)
+					.rarity(Rarity.UNCOMMON)
+					.component(DataComponents.USE_COOLDOWN, new UseCooldown(0.05f, Optional.of(Mobility.RAM_COOLDOWN_GROUP))));
+
 	private ModItems() {
 	}
 
@@ -109,6 +120,10 @@ public final class ModItems {
 		return item;
 	}
 
+	private static Item registerMobility(String path, MobilityItem.Kind kind, Rarity rarity) {
+		return register(path, properties -> new MobilityItem(kind, properties), new Item.Properties().stacksTo(1).rarity(rarity));
+	}
+
 	private static Item register(String path, Function<Item.Properties, Item> factory, Item.Properties properties) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, MisfitRelics.id(path));
 		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(properties.setId(key)));
@@ -122,6 +137,11 @@ public final class ModItems {
 		TrinketCallback.setCallback(CURSED_RABBIT_FOOT, (TrinketCallback) CURSED_RABBIT_FOOT);
 		TrinketCallback.setCallback(PLAGUE_RING, (TrinketCallback) PLAGUE_RING);
 		TrinketCallback.setCallback(FEAST_RING, (TrinketCallback) FEAST_RING);
+		TrinketCallback.setCallback(SILK_GLOVES, (TrinketCallback) SILK_GLOVES);
+		TrinketCallback.setCallback(WIDOW_GLOVES, (TrinketCallback) WIDOW_GLOVES);
+		TrinketCallback.setCallback(BREEZE_BOTTLE, (TrinketCallback) BREEZE_BOTTLE);
+		TrinketCallback.setCallback(MAGMA_BOOTS, (TrinketCallback) MAGMA_BOOTS);
+		TrinketCallback.setCallback(RAM_HORNS, (TrinketCallback) RAM_HORNS);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
 				.icon(() -> new ItemStack(SPUD_CANNON))
@@ -141,6 +161,11 @@ public final class ModItems {
 					output.accept(CURSED_RABBIT_FOOT);
 					output.accept(PLAGUE_RING);
 					output.accept(FEAST_RING);
+					output.accept(SILK_GLOVES);
+					output.accept(WIDOW_GLOVES);
+					output.accept(BREEZE_BOTTLE);
+					output.accept(MAGMA_BOOTS);
+					output.accept(RAM_HORNS);
 					// Pociones y flechas de hedor en todas sus variantes.
 					for (Holder<Potion> potion : List.of(ModPotions.STENCH, ModPotions.LONG_STENCH, ModPotions.STRONG_STENCH)) {
 						for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {

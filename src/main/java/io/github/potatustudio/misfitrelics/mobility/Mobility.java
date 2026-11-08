@@ -1,0 +1,243 @@
+package io.github.potatustudio.misfitrelics.mobility;
+
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import eu.pb4.trinkets.api.TrinketsApi;
+import io.github.potatustudio.misfitrelics.MisfitRelics;
+import io.github.potatustudio.misfitrelics.registry.ModEffects;
+import io.github.potatustudio.misfitrelics.registry.ModItems;
+import io.github.potatustudio.misfitrelics.util.Allies;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * Reliquias de movilidad (Trinkets):
+ * <ul>
+ *   <li><b>Guantes de seda</b> (guantes): con Shift te quedas pegado a una pared; saltando desde ahí subes y te
+ *       vuelves a pegar (saltos de pared limitados hasta tocar el suelo).</li>
+ *   <li><b>Guantes de la viuda</b> (guantes): además caminas por las paredes como por una escalera y te cuelgas de
+ *       los techos manteniendo el salto.</li>
+ *   <li><b>Breeze en una botella</b> (cinturón): en el aire, Shift + salto suelta una ráfaga que te impulsa hacia donde
+ *       miras y empuja a los mobs cercanos. Una ráfaga por salto.</li>
+ *   <li><b>Botas de magma</b> (zapatos): caminas sobre la lava sin quemarte (Shift para hundirte) y en el Nether vas
+ *       más rápido.</li>
+ *   <li><b>Cuernos del carnero</b> (sombrero): con una tecla embistes hacia adelante; lo que golpeas recibe daño,
+ *       sale volando y queda aturdido.</li>
+ * </ul>
+ * El movimiento lo decide el cliente (en Minecraft el jugador mueve a su propio personaje); aquí está lo común y lo
+ * que corre en el servidor: caídas, daño, efectos y la embestida.
+ */
+public final class Mobility {
+	/** Saltos de pared antes de tener que tocar el suelo. */
+	public static final int WALL_JUMPS = 6;
+	public static final double WALL_JUMP_SPEED = 0.62;
+	public static final double BREEZE_DASH_SPEED = 1.15;
+	public static final double BREEZE_PUSH_RADIUS = 3.0;
+	/** Gracia tras salir de la lava con las botas de magma, sin quemarse (2 s). */
+	public static final int MAGMA_GRACE_TICKS = 40;
+	public static final double MAGMA_NETHER_SPEED = 0.15;
+	public static final float RAM_DAMAGE = 10.0f;
+	/** Velocidad horizontal con la que sale volando lo que embistes. */
+	public static final double RAM_KNOCKBACK = 2.2;
+	public static final int RAM_COOLDOWN = 60;
+	public static final int RAM_STUN = 20;
+	/** Ticks que dura la carrera: mientras tanto, el jugador es invulnerable (0,6 s). */
+	public static final int RAM_ACTIVE_TICKS = 12;
+	private static final Identifier MAGMA_SPEED_ID = MisfitRelics.id("magma_boots_nether_speed");
+	public static final Identifier RAM_COOLDOWN_GROUP = MisfitRelics.id("ram_horns");
+
+	private record Ram(Vec3 direction, Set<UUID> hit, int[] ticksLeft) {
+	}
+
+	private static final Map<UUID, Ram> RAMS = new HashMap<>();
+	private static final Map<UUID, Integer> MAGMA_GRACE = new HashMap<>();
+	private static final Map<UUID, Long> LAST_DASH = new HashMap<>();
+
+	private Mobility() {
+	}
+
+	public static void init() {
+		ServerTickEvents.END_SERVER_TICK.register(Mobility::tick);
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (!(entity instanceof Player player)) {
+				return true;
+			}
+			// Embistiendo: invulnerable.
+			if (RAMS.containsKey(player.getUUID())) {
+				return false;
+			}
+			return !(source.is(DamageTypeTags.IS_FIRE) && isWearing(player, ModItems.MAGMA_BOOTS)
+					&& MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
+		});
+	}
+
+	public static boolean isWearing(LivingEntity entity, Item item) {
+		return TrinketsApi.getAttachment(entity).findFirst(item).map(TrinketSlotAccess::get).isPresent();
+	}
+
+	public static boolean hasSilk(LivingEntity entity) {
+		return isWearing(entity, ModItems.SILK_GLOVES) || isWearing(entity, ModItems.WIDOW_GLOVES);
+	}
+
+	/** Toca una pared por algún costado (sin contar el suelo ni el techo). */
+	public static boolean touchingWall(LivingEntity entity) {
+		AABB bb = entity.getBoundingBox();
+		AABB probe = new AABB(bb.minX - 0.08, bb.minY + 0.1, bb.minZ - 0.08, bb.maxX + 0.08, bb.maxY - 0.1, bb.maxZ + 0.08);
+		return !entity.level().noCollision(entity, probe);
+	}
+
+	public static boolean touchingCeiling(LivingEntity entity) {
+		AABB bb = entity.getBoundingBox();
+		return !entity.level().noCollision(entity, new AABB(bb.minX + 0.05, bb.maxY, bb.minZ + 0.05,
+				bb.maxX - 0.05, bb.maxY + 0.12, bb.maxZ - 0.05));
+	}
+
+	/** Pegado a la pared con los guantes (Shift contra una pared, en el aire). */
+	public static boolean isClinging(Player player) {
+		return !player.onGround() && player.isShiftKeyDown() && hasSilk(player) && touchingWall(player);
+	}
+
+	/** Guantes de la viuda: la pared (o el techo, manteniendo el salto) cuenta como escalera. */
+	public static boolean widowClimbs(Player player, boolean jumping) {
+		return isWearing(player, ModItems.WIDOW_GLOVES) && !player.getAbilities().flying
+				&& (touchingWall(player) || (jumping && touchingCeiling(player)));
+	}
+
+	// --- Servidor --------------------------------------------------------------------------------------------------
+
+	private static void tick(MinecraftServer server) {
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			// Pegado a la pared no se acumula caída (el cliente lo sostiene; aquí se perdona la altura).
+			if (isClinging(player)) {
+				player.resetFallDistance();
+			}
+			magmaBoots(player);
+		}
+		tickRams(server);
+	}
+
+	private static void magmaBoots(ServerPlayer player) {
+		boolean wearing = isWearing(player, ModItems.MAGMA_BOOTS);
+		UUID id = player.getUUID();
+		if (wearing && player.isInLava()) {
+			MAGMA_GRACE.put(id, MAGMA_GRACE_TICKS);
+			player.clearFire();
+			if (player.tickCount % 10 == 0 && player.level() instanceof ServerLevel level) {
+				level.sendParticles(ParticleTypes.LAVA, player.getX(), player.getY(), player.getZ(), 1, 0.2, 0.0, 0.2, 0.0);
+			}
+		} else if (MAGMA_GRACE.containsKey(id)) {
+			int left = MAGMA_GRACE.get(id) - 1;
+			if (left <= 0 || !wearing) {
+				MAGMA_GRACE.remove(id);
+			} else {
+				MAGMA_GRACE.put(id, left);
+				player.clearFire();
+			}
+		}
+		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			if (wearing && player.level().dimension() == Level.NETHER) {
+				speed.addOrUpdateTransientModifier(new AttributeModifier(MAGMA_SPEED_ID, MAGMA_NETHER_SPEED,
+						AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			} else {
+				speed.removeModifier(MAGMA_SPEED_ID);
+			}
+		}
+	}
+
+	/** El cliente avisa que usó la ráfaga: efectos, empuje a los mobs y se perdona la caída. */
+	public static void onBreezeDash(ServerPlayer player) {
+		if (!isWearing(player, ModItems.BREEZE_BOTTLE) || player.onGround()) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		if (now - LAST_DASH.getOrDefault(player.getUUID(), 0L) < 5) {
+			return;
+		}
+		LAST_DASH.put(player.getUUID(), now);
+		player.resetFallDistance();
+		ServerLevel level = player.level();
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),
+				SoundSource.PLAYERS, 0.8f, 1.2f);
+		level.sendParticles(ParticleTypes.GUST, player.getX(), player.getY() + 0.5, player.getZ(), 1, 0, 0, 0, 0);
+		level.sendParticles(ParticleTypes.SMALL_GUST, player.getX(), player.getY() + 0.5, player.getZ(), 8, 0.5, 0.3, 0.5, 0.05);
+		for (LivingEntity mob : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BREEZE_PUSH_RADIUS),
+				e -> e != player && e.isAlive() && !Allies.isAlly(level, e, player.getUUID()))) {
+			Vec3 away = mob.position().subtract(player.position()).normalize();
+			mob.push(away.x * 0.9, 0.35, away.z * 0.9);
+			mob.needsSync = true;
+		}
+	}
+
+	/** Embestida de los cuernos del carnero (tecla). */
+	public static void onRam(ServerPlayer player) {
+		var horns = TrinketsApi.getAttachment(player).findFirst(ModItems.RAM_HORNS).map(TrinketSlotAccess::get);
+		if (horns.isEmpty() || player.getCooldowns().isOnCooldown(horns.get()) || RAMS.containsKey(player.getUUID())) {
+			return;
+		}
+		Vec3 look = player.getLookAngle();
+		Vec3 dir = new Vec3(look.x, 0, look.z);
+		if (dir.lengthSqr() < 1.0E-4) {
+			return;
+		}
+		dir = dir.normalize();
+		player.setDeltaMovement(dir.x * 1.9, Math.max(player.getDeltaMovement().y, 0.2), dir.z * 1.9);
+		player.needsSync = true;
+		player.getCooldowns().addCooldown(RAM_COOLDOWN_GROUP, RAM_COOLDOWN);
+		RAMS.put(player.getUUID(), new Ram(dir, new HashSet<>(), new int[] {RAM_ACTIVE_TICKS}));
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GOAT_PREPARE_RAM,
+				SoundSource.PLAYERS, 1.0f, 1.0f);
+	}
+
+	private static void tickRams(MinecraftServer server) {
+		Iterator<Map.Entry<UUID, Ram>> it = RAMS.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<UUID, Ram> entry = it.next();
+			ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+			Ram ram = entry.getValue();
+			if (player == null || --ram.ticksLeft()[0] < 0) {
+				it.remove();
+				continue;
+			}
+			ServerLevel level = player.level();
+			level.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.2, player.getZ(), 2, 0.2, 0.05, 0.2, 0.0);
+			for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(0.8),
+					e -> e != player && e.isAlive() && !ram.hit().contains(e.getUUID())
+							&& !Allies.isAlly(level, e, player.getUUID()))) {
+				ram.hit().add(target.getUUID());
+				target.hurtServer(level, player.damageSources().playerAttack(player), RAM_DAMAGE);
+				// Empuje directo en la dirección de la embestida (más fuerte que el knockback normal).
+				target.push(ram.direction().x * RAM_KNOCKBACK, 0.5, ram.direction().z * RAM_KNOCKBACK);
+				target.needsSync = true;
+				target.addEffect(new MobEffectInstance(ModEffects.STUNNED, RAM_STUN), player);
+				level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.GOAT_RAM_IMPACT,
+						SoundSource.PLAYERS, 1.0f, 1.0f);
+				level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + target.getBbHeight() * 0.6,
+						target.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
+			}
+		}
+	}
+}

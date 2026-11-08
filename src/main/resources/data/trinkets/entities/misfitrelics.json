@@ -6,6 +6,10 @@
     "chest/necklace",
     "legs/belt",
     "hand/ring",
-    "offhand/ring"
+    "offhand/ring",
+    "hand/glove",
+    "offhand/glove",
+    "feet/shoes",
+    "head/hat"
   ]
 }

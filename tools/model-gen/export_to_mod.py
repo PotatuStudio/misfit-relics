@@ -100,4 +100,25 @@ dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics
      os.path.join(MODELS, "king_bat_collar.json"))
 dump({"model": model_ref("king_bat_collar")}, os.path.join(ITEMS, "king_bat_collar.json"))
 dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
+# Collares puestos: lámina plana con la parte recortada del ícono (la cadena bajando del cuello y el dije),
+# en el atlas de bloques para que Trinkets la dibuje como modelo en el pecho.
+for collar in ("bat_collar", "king_bat_collar"):
+    shutil.copyfile(os.path.join(src, collar + "_worn.png"), os.path.join(BLOCK_TEXTURES, collar + "_worn.png"))
+    dump({"textures": {"t": f"misfitrelics:block/{collar}_worn", "particle": f"misfitrelics:block/{collar}_worn"},
+          "elements": [{"from": [0, 0, 8], "to": [16, 16, 8],
+                        "faces": {"south": {"uv": [0, 0, 16, 16], "texture": "#t"},
+                                  "north": {"uv": [16, 0, 0, 16], "texture": "#t"}}}]},
+         os.path.join(MODELS, collar + "_worn.json"))
+
+# Reliquias de movilidad: íconos 2D (la botella va sobre la botella de vidrio vanilla)
+for item_id in ("silk_gloves", "widow_gloves", "magma_boots", "ram_horns"):
+    shutil.copyfile(os.path.join(src, item_id + ".png"), os.path.join(TEXTURES, item_id + ".png"))
+    dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"misfitrelics:item/{item_id}"}},
+         os.path.join(MODELS, item_id + ".json"))
+    dump({"model": model_ref(item_id)}, os.path.join(ITEMS, item_id + ".json"))
+shutil.copyfile(os.path.join(src, "breeze_bottle_overlay.png"), os.path.join(TEXTURES, "breeze_bottle_overlay.png"))
+dump({"parent": "minecraft:item/generated", "textures": {"layer0": "minecraft:item/glass_bottle",
+                                                         "layer1": "misfitrelics:item/breeze_bottle_overlay"}},
+     os.path.join(MODELS, "breeze_bottle.json"))
+dump({"model": model_ref("breeze_bottle")}, os.path.join(ITEMS, "breeze_bottle.json"))
 print("exportado: 8 cañones, 4 trompetas y el collar")
