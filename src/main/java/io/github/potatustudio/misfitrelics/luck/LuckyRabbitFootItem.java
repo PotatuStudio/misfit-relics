@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.luck;
 
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
+import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -44,6 +45,7 @@ public class LuckyRabbitFootItem extends Item implements TrinketCallback {
 		}
 		tooltip.accept(Component.translatable("item.misfitrelics.lucky_rabbit_foot.tooltip.sources")
 				.withStyle(ChatFormatting.GRAY));
+		ModLoot.appendWhere(this, tooltip);
 	}
 
 	/** Al ponérsela: saltito de conejo y destellos (o almas, si es la maldita). */

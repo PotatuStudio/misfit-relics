@@ -21,6 +21,9 @@
 		],
 		"client": [
 			"io.github.potatustudio.misfitrelics.client.MisfitRelicsClient"
+		],
+		"jei_mod_plugin": [
+			"io.github.potatustudio.misfitrelics.client.jei.MisfitRelicsJeiPlugin"
 		]
 	},
 	"mixins": [

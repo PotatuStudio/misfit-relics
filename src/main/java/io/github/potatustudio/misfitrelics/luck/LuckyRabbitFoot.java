@@ -3,6 +3,7 @@ package io.github.potatustudio.misfitrelics.luck;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.TrinketsApi;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
+import io.github.potatustudio.misfitrelics.util.Advancements;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -79,10 +80,14 @@ public final class LuckyRabbitFoot {
 			if (roll < LOSE_CHANCE) {
 				drops.clear();
 				curse(context, player);
+				Advancements.award(player, "cursed_loss", "lost");
 			} else if (roll < LOSE_CHANCE + JACKPOT_CHANCE) {
 				int multiplier = MIN_MULTIPLIER + random.nextInt(MAX_MULTIPLIER - MIN_MULTIPLIER + 1);
 				multiply(drops, multiplier);
 				jackpot(context, player, multiplier);
+				if (multiplier == MAX_MULTIPLIER) {
+					Advancements.award(player, "jackpot", "jackpot");
+				}
 			}
 		} else if (isWearing(player, ModItems.LUCKY_RABBIT_FOOT) && random.nextFloat() < LUCKY_CHANCE) {
 			multiply(drops, LUCKY_MULTIPLIER);

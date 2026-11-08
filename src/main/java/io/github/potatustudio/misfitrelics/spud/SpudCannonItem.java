@@ -87,6 +87,7 @@ public class SpudCannonItem extends Item {
 					Math.round(CannonDesign.OXIDATION_CHANCE * 100)).withStyle(ChatFormatting.DARK_GREEN));
 		}
 		tooltip.accept(Component.translatable("item.misfitrelics.copper.tooltip.maintenance").withStyle(ChatFormatting.DARK_GRAY));
+		io.github.potatustudio.misfitrelics.registry.ModLoot.appendWhere(this, tooltip);
 	}
 
 	@Override

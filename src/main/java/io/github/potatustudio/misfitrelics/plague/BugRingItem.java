@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.plague;
 
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
+import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -40,6 +41,7 @@ public class BugRingItem extends Item implements TrinketCallback {
 					PlagueRings.FIGHT_TICKS / 20, PlagueRings.LIFETIME_TICKS / 20).withStyle(ChatFormatting.GRAY));
 		}
 		tooltip.accept(Component.translatable("item.misfitrelics.bug_ring.tooltip.combo").withStyle(ChatFormatting.DARK_GREEN));
+		ModLoot.appendWhere(this, tooltip);
 	}
 
 	@Override

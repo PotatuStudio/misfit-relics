@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:king_bat_collar"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.king_bat_collar.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.king_bat_collar.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:king_bat_collar"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:bat_collar"
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:plague_ring"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.plague_ring.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.plague_ring.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:plague_ring"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:lucky_rabbit_foot"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.lucky_rabbit_foot.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.lucky_rabbit_foot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:lucky_rabbit_foot"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

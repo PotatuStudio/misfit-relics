@@ -1,0 +1,49 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:spud_cannon"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.root.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "minecraft:gui/advancements/backgrounds/stone"
+  },
+  "criteria": {
+    "any": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:spud_cannon",
+              "misfitrelics:exposed_spud_cannon",
+              "misfitrelics:weathered_spud_cannon",
+              "misfitrelics:oxidized_spud_cannon",
+              "misfitrelics:copper_trumpet",
+              "misfitrelics:exposed_copper_trumpet",
+              "misfitrelics:weathered_copper_trumpet",
+              "misfitrelics:oxidized_copper_trumpet",
+              "misfitrelics:pressure_spud_cannon",
+              "misfitrelics:exposed_pressure_spud_cannon",
+              "misfitrelics:weathered_pressure_spud_cannon",
+              "misfitrelics:oxidized_pressure_spud_cannon",
+              "misfitrelics:bat_collar",
+              "misfitrelics:king_bat_collar",
+              "misfitrelics:lucky_rabbit_foot",
+              "misfitrelics:cursed_rabbit_foot",
+              "misfitrelics:plague_ring",
+              "misfitrelics:feast_ring"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:copper_trumpet"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.trumpet.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.trumpet.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:copper_trumpet",
+              "misfitrelics:exposed_copper_trumpet",
+              "misfitrelics:weathered_copper_trumpet",
+              "misfitrelics:oxidized_copper_trumpet"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

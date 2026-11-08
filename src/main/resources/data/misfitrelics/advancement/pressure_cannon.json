@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:pressure_spud_cannon"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.pressure_cannon.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.pressure_cannon.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:pressure_spud_cannon",
+              "misfitrelics:exposed_pressure_spud_cannon",
+              "misfitrelics:weathered_pressure_spud_cannon",
+              "misfitrelics:oxidized_pressure_spud_cannon"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

@@ -3,6 +3,7 @@ package io.github.potatustudio.misfitrelics.bat;
 import eu.pb4.trinkets.api.TrinketSlotAccess;
 import eu.pb4.trinkets.api.callback.TrinketCallback;
 import io.github.potatustudio.misfitrelics.registry.ModComponents;
+import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,6 +54,7 @@ public class BatCollarItem extends Item implements TrinketCallback {
 			tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.reviving", (revive + 19) / 20)
 					.withStyle(ChatFormatting.DARK_PURPLE));
 		}
+		ModLoot.appendWhere(this, tooltip);
 	}
 
 	/** Mientras el murciélago revive, una barra morada se va llenando. */

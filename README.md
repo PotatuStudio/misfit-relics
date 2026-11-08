@@ -79,6 +79,11 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van
 ## Cómo se consiguen
 Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.
 
+El tooltip de cada reliquia dice dónde encontrarla, y con **JEI** instalado cada una tiene una página con los lugares y la probabilidad.
+
+## Logros
+Un árbol propio de 13 logros: encontrar cada reliquia, el rey murciélago, sacar un jackpot ×10 con la pata maldita (y uno oculto) y el de coleccionista.
+
 ## Game rules
 | Regla | Por defecto | Qué hace |
 |---|---|---|

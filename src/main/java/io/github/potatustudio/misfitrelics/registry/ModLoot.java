@@ -61,7 +61,49 @@ public final class ModLoot {
 			// Anillo del festín: en el End, donde abundan los endermites. El par completo pide ir hasta allá.
 			Map.entry(BuiltInLootTables.END_CITY_TREASURE, List.of(Drop.single(0.12f, () -> ModItems.FEAST_RING))));
 
+	/** Dónde aparece una reliquia: tabla de botín y probabilidad por cofre (o por muerte). */
+	public record Source(ResourceKey<LootTable> table, float chance) {
+		/** Clave de traducción del lugar, p. ej. loot.misfitrelics.chests.ancient_city. */
+		public String translationKey() {
+			return "loot.misfitrelics." + table.identifier().getPath().replace('/', '.');
+		}
+	}
+
 	private ModLoot() {
+	}
+
+	/** Todos los lugares donde se encuentra una reliquia (cualquiera de sus etapas de oxidación), de más a menos probable. */
+	public static List<Source> sources(Item item) {
+		List<Source> found = new ArrayList<>();
+		for (Map.Entry<ResourceKey<LootTable>, List<Drop>> entry : DROPS.entrySet()) {
+			for (Drop drop : entry.getValue()) {
+				if (drop.items().get().containsKey(item)) {
+					found.add(new Source(entry.getKey(), drop.chance()));
+				}
+			}
+		}
+		if (item == ModItems.KING_BAT_COLLAR) {
+			EntityTypes.WARDEN.getDefaultLootTable().ifPresent(key -> found.add(new Source(key, WARDEN_KING_COLLAR_CHANCE)));
+		}
+		found.sort((a, b) -> Float.compare(b.chance(), a.chance()));
+		return found;
+	}
+
+	/** Línea discreta para el tooltip: "Se encuentra en: ciudad antigua, warden". */
+	public static void appendWhere(Item item, java.util.function.Consumer<net.minecraft.network.chat.Component> tooltip) {
+		List<Source> found = sources(item);
+		if (found.isEmpty()) {
+			return;
+		}
+		net.minecraft.network.chat.MutableComponent places = net.minecraft.network.chat.Component.empty();
+		for (int i = 0; i < found.size(); i++) {
+			if (i > 0) {
+				places.append(", ");
+			}
+			places.append(net.minecraft.network.chat.Component.translatable(found.get(i).translationKey()));
+		}
+		tooltip.accept(net.minecraft.network.chat.Component.translatable("tooltip.misfitrelics.found_in", places)
+				.withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
 	}
 
 	private static Drop pressureCannon(float chance) {

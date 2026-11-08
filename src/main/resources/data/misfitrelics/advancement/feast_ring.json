@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:feast_ring"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.feast_ring.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.feast_ring.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:feast_ring"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:plague_ring"
+}

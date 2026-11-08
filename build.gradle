@@ -56,6 +56,8 @@ dependencies {
 	localRuntime "maven.modrinth:modmenu:${project.modmenu_version}"
 	localRuntime "maven.modrinth:placeholder-api:${project.placeholder_api_version}"
 	// JEI para buscar ítems por mod (@misfitrelics). IDs de versión de Modrinth (mismo número para cada loader).
+	// Se compila contra JEI solo para la página "dónde encontrarlo" (integración opcional, no es dependencia).
+	compileOnly "maven.modrinth:jei:${project.jei_version_id}"
 	localRuntime "maven.modrinth:jei:${project.jei_version_id}"
 	localRuntime "maven.modrinth:mezzconfig:${project.mezzconfig_version_id}"
 }

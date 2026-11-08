@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:cursed_rabbit_foot"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.jackpot.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.jackpot.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "jackpot": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "parent": "misfitrelics:cursed_rabbit_foot"
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:bat_collar"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.bat_collar.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.bat_collar.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:bat_collar"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

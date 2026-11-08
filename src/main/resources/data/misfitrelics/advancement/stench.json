@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:poisonous_potato"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.stench.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.stench.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "stench": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "misfitrelics:stench": {}
+        }
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}

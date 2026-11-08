@@ -3,6 +3,7 @@ package io.github.potatustudio.misfitrelics.trumpet;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
+import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import io.github.potatustudio.misfitrelics.util.Allies;
 import io.github.potatustudio.misfitrelics.util.CopperAging;
 import java.util.function.Consumer;
@@ -161,6 +162,7 @@ public class CopperTrumpetItem extends Item {
 					Math.round(OXIDATION_CHANCE * 100)).withStyle(ChatFormatting.DARK_GREEN));
 		}
 		tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.maintenance").withStyle(ChatFormatting.DARK_GRAY));
+		ModLoot.appendWhere(this, tooltip);
 	}
 
 	private void maybeOxidize(Player player, InteractionHand hand, ItemStack trumpet) {

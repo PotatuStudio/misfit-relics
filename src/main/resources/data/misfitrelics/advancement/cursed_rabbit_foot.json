@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:cursed_rabbit_foot"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.cursed_rabbit_foot.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.cursed_rabbit_foot.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:cursed_rabbit_foot"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:lucky_rabbit_foot"
+}

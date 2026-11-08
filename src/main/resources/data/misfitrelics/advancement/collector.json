@@ -1,0 +1,122 @@
+{
+  "display": {
+    "icon": {
+      "id": "misfitrelics:king_bat_collar"
+    },
+    "title": {
+      "translate": "advancements.misfitrelics.collector.title"
+    },
+    "description": {
+      "translate": "advancements.misfitrelics.collector.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "trumpet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:copper_trumpet",
+              "misfitrelics:exposed_copper_trumpet",
+              "misfitrelics:weathered_copper_trumpet",
+              "misfitrelics:oxidized_copper_trumpet"
+            ]
+          }
+        ]
+      }
+    },
+    "pressure_cannon": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:pressure_spud_cannon",
+              "misfitrelics:exposed_pressure_spud_cannon",
+              "misfitrelics:weathered_pressure_spud_cannon",
+              "misfitrelics:oxidized_pressure_spud_cannon"
+            ]
+          }
+        ]
+      }
+    },
+    "bat_collar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:bat_collar"
+            ]
+          }
+        ]
+      }
+    },
+    "king_bat_collar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:king_bat_collar"
+            ]
+          }
+        ]
+      }
+    },
+    "lucky_rabbit_foot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:lucky_rabbit_foot"
+            ]
+          }
+        ]
+      }
+    },
+    "cursed_rabbit_foot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:cursed_rabbit_foot"
+            ]
+          }
+        ]
+      }
+    },
+    "plague_ring": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:plague_ring"
+            ]
+          }
+        ]
+      }
+    },
+    "feast_ring": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "misfitrelics:feast_ring"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "misfitrelics:root"
+}
