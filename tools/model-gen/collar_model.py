@@ -78,11 +78,8 @@ RUBY_HEX = {'ruby_dark': '#7a1410', 'ruby': '#b3241c', 'ruby_light': '#d8352a', 
 
 
 def bat_depth(ch, col):
-    """Grosor (hacia adelante) de cada píxel: el cuerpo sobresale, las alas son delgadas, ojos y colmillos más."""
-    if ch == 'R':
-        return 1.5
-    if ch == 'F':
-        return 1.35
+    """Grosor (hacia adelante) de cada píxel: el cuerpo sobresale y su cara es plana (ojos y colmillos al ras);
+    las alas son delgadas."""
     if 6 <= col <= 9:
         return 1.2
     if col in (5, 10):
@@ -124,7 +121,8 @@ def pendant(m, cx, cy, cz, s=1.0):
     z0 = cz - 0.3
     m.box([cx - 0.45, cy + 2.1, z0 + 0.1], [cx + 0.45, cy + 3.0, z0 + 0.6], 'iron', name="argolla")
     bat_relief(m, cx, cy, z0)
-    ruby(m, cx, cy - 2.5 - 1.3, z0)
+    # El rubí cuelga pegado a las patas: su punta superior entra un poco en la última fila del murciélago.
+    ruby(m, cx, cy - 2.0 - 1.15, z0 + 0.05)
 
 
 def build_item():

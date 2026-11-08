@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
@@ -110,6 +111,12 @@ public class SpudCannonItem extends Item {
 			playLoading(level, entity, SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), 0.9f);
 		} else if (used == design.chargeTicks) {
 			playLoading(level, entity, SoundEvents.CROSSBOW_LOADING_END.value(), 0.8f);
+			// Listo para disparar: bocanada de vapor y chispas en la boca del cañón, visible en primera persona.
+			if (level instanceof ServerLevel serverLevel) {
+				Vec3 muzzle = entity.getEyePosition().add(entity.getLookAngle().scale(0.9)).add(0, -0.2, 0);
+				serverLevel.sendParticles(ParticleTypes.CLOUD, muzzle.x, muzzle.y, muzzle.z, 4, 0.06, 0.06, 0.06, 0.01);
+				serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, muzzle.x, muzzle.y, muzzle.z, 5, 0.08, 0.08, 0.08, 0.05);
+			}
 		}
 	}
 

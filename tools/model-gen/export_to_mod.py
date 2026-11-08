@@ -41,7 +41,13 @@ def model_ref(name):
 
 def cannon(base_id, scratch_base, details, charge_ticks):
     for suffix in ("", "_charged"):
-        dump(load(scratch_base + suffix), os.path.join(MODELS, f"{base_id}_base{suffix}.json"))
+        model = load(scratch_base + suffix)
+        if suffix:
+            # Cargado: en primera persona el cañón sube y apunta un poco hacia arriba, para que se note que está listo.
+            d = model["display"]
+            d["firstperson_righthand"] = {**d["firstperson_righthand"], "rotation": [0, 90, 6], "translation": [1.5, 4.2, -0.5]}
+            d["firstperson_lefthand"] = {**d["firstperson_lefthand"], "rotation": [0, -90, -6], "translation": [1.5, 4.2, -0.5]}
+        dump(model, os.path.join(MODELS, f"{base_id}_base{suffix}.json"))
     shutil.copyfile(os.path.join(src, details + ".png"), os.path.join(BLOCK_TEXTURES, details + ".png"))
     for p in PREFIXES:
         item_id = p + base_id
