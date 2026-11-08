@@ -111,7 +111,7 @@ for collar in ("bat_collar", "king_bat_collar"):
          os.path.join(MODELS, collar + "_worn.json"))
 
 # Reliquias de movilidad: íconos 2D (la botella va sobre la botella de vidrio vanilla)
-for item_id in ("silk_gloves", "widow_gloves", "magma_boots", "ram_horns"):
+for item_id in ("silk_gloves", "widow_gloves", "ram_horns"):
     shutil.copyfile(os.path.join(src, item_id + ".png"), os.path.join(TEXTURES, item_id + ".png"))
     dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"misfitrelics:item/{item_id}"}},
          os.path.join(MODELS, item_id + ".json"))
@@ -134,4 +134,21 @@ dump({"parent": "minecraft:item/generated", "textures": {"layer0": "minecraft:it
                                                          "layer1": "misfitrelics:item/nautilus_shell_overlay"}},
      os.path.join(MODELS, "nautilus_shell.json"))
 dump({"model": model_ref("nautilus_shell")}, os.path.join(ITEMS, "nautilus_shell.json"))
+# Botas de magma: botas de cuero vanilla teñidas de basalto + grietas de lava propias.
+shutil.copyfile(os.path.join(src, "magma_boots_overlay.png"), os.path.join(TEXTURES, "magma_boots_overlay.png"))
+dump({"parent": "minecraft:item/generated", "textures": {"layer0": "minecraft:item/leather_boots",
+                                                         "layer1": "minecraft:item/leather_boots_overlay",
+                                                         "layer2": "misfitrelics:item/magma_boots_overlay"}},
+     os.path.join(MODELS, "magma_boots.json"))
+dump({"model": {"type": "minecraft:model", "model": "misfitrelics:item/magma_boots",
+                "tints": [{"type": "minecraft:constant", "value": 0x3D3434},
+                          {"type": "minecraft:constant", "value": -1}, {"type": "minecraft:constant", "value": -1}]}},
+     os.path.join(ITEMS, "magma_boots.json"))
+# Concha de nautilus: la concha vanilla teñida de prismarina + cadena de oro y gema.
+dump({"model": {"type": "minecraft:model", "model": "misfitrelics:item/nautilus_shell",
+                "tints": [{"type": "minecraft:constant", "value": 0x8FE3D8}, {"type": "minecraft:constant", "value": -1}]}},
+     os.path.join(ITEMS, "nautilus_shell.json"))
+# Ícono del mod (panel de inventario con reliquias) y el de la pestaña creativa.
+shutil.copyfile(os.path.join(src, "icon.png"), os.path.join(A, "icon.png"))
+shutil.copyfile(os.path.join(src, "relic_icon.png"), os.path.join(TEXTURES, "relic_icon.png"))
 print("exportado: 8 cañones, 4 trompetas y el collar")

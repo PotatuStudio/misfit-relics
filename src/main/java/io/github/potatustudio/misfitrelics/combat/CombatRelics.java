@@ -178,7 +178,7 @@ public final class CombatRelics {
 				SoundSource.PLAYERS, 0.25f + 0.08f * c, 1.8f);
 		// Chispas en la mano: más mientras más cargado.
 		Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(0.6)).add(0, -0.4, 0);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, hand.x, hand.y, hand.z, 3 + c * 3, 0.15, 0.15, 0.15, 0.08);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, hand.x, hand.y, hand.z, 2 + c * 2, 0.15, 0.15, 0.15, 0.06);
 		player.sendOverlayMessage(Component.translatable("message.misfitrelics.electric_charge", "⚡".repeat(c), c, MAX_CHARGE)
 				.withStyle(c == MAX_CHARGE ? ChatFormatting.AQUA : ChatFormatting.YELLOW));
 	}
@@ -199,7 +199,7 @@ public final class CombatRelics {
 	}
 
 	/** Cuántos ticks dura un arco: en cada uno se redibuja con otra forma (parpadea) y la corriente avanza. */
-	public static final int ARC_TICKS = 7;
+	public static final int ARC_TICKS = 6;
 
 	/** Arco eléctrico vivo entre dos entidades (sigue sus posiciones mientras dura). */
 	private record Arc(ServerLevel level, LivingEntity from, LivingEntity to, int[] age) {
@@ -237,7 +237,7 @@ public final class CombatRelics {
 		for (int i = 0; i < points.size() - 1; i++) {
 			Vec3 p = points.get(i);
 			Vec3 q = points.get(i + 1);
-			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.18));
+			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.26));
 			for (int k = 0; k < steps; k++) {
 				Vec3 t = p.add(q.subtract(p).scale((double) k / steps));
 				level.sendParticles(ParticleTypes.ELECTRIC_SPARK, t.x, t.y, t.z, 1, 0, 0, 0, 0);
@@ -246,8 +246,8 @@ public final class CombatRelics {
 		// La corriente: avanza por el arco a lo largo de su duración.
 		double f = Math.min(1.0, (age + 1) / (double) ARC_TICKS);
 		Vec3 head = start.add(end.subtract(start).scale(f));
-		level.sendParticles(ParticleTypes.END_ROD, head.x, head.y, head.z, 2, 0.03, 0.03, 0.03, 0.0);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, head.x, head.y, head.z, 4, 0.08, 0.08, 0.08, 0.1);
+		level.sendParticles(ParticleTypes.END_ROD, head.x, head.y, head.z, 1, 0.02, 0.02, 0.02, 0.0);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, head.x, head.y, head.z, 2, 0.06, 0.06, 0.06, 0.08);
 	}
 
 	/** Descarga sobre una entidad: chispas que saltan alrededor del cuerpo. */
@@ -255,7 +255,7 @@ public final class CombatRelics {
 		Vec3 c = e.getBoundingBox().getCenter();
 		double w = e.getBbWidth() * 0.6;
 		double h = e.getBbHeight() * 0.4;
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 8 + intensity * 3, w, h, w, 0.25);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 5 + intensity * 2, w, h, w, 0.2);
 	}
 
 	/** Arcos vivos y chisporroteo de la mano mientras hay carga. */

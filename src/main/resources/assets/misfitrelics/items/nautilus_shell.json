@@ -1,6 +1,16 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "misfitrelics:item/nautilus_shell"
+  "model": "misfitrelics:item/nautilus_shell",
+  "tints": [
+   {
+    "type": "minecraft:constant",
+    "value": 9429976
+   },
+   {
+    "type": "minecraft:constant",
+    "value": -1
+   }
+  ]
  }
 }
