@@ -91,6 +91,11 @@ public final class MobilityClient {
 		if (player.getAbilities().flying) {
 			return;
 		}
+		if (player.isInLava() && !player.isShiftKeyDown() && Mobility.isWearing(player, ModItems.MAGMA_BOOTS)) {
+			// Hundido en la lava con las botas de magma: flota hacia la superficie, como el strider.
+			Vec3 v = player.getDeltaMovement();
+			player.setDeltaMovement(v.x, Math.max(v.y, 0.12), v.z);
+		}
 		boolean clinging = Mobility.isClinging(player);
 		if (clinging) {
 			Vec3 v = player.getDeltaMovement();

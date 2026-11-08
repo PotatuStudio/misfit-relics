@@ -30,8 +30,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Reliquias de movilidad (Trinkets):
@@ -59,6 +61,8 @@ public final class Mobility {
 	/** Gracia tras salir de la lava con las botas de magma, sin quemarse (2 s). */
 	public static final int MAGMA_GRACE_TICKS = 40;
 	public static final double MAGMA_NETHER_SPEED = 0.15;
+	/** Superficie de la lava para quien lleva las botas de magma: la misma media altura que usa el strider. */
+	public static final VoxelShape LAVA_SURFACE = Block.column(16.0, 0.0, 8.0);
 	public static final float RAM_DAMAGE = 10.0f;
 	/** Velocidad horizontal con la que sale volando lo que embistes. */
 	public static final double RAM_KNOCKBACK = 2.2;

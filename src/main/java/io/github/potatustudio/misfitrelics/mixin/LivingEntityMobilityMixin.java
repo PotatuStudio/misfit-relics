@@ -6,6 +6,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +26,18 @@ public abstract class LivingEntityMobilityMixin {
 	private void misfitrelics$widowClimb(CallbackInfoReturnable<Boolean> cir) {
 		if ((Object) this instanceof Player player && !player.isSpectator() && Mobility.widowClimbs(player, jumping)) {
 			cir.setReturnValue(true);
+		}
+	}
+
+	/**
+	 * La lava solo es sólida para quien devuelve una forma aquí (el strider devuelve media altura de bloque). Sin esto,
+	 * canStandOnFluid por sí solo no sostiene al jugador: se hunde y no puede saltar.
+	 */
+	@Inject(method = "getLiquidCollisionShape", at = @At("HEAD"), cancellable = true)
+	private void misfitrelics$magmaSurface(CallbackInfoReturnable<VoxelShape> cir) {
+		if ((Object) this instanceof Player player && !player.isShiftKeyDown()
+				&& Mobility.isWearing(player, ModItems.MAGMA_BOOTS)) {
+			cir.setReturnValue(Mobility.LAVA_SURFACE);
 		}
 	}
 
