@@ -69,6 +69,9 @@ public final class ModItems {
 	public static final Item WEATHERED_COPPER_TRUMPET = registerTrumpet("weathered_copper_trumpet", TrumpetStage.WEATHERED);
 	public static final Item OXIDIZED_COPPER_TRUMPET = registerTrumpet("oxidized_copper_trumpet", TrumpetStage.OXIDIZED);
 
+	/** Solo para el ícono de la pestaña creativa (el amuleto del ícono del mod); no aparece en el inventario. */
+	public static final Item RELIC_ICON = register("relic_icon", Item::new, new Item.Properties());
+
 	public static final Item BAT_COLLAR = register("bat_collar",
 			properties -> new BatCollarItem(false, properties), new Item.Properties().stacksTo(1)
 					.component(DataComponents.USE_COOLDOWN, new UseCooldown(0.05f, Optional.of(BatCollar.COOLDOWN_GROUP))));
@@ -164,7 +167,7 @@ public final class ModItems {
 		TrinketCallback.setCallback(BERSERKER_RING, (TrinketCallback) BERSERKER_RING);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
-				.icon(() -> new ItemStack(SPUD_CANNON))
+				.icon(() -> new ItemStack(RELIC_ICON))
 				.displayItems((parameters, output) -> {
 					for (CannonDesign design : CannonDesign.values()) {
 						for (CopperStage stage : CopperStage.values()) {

@@ -168,5 +168,6 @@
   "loot.misfitrelics.chests.buried_treasure": "Buried treasure",
   "loot.misfitrelics.chests.bastion_other": "Bastions",
   "loot.misfitrelics.chests.bastion_bridge": "Bastion bridges",
-  "item.misfitrelics.electric_gauntlet.tooltip.4": "The charge fades after %7$s s without hitting"
+  "item.misfitrelics.electric_gauntlet.tooltip.4": "The charge fades after %7$s s without hitting",
+  "item.misfitrelics.relic_icon": "Misfit Relics"
 }

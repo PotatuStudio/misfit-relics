@@ -168,5 +168,6 @@
   "loot.misfitrelics.chests.buried_treasure": "tesoros enterrados",
   "loot.misfitrelics.chests.bastion_other": "bastiones",
   "loot.misfitrelics.chests.bastion_bridge": "puentes de bastión",
-  "item.misfitrelics.electric_gauntlet.tooltip.4": "La carga se pierde a los %7$s s sin golpear"
+  "item.misfitrelics.electric_gauntlet.tooltip.4": "La carga se pierde a los %7$s s sin golpear",
+  "item.misfitrelics.relic_icon": "Misfit Relics"
 }
