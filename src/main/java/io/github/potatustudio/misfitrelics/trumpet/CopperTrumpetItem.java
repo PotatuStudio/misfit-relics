@@ -4,6 +4,12 @@ import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.util.Allies;
+import io.github.potatustudio.misfitrelics.util.CopperAging;
+import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -85,6 +91,25 @@ public class CopperTrumpetItem extends Item {
 	}
 
 	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+			Consumer<Component> tooltip, TooltipFlag flag) {
+		tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.stun",
+				stage.stunTicks / 20.0, (int) stage.range, (int) stage.coneDegrees).withStyle(ChatFormatting.GOLD));
+		tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.echo",
+				Math.round((WALL_ECHO_MULTIPLIER - 1) * 100), Math.round((ROOF_ECHO_MULTIPLIER - 1) * 100))
+				.withStyle(ChatFormatting.GRAY));
+		tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.cooldown",
+				stage.cooldown / 20.0).withStyle(ChatFormatting.GRAY));
+		if (stack.has(DataComponents.WAXED)) {
+			tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.waxed").withStyle(ChatFormatting.YELLOW));
+		} else if (stage != TrumpetStage.OXIDIZED) {
+			tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.oxidizes",
+					Math.round(OXIDATION_CHANCE * 100)).withStyle(ChatFormatting.DARK_GREEN));
+		}
+		tooltip.accept(Component.translatable("item.misfitrelics.copper_trumpet.tooltip.maintenance").withStyle(ChatFormatting.DARK_GRAY));
+	}
+
+	@Override
 	public int getUseDuration(ItemStack stack, LivingEntity entity) {
 		return USE_DURATION;
 	}
@@ -157,50 +182,13 @@ public class CopperTrumpetItem extends Item {
 	}
 
 	private void maybeOxidize(Player player, InteractionHand hand, ItemStack trumpet) {
-		if (stage == TrumpetStage.OXIDIZED || trumpet.has(DataComponents.WAXED)
-				|| player.getRandom().nextFloat() >= OXIDATION_CHANCE) {
-			return;
-		}
-		player.setItemInHand(hand, trumpet.transmuteCopy(ModItems.trumpetFor(stage.next())));
+		Item next = stage == TrumpetStage.OXIDIZED ? null : ModItems.trumpetFor(stage.next());
+		CopperAging.maybeOxidize(player, hand, trumpet, next, OXIDATION_CHANCE);
 	}
 
 	/** Mantenimiento agachado: panal para encerar, hacha para quitar cera u óxido. */
 	private InteractionResult tryMaintenance(Level level, Player player, InteractionHand hand, ItemStack trumpet) {
-		InteractionHand otherHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-		ItemStack tool = player.getItemInHand(otherHand);
-
-		if (tool.is(Items.HONEYCOMB) && !trumpet.has(DataComponents.WAXED)) {
-			if (!level.isClientSide()) {
-				trumpet.set(DataComponents.WAXED, Unit.INSTANCE);
-				if (!player.hasInfiniteMaterials()) {
-					tool.shrink(1);
-				}
-				playMaintenance(level, player, SoundEvents.HONEYCOMB_WAX_ON, true);
-			}
-			return InteractionResult.SUCCESS;
-		}
-
-		if (tool.is(ItemTags.AXES) && (trumpet.has(DataComponents.WAXED) || stage != TrumpetStage.COPPER)) {
-			if (!level.isClientSide()) {
-				if (trumpet.has(DataComponents.WAXED)) {
-					trumpet.remove(DataComponents.WAXED);
-					playMaintenance(level, player, SoundEvents.AXE_WAX_OFF.value(), false);
-				} else {
-					player.setItemInHand(hand, trumpet.transmuteCopy(ModItems.trumpetFor(stage.previous())));
-					playMaintenance(level, player, SoundEvents.AXE_SCRAPE.value(), false);
-				}
-				tool.hurtAndBreak(1, player, otherHand);
-			}
-			return InteractionResult.SUCCESS;
-		}
-		return InteractionResult.PASS;
-	}
-
-	private static void playMaintenance(Level level, Player player, SoundEvent sound, boolean waxOn) {
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, 1.0f, 1.0f);
-		if (level instanceof ServerLevel serverLevel) {
-			serverLevel.sendParticles(waxOn ? ParticleTypes.WAX_ON : ParticleTypes.SCRAPE,
-					player.getX(), player.getY() + 1.0, player.getZ(), 10, 0.4, 0.4, 0.4, 0.5);
-		}
+		Item previous = stage == TrumpetStage.COPPER ? null : ModItems.trumpetFor(stage.previous());
+		return CopperAging.tryMaintenance(level, player, hand, trumpet, previous);
 	}
 }

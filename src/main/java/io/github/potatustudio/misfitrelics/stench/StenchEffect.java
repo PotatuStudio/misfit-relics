@@ -4,6 +4,8 @@ import io.github.potatustudio.misfitrelics.registry.ModAttachments;
 import io.github.potatustudio.misfitrelics.registry.ModDamageTypes;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
+import io.github.potatustudio.misfitrelics.registry.ModParticles;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,6 +43,12 @@ public class StenchEffect extends MobEffect {
 	/** Nivel I: cada 2 s. Cada nivel extra divide el intervalo, como el veneno. */
 	static int damageInterval(int amplifier) {
 		return Math.max(10, 40 >> amplifier);
+	}
+
+	/** En vez de los remolinos de color de los efectos, revolotean moscas. */
+	@Override
+	public ParticleOptions createParticleOptions(MobEffectInstance effect) {
+		return ModParticles.FLY;
 	}
 
 	@Override

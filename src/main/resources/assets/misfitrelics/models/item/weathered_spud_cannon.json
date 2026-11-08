@@ -1,0 +1,6 @@
+{
+ "parent": "misfitrelics:item/spud_cannon_base",
+ "textures": {
+  "copper": "minecraft:block/weathered_copper"
+ }
+}

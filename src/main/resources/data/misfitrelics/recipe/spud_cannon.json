@@ -3,12 +3,15 @@
   "category": "equipment",
   "key": {
     "C": "minecraft:copper_ingot",
+    "S": "minecraft:string",
     "P": "minecraft:piston",
-    "F": "minecraft:flint"
+    "F": "minecraft:flint",
+    "T": "minecraft:stick"
   },
   "pattern": [
     "CCC",
-    "CPF"
+    "SPF",
+    " T "
   ],
   "result": {
     "id": "misfitrelics:spud_cannon"

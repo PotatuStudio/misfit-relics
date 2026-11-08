@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "misfitrelics:item/spud_cannon"
-  }
+ "parent": "misfitrelics:item/spud_cannon_base",
+ "textures": {
+  "copper": "minecraft:block/copper_block"
+ }
 }

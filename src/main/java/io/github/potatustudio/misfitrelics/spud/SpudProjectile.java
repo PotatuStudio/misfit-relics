@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
  * papa normal = solo daño; papa venenosa = además, nube de Hedor.
  */
 public class SpudProjectile extends ThrowableItemProjectile {
-	/** Daño por impacto directo (tres corazones). */
+	/** Daño por impacto directo por defecto (tres corazones); el cañón lo ajusta por disparo. */
 	public static final float IMPACT_DAMAGE = 6.0f;
 	/** Empuje horizontal al golpear. */
 	public static final double KNOCKBACK = 0.5;
@@ -35,6 +35,13 @@ public class SpudProjectile extends ThrowableItemProjectile {
 	/** Duración del Hedor que aplica la nube (10 s). */
 	public static final int CLOUD_EFFECT_DURATION = 200;
 	private static final byte EVENT_BREAK = 3;
+
+	/** Daño de este disparo; lo fija el cañón según su diseño y su oxidación. */
+	private float impactDamage = IMPACT_DAMAGE;
+
+	public void setImpactDamage(float impactDamage) {
+		this.impactDamage = impactDamage;
+	}
 
 	public SpudProjectile(EntityType<? extends ThrowableItemProjectile> type, Level level) {
 		super(type, level);
@@ -54,7 +61,7 @@ public class SpudProjectile extends ThrowableItemProjectile {
 		super.onHitEntity(hitResult);
 		if (level() instanceof ServerLevel level) {
 			Entity target = hitResult.getEntity();
-			if (target.hurtServer(level, damageSources().thrown(this, getOwner()), IMPACT_DAMAGE)) {
+			if (target.hurtServer(level, damageSources().thrown(this, getOwner()), impactDamage)) {
 				Vec3 push = getDeltaMovement().multiply(1.0, 0.0, 1.0).normalize().scale(KNOCKBACK);
 				target.push(push.x, 0.15, push.z);
 				target.needsSync = true;

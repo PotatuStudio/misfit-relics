@@ -1,0 +1,76 @@
+"""Exporta los modelos aprobados (cañones, trompeta y collar) a los recursos del mod.
+
+Los modelos referencian texturas vanilla (minecraft:block/...) y un atlas pequeño de detalles propios;
+cada etapa de oxidación es un modelo hijo que solo cambia las texturas de cobre.
+
+Uso: python export_to_mod.py <carpeta_scratch_modelo> <carpeta_resources_del_mod>
+"""
+import json
+import os
+import shutil
+import sys
+
+src, res = sys.argv[1], sys.argv[2]
+A = os.path.join(res, "assets", "misfitrelics")
+MODELS, TEXTURES, ITEMS = (os.path.join(A, d) for d in (os.path.join("models", "item"), os.path.join("textures", "item"), "items"))
+for d in (MODELS, TEXTURES, ITEMS):
+    os.makedirs(d, exist_ok=True)
+
+PREFIXES = ["", "exposed_", "weathered_", "oxidized_"]
+COPPER = {p: (f"minecraft:block/{p}copper" if p else "minecraft:block/copper_block") for p in PREFIXES}
+CUT_COPPER = {p: f"minecraft:block/{p}cut_copper" for p in PREFIXES}
+
+
+def load(name):
+    with open(os.path.join(src, name + ".json"), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def dump(obj, path):
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(obj, f, indent=1)
+        f.write("\n")
+
+
+def model_ref(name):
+    return {"type": "minecraft:model", "model": f"misfitrelics:item/{name}"}
+
+
+def cannon(base_id, scratch_base, details, charge_ticks):
+    for suffix in ("", "_charged"):
+        dump(load(scratch_base + suffix), os.path.join(MODELS, f"{base_id}_base{suffix}.json"))
+    shutil.copyfile(os.path.join(src, details + ".png"), os.path.join(TEXTURES, details + ".png"))
+    for p in PREFIXES:
+        item_id = p + base_id
+        for suffix in ("", "_charged"):
+            dump({"parent": f"misfitrelics:item/{base_id}_base{suffix}", "textures": {"copper": COPPER[p]}},
+                 os.path.join(MODELS, f"{item_id}{suffix}.json"))
+        # Mismo modelo 3D en el inventario y en la mano; al terminar de cargar asoma la papa.
+        dump({"model": {
+            "type": "minecraft:condition", "property": "minecraft:using_item",
+            "on_false": model_ref(item_id),
+            "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration",
+                        "scale": round(1.0 / charge_ticks, 4),
+                        "entries": [{"threshold": 1.0, "model": model_ref(item_id + "_charged")}],
+                        "fallback": model_ref(item_id)}}},
+            os.path.join(ITEMS, f"{item_id}.json"))
+
+
+cannon("spud_cannon", "rustic_base", "spud_cannon_details", 10)
+cannon("pressure_spud_cannon", "spud_cannon_base", "pressure_spud_cannon_details", 8)
+
+# Trompeta: base + 4 etapas (cobre y cobre cortado cambian con la oxidación)
+dump(load("trumpet_base"), os.path.join(MODELS, "copper_trumpet_base.json"))
+shutil.copyfile(os.path.join(src, "copper_trumpet_details.png"), os.path.join(TEXTURES, "copper_trumpet_details.png"))
+for p in PREFIXES:
+    item_id = p + "copper_trumpet"
+    dump({"parent": "misfitrelics:item/copper_trumpet_base",
+          "textures": {"copper": COPPER[p], "cut_copper": CUT_COPPER[p]}}, os.path.join(MODELS, item_id + ".json"))
+    dump({"model": model_ref(item_id)}, os.path.join(ITEMS, item_id + ".json"))
+
+# Collar: modelo del ítem y versión puesta (la dibuja Trinkets en el pecho)
+dump(load("collar_base"), os.path.join(MODELS, "bat_collar.json"))
+dump(load("collar_worn"), os.path.join(MODELS, "bat_collar_worn.json"))
+shutil.copyfile(os.path.join(src, "bat_collar_details.png"), os.path.join(TEXTURES, "bat_collar_details.png"))
+dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
+print("exportado: 8 cañones, 4 trompetas y el collar")

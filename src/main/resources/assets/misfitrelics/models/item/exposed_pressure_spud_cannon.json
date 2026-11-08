@@ -1,0 +1,6 @@
+{
+ "parent": "misfitrelics:item/pressure_spud_cannon_base",
+ "textures": {
+  "copper": "minecraft:block/exposed_copper"
+ }
+}

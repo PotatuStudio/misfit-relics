@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "minecraft:model",
-    "model": "misfitrelics:item/bat_collar"
-  }
+ "model": {
+  "type": "minecraft:model",
+  "model": "misfitrelics:item/bat_collar"
+ }
 }

@@ -5,12 +5,15 @@ import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.network.EcholocatePayload;
 import io.github.potatustudio.misfitrelics.registry.ModEntityTypes;
+import io.github.potatustudio.misfitrelics.registry.ModParticles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.particle.FireflyParticle;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 public class MisfitRelicsClient implements ClientModInitializer {
@@ -24,6 +27,8 @@ public class MisfitRelicsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// La papa disparada se dibuja como el ítem de su munición (papa o papa venenosa).
 		EntityRendererRegistry.register(ModEntityTypes.SPUD, ThrownItemRenderer::new);
+		// Moscas del Hedor: comportamiento errático de la luciérnaga vanilla con textura propia.
+		ParticleProviderRegistry.getInstance().register(ModParticles.FLY, FireflyParticle.FireflyProvider::new);
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (ECHOLOCATE.consumeClick()) {

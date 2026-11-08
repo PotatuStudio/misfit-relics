@@ -1,6 +1,6 @@
 {
-  "model": {
-    "type": "minecraft:model",
-    "model": "misfitrelics:item/exposed_copper_trumpet"
-  }
+ "model": {
+  "type": "minecraft:model",
+  "model": "misfitrelics:item/exposed_copper_trumpet"
+ }
 }

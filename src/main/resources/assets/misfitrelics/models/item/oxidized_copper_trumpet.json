@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "misfitrelics:item/oxidized_copper_trumpet"
-  }
+ "parent": "misfitrelics:item/copper_trumpet_base",
+ "textures": {
+  "copper": "minecraft:block/oxidized_copper",
+  "cut_copper": "minecraft:block/oxidized_cut_copper"
+ }
 }

@@ -1,10 +1,13 @@
 package io.github.potatustudio.misfitrelics.registry;
 
+import eu.pb4.trinkets.api.callback.TrinketCallback;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
+import io.github.potatustudio.misfitrelics.spud.CannonDesign;
 import io.github.potatustudio.misfitrelics.spud.SpudCannonItem;
 import io.github.potatustudio.misfitrelics.trumpet.CopperTrumpetItem;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetStage;
+import io.github.potatustudio.misfitrelics.util.CopperStage;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +31,26 @@ public final class ModItems {
 	public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, MisfitRelics.id("main"));
 
-	public static final Item SPUD_CANNON = register("spud_cannon", SpudCannonItem::new,
-			new Item.Properties()
-					.stacksTo(1)
-					.durability(SpudCannonItem.DURABILITY)
-					.repairable(Items.IRON_INGOT)
-					.enchantable(1));
+	/** Cañones de papas: 2 diseños × 4 etapas de oxidación. */
+	private static final Map<CannonDesign, Map<CopperStage, Item>> CANNONS = new EnumMap<>(CannonDesign.class);
+
+	static {
+		for (CannonDesign design : CannonDesign.values()) {
+			Map<CopperStage, Item> byStage = new EnumMap<>(CopperStage.class);
+			for (CopperStage stage : CopperStage.values()) {
+				byStage.put(stage, register(design.id(stage), properties -> new SpudCannonItem(design, stage, properties),
+						new Item.Properties()
+								.stacksTo(1)
+								.durability(design.durability)
+								.repairable(Items.COPPER_INGOT)
+								.enchantable(1)));
+			}
+			CANNONS.put(design, byStage);
+		}
+	}
+
+	/** Cañón rústico nuevo (el que se craftea). */
+	public static final Item SPUD_CANNON = cannonFor(CannonDesign.RUSTIC, CopperStage.COPPER);
 
 	private static final Map<TrumpetStage, Item> TRUMPETS = new EnumMap<>(TrumpetStage.class);
 	public static final Item COPPER_TRUMPET = registerTrumpet("copper_trumpet", TrumpetStage.COPPER);
@@ -45,6 +62,11 @@ public final class ModItems {
 			new Item.Properties().stacksTo(1));
 
 	private ModItems() {
+	}
+
+	/** Cañón de un diseño en una etapa de oxidación. */
+	public static Item cannonFor(CannonDesign design, CopperStage stage) {
+		return CANNONS.get(design).get(stage);
 	}
 
 	/** Trompeta correspondiente a una etapa de oxidación. */
@@ -68,11 +90,17 @@ public final class ModItems {
 	}
 
 	public static void init() {
+		// Trinkets: reacción al ponerse el collar (BatCollarItem#onEquip).
+		TrinketCallback.setCallback(BAT_COLLAR, (TrinketCallback) BAT_COLLAR);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
 				.icon(() -> new ItemStack(SPUD_CANNON))
 				.displayItems((parameters, output) -> {
-					output.accept(SPUD_CANNON);
+					for (CannonDesign design : CannonDesign.values()) {
+						for (CopperStage stage : CopperStage.values()) {
+							output.accept(cannonFor(design, stage));
+						}
+					}
 					output.accept(COPPER_TRUMPET);
 					output.accept(EXPOSED_COPPER_TRUMPET);
 					output.accept(WEATHERED_COPPER_TRUMPET);

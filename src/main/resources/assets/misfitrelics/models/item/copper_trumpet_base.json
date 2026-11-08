@@ -1,0 +1,978 @@
+{
+ "textures": {
+  "t": "misfitrelics:item/copper_trumpet_details",
+  "copper": "minecraft:block/copper_block",
+  "cut_copper": "minecraft:block/cut_copper",
+  "pearl": "minecraft:block/quartz_block_top",
+  "particle": "#copper"
+ },
+ "gui_light": "side",
+ "elements": [
+  {
+   "name": "boquilla",
+   "from": [
+    0.8,
+    8.25,
+    7.25
+   ],
+   "to": [
+    1.8,
+    9.75,
+    8.75
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      15,
+      5,
+      16,
+      7
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      15,
+      5,
+      16,
+      7
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      6,
+      2,
+      7,
+      4
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      12,
+      4,
+      13,
+      6
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      12,
+      4,
+      14,
+      6
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      12,
+      4,
+      14,
+      6
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "tubo_entrada",
+   "from": [
+    1.8,
+    8.5,
+    7.5
+   ],
+   "to": [
+    7.0,
+    9.5,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      8,
+      13,
+      9
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      8,
+      8,
+      13,
+      9
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      11,
+      5,
+      16,
+      6
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      5,
+      7,
+      10,
+      8
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      1,
+      7,
+      2,
+      8
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      1,
+      7,
+      2,
+      8
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "pistones",
+   "from": [
+    6.8,
+    5.2,
+    7.0
+   ],
+   "to": [
+    11.6,
+    10.2,
+    9.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      1,
+      11,
+      6,
+      16
+     ],
+     "texture": "#cut_copper"
+    },
+    "south": {
+     "uv": [
+      1,
+      11,
+      6,
+      16
+     ],
+     "texture": "#cut_copper"
+    },
+    "up": {
+     "uv": [
+      4,
+      8,
+      9,
+      10
+     ],
+     "texture": "#cut_copper"
+    },
+    "down": {
+     "uv": [
+      10,
+      10,
+      15,
+      12
+     ],
+     "texture": "#cut_copper"
+    },
+    "east": {
+     "uv": [
+      7,
+      10,
+      9,
+      15
+     ],
+     "texture": "#cut_copper"
+    },
+    "west": {
+     "uv": [
+      7,
+      10,
+      9,
+      15
+     ],
+     "texture": "#cut_copper"
+    }
+   }
+  },
+  {
+   "name": "boton0",
+   "from": [
+    7.1,
+    10.2,
+    7.5
+   ],
+   "to": [
+    8.1,
+    10.9,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      14,
+      14,
+      15,
+      15
+     ],
+     "texture": "#pearl"
+    },
+    "south": {
+     "uv": [
+      14,
+      14,
+      15,
+      15
+     ],
+     "texture": "#pearl"
+    },
+    "up": {
+     "uv": [
+      5,
+      11,
+      6,
+      12
+     ],
+     "texture": "#pearl"
+    },
+    "down": {
+     "uv": [
+      11,
+      13,
+      12,
+      14
+     ],
+     "texture": "#pearl"
+    },
+    "east": {
+     "uv": [
+      11,
+      13,
+      12,
+      14
+     ],
+     "texture": "#pearl"
+    },
+    "west": {
+     "uv": [
+      11,
+      13,
+      12,
+      14
+     ],
+     "texture": "#pearl"
+    }
+   }
+  },
+  {
+   "name": "boton1",
+   "from": [
+    8.7,
+    10.2,
+    7.5
+   ],
+   "to": [
+    9.7,
+    10.9,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      3,
+      1,
+      4,
+      2
+     ],
+     "texture": "#pearl"
+    },
+    "south": {
+     "uv": [
+      3,
+      1,
+      4,
+      2
+     ],
+     "texture": "#pearl"
+    },
+    "up": {
+     "uv": [
+      10,
+      14,
+      11,
+      15
+     ],
+     "texture": "#pearl"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#pearl"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#pearl"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      1,
+      1
+     ],
+     "texture": "#pearl"
+    }
+   }
+  },
+  {
+   "name": "boton2",
+   "from": [
+    10.3,
+    10.2,
+    7.5
+   ],
+   "to": [
+    11.3,
+    10.9,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#pearl"
+    },
+    "south": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#pearl"
+    },
+    "up": {
+     "uv": [
+      15,
+      1,
+      16,
+      2
+     ],
+     "texture": "#pearl"
+    },
+    "down": {
+     "uv": [
+      5,
+      3,
+      6,
+      4
+     ],
+     "texture": "#pearl"
+    },
+    "east": {
+     "uv": [
+      5,
+      3,
+      6,
+      4
+     ],
+     "texture": "#pearl"
+    },
+    "west": {
+     "uv": [
+      5,
+      3,
+      6,
+      4
+     ],
+     "texture": "#pearl"
+    }
+   }
+  },
+  {
+   "name": "vuelta_inferior",
+   "from": [
+    3.5,
+    5.15,
+    7.55
+   ],
+   "to": [
+    7.0,
+    6.05,
+    8.45
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      7,
+      10,
+      8
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      6,
+      7,
+      10,
+      8
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      10,
+      4,
+      14,
+      5
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      3,
+      6,
+      7,
+      7
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      10,
+      6,
+      11,
+      7
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      10,
+      6,
+      11,
+      7
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "vuelta_codo",
+   "from": [
+    3.08,
+    5.2,
+    7.58
+   ],
+   "to": [
+    3.92,
+    8.6,
+    8.42
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      2,
+      12,
+      3,
+      15
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      2,
+      12,
+      3,
+      15
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      9,
+      7,
+      10,
+      8
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      15,
+      9,
+      16,
+      10
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      15,
+      11,
+      16,
+      14
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      15,
+      11,
+      16,
+      14
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "tubo_campana",
+   "from": [
+    11.6,
+    7.05,
+    7.45
+   ],
+   "to": [
+    12.9,
+    8.15,
+    8.55
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      13,
+      8,
+      14
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      7,
+      13,
+      8,
+      14
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      14,
+      10,
+      15,
+      11
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      4,
+      12,
+      5,
+      13
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      4,
+      12,
+      5,
+      13
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      4,
+      12,
+      5,
+      13
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "campana0",
+   "from": [
+    12.9,
+    6.5,
+    6.9
+   ],
+   "to": [
+    14.1,
+    8.7,
+    9.1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      12,
+      2,
+      13,
+      4
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      12,
+      2,
+      13,
+      4
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      3,
+      14,
+      4,
+      16
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      9,
+      1,
+      10,
+      3
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      12,
+      1,
+      14,
+      3
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      12,
+      1,
+      14,
+      3
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "campana1",
+   "from": [
+    14.1,
+    5.6,
+    6.0
+   ],
+   "to": [
+    15.6,
+    9.6,
+    10.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      5,
+      9,
+      7,
+      13
+     ],
+     "texture": "#copper"
+    },
+    "south": {
+     "uv": [
+      5,
+      9,
+      7,
+      13
+     ],
+     "texture": "#copper"
+    },
+    "up": {
+     "uv": [
+      11,
+      6,
+      13,
+      10
+     ],
+     "texture": "#copper"
+    },
+    "down": {
+     "uv": [
+      2,
+      8,
+      4,
+      12
+     ],
+     "texture": "#copper"
+    },
+    "east": {
+     "uv": [
+      10,
+      8,
+      14,
+      12
+     ],
+     "texture": "#copper"
+    },
+    "west": {
+     "uv": [
+      10,
+      8,
+      14,
+      12
+     ],
+     "texture": "#copper"
+    }
+   }
+  },
+  {
+   "name": "interior_campana",
+   "from": [
+    15.58,
+    6.3,
+    6.7
+   ],
+   "to": [
+    15.68,
+    8.9,
+    9.3
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    },
+    "south": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    },
+    "up": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    },
+    "down": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    },
+    "east": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    },
+    "west": {
+     "uv": [
+      0.0,
+      0.0,
+      4.0,
+      4.0
+     ],
+     "texture": "#t"
+    }
+   }
+  }
+ ],
+ "display": {
+  "gui": {
+   "rotation": [
+    25,
+    -30,
+    35
+   ],
+   "translation": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    0.85,
+    0.85,
+    0.85
+   ]
+  },
+  "ground": {
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    2,
+    0
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "fixed": {
+   "rotation": [
+    0,
+    90,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    0.9,
+    0.9,
+    0.9
+   ]
+  },
+  "thirdperson_righthand": {
+   "rotation": [
+    0,
+    90,
+    180
+   ],
+   "translation": [
+    0,
+    2,
+    1
+   ],
+   "scale": [
+    0.8,
+    0.8,
+    0.8
+   ]
+  },
+  "thirdperson_lefthand": {
+   "rotation": [
+    0,
+    -90,
+    180
+   ],
+   "translation": [
+    0,
+    2,
+    1
+   ],
+   "scale": [
+    0.8,
+    0.8,
+    0.8
+   ]
+  },
+  "firstperson_righthand": {
+   "rotation": [
+    0,
+    90,
+    -5
+   ],
+   "translation": [
+    1.5,
+    3,
+    0
+   ],
+   "scale": [
+    0.7,
+    0.7,
+    0.7
+   ]
+  },
+  "firstperson_lefthand": {
+   "rotation": [
+    0,
+    -90,
+    5
+   ],
+   "translation": [
+    1.5,
+    3,
+    0
+   ],
+   "scale": [
+    0.7,
+    0.7,
+    0.7
+   ]
+  },
+  "head": {
+   "rotation": [
+    0,
+    -90,
+    0
+   ],
+   "translation": [
+    0,
+    10,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  }
+ }
+}

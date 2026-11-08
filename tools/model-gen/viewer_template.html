@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Visor de modelos</title>
+<style>
+:root { --bg:#1b1c22; --panel:#26272f; --text:#e8e6e1; --muted:#a3a2a8; --accent:#e3826c; }
+body { margin:0; background:var(--bg); color:var(--text); font:14px system-ui,sans-serif; display:flex; height:100vh; overflow:hidden; }
+#side { width:270px; padding:16px; background:var(--panel); box-sizing:border-box; overflow:auto; }
+h1 { font-size:16px; margin:0 0 12px; }
+button { display:block; width:100%; margin:4px 0; padding:8px; background:#33343d; color:var(--text); border:1px solid #44454f; border-radius:6px; cursor:pointer; text-align:left; }
+button.on { border-color:var(--accent); background:#3b2f2c; }
+label { display:flex; gap:8px; align-items:center; margin:10px 0; color:var(--muted); }
+select { flex:1; background:#33343d; color:var(--text); border:1px solid #44454f; border-radius:6px; padding:4px; }
+p { color:var(--muted); font-size:12px; line-height:1.4; }
+#view { flex:1; position:relative; }
+canvas { display:block; }
+#slot { position:absolute; left:16px; bottom:16px; display:none; gap:12px; align-items:flex-end; }
+#slot div { text-align:center; color:var(--muted); font-size:11px; }
+.s { background:#8b8b8b; border:3px solid; border-color:#373737 #fff #fff #373737; image-rendering:pixelated; display:block; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>Misfit Relics · visor</h1>
+  <label>Ítem <select id="item"></select></label>
+  <label>Variante <select id="variant"></select></label>
+  <label>Etapa <select id="stage"></select></label>
+  <label id="chargedRow"><input type="checkbox" id="charged"> Cargado</label>
+  <button data-mode="free" class="on">Libre (girar con el mouse)</button>
+  <button data-mode="gui">Inventario</button>
+  <button data-mode="fp">Primera persona (aprox.)</button>
+  <button data-mode="tp">Tercera persona (aprox.)</button>
+  <label><input type="checkbox" id="grid" checked> Fondo oscuro</label>
+  <p><b>Libre</b>: arrastra para girar, rueda para zoom, clic derecho para mover.</p>
+  <p><b>Inventario</b> usa la transformación <code>gui</code> del modelo, igual que el juego, y muestra la ranura a escala 1 y 2.</p>
+  <p><b>Primera y tercera persona</b> son aproximadas. En tercera persona, los accesorios se ven <b>puestos</b> en el personaje.</p>
+  <p id="info"></p>
+</div>
+<div id="view">
+  <div id="slot">
+    <div><canvas class="s" id="s1" width="16" height="16" style="width:48px;height:48px"></canvas>escala 1</div>
+    <div><canvas class="s" id="s2" width="32" height="32" style="width:96px;height:96px"></canvas>escala 2</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const DATA = __DATA__;
+const STAGES = __STAGES__;
+const view = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+view.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const sun = new THREE.DirectionalLight(0xffffff, 0.6); sun.position.set(0.4, 1, 0.7); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.25); fill.position.set(-0.6, -0.2, -0.5); scene.add(fill);
+
+const loader = new THREE.TextureLoader();
+const matCache = {};
+function material(b64) {
+  if (!matCache[b64]) {
+    const t = loader.load("data:image/png;base64," + b64, () => draw());
+    t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter;
+    matCache[b64] = new THREE.MeshLambertMaterial({ map: t, transparent: true, alphaTest: 0.1 });
+  }
+  return matCache[b64];
+}
+
+const persp = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+const ortho = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -10, 10); ortho.position.set(0, 0, 5);
+const controls = new THREE.OrbitControls(persp, renderer.domElement);
+scene.add(persp);
+let mode = 'free';
+let current = null;
+const holder = new THREE.Group(); scene.add(holder);
+const fpHolder = new THREE.Group(); fpHolder.position.set(0.56, -0.52, -0.72); persp.add(fpHolder);
+const FACE_ORDER = ['east', 'west', 'up', 'down', 'south', 'north'];
+const HIDDEN = new THREE.MeshBasicMaterial({ visible: false });
+
+function buildModel(m, mats) {
+  const root = new THREE.Group();
+  for (const el of m.elements) {
+    const f = el.from, t = el.to;
+    const size = [t[0] - f[0], t[1] - f[1], t[2] - f[2]].map(v => Math.max(v, 0.01) / 16);
+    const geo = new THREE.BoxGeometry(size[0], size[1], size[2]);
+    const uv = geo.attributes.uv;
+    FACE_ORDER.forEach((name, i) => {
+      const face = el.faces[name];
+      if (!face) return;
+      const [u0, v0, u1, v1] = face.uv.map(x => x / 16);
+      // Esquinas en el orden del juego (sup-izq, sup-der, inf-der, inf-izq) y rotación de la cara en pasos de 90°
+      let c = [[u0, 1 - v0], [u1, 1 - v0], [u1, 1 - v1], [u0, 1 - v1]];
+      const k90 = ((face.rotation || 0) / 90) % 4;
+      for (let r = 0; r < k90; r++) c = [c[3], c[0], c[1], c[2]];
+      const q = [c[0], c[1], c[3], c[2]];   // orden de vértices de BoxGeometry: sup-izq, sup-der, inf-izq, inf-der
+      for (let k = 0; k < 4; k++) uv.setXY(i * 4 + k, q[k][0], q[k][1]);
+    });
+    uv.needsUpdate = true;
+    // Como en Minecraft: las caras que el modelo no define no se dibujan.
+    const faceMats = FACE_ORDER.map(name => {
+      const face = el.faces[name];
+      if (!face) return HIDDEN;
+      return mats[(face.texture || '#t').replace('#', '')] || HIDDEN;
+    });
+    const mesh = new THREE.Mesh(geo, faceMats);
+    const c = [(f[0] + t[0]) / 2, (f[1] + t[1]) / 2, (f[2] + t[2]) / 2];
+    if (el.rotation) {
+      const o = el.rotation.origin, pivot = new THREE.Group();
+      pivot.position.set((o[0] - 8) / 16, (o[1] - 8) / 16, (o[2] - 8) / 16);
+      mesh.position.set((c[0] - o[0]) / 16, (c[1] - o[1]) / 16, (c[2] - o[2]) / 16);
+      pivot.rotation[el.rotation.axis] = THREE.MathUtils.degToRad(el.rotation.angle);
+      pivot.add(mesh); root.add(pivot);
+    } else {
+      mesh.position.set((c[0] - 8) / 16, (c[1] - 8) / 16, (c[2] - 8) / 16);
+      root.add(mesh);
+    }
+  }
+  return root;
+}
+
+function applyDisplay(obj, d) {
+  d = d || {};
+  const r = d.rotation || [0, 0, 0], tr = d.translation || [0, 0, 0], s = d.scale || [1, 1, 1];
+  obj.position.set(tr[0] / 16, tr[1] / 16, tr[2] / 16);
+  obj.rotation.set(THREE.MathUtils.degToRad(r[0]), THREE.MathUtils.degToRad(r[1]), THREE.MathUtils.degToRad(r[2]), 'XYZ');
+  obj.scale.set(s[0], s[1], s[2]);
+}
+
+function part(w, h, d, color, x, y, z) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w / 16, h / 16, d / 16), new THREE.MeshLambertMaterial({ color }));
+  m.position.set(x / 16, y / 16, z / 16);
+  return m;
+}
+const steve = new THREE.Group();
+steve.add(part(8, 8, 8, 0xc69c6d, 0, 28, 0));
+steve.add(part(8, 12, 4, 0x2f8fbf, 0, 18, 0));
+steve.add(part(4, 12, 4, 0x3a3aa0, -2, 6, 0));
+steve.add(part(4, 12, 4, 0x3a3aa0, 2, 6, 0));
+steve.add(part(4, 12, 4, 0x2f8fbf, 6, 18, 0));
+const arm = new THREE.Group(); arm.position.set(-6 / 16, 22 / 16, 0); arm.rotation.x = -0.9;
+arm.add(part(4, 12, 4, 0xc69c6d, 0, -5, 0));
+steve.add(arm);
+const handSlot = new THREE.Group(); handSlot.position.set(0, -10 / 16, -1 / 16); handSlot.rotation.set(-Math.PI / 2, Math.PI, 0);
+arm.add(handSlot);
+// Pecho: frente del torso (el personaje mira hacia -Z)
+const chestSlot = new THREE.Group(); chestSlot.position.set(0, 20 / 16, -2.4 / 16); chestSlot.rotation.y = Math.PI;
+steve.add(chestSlot);
+
+const itemSel = document.getElementById('item'), variantSel = document.getElementById('variant'), stageSel = document.getElementById('stage');
+for (const [k, it] of Object.entries(DATA)) itemSel.add(new Option(it.label, k));
+function fillVariants() {
+  variantSel.innerHTML = '';
+  for (const [k, v] of Object.entries(DATA[itemSel.value].variants)) variantSel.add(new Option(v.label, k));
+  fillStages();
+}
+function fillStages() {
+  const v = DATA[itemSel.value].variants[variantSel.value];
+  const keep = stageSel.value;
+  stageSel.innerHTML = '';
+  for (const k of Object.keys(v.textures)) stageSel.add(new Option(STAGES[k] || 'Único', k));
+  if ([...stageSel.options].some(o => o.value === keep)) stageSel.value = keep;
+  stageSel.disabled = Object.keys(v.textures).length < 2;
+  document.getElementById('chargedRow').style.display = v.charged ? 'flex' : 'none';
+}
+
+function detach() { if (current && current.parent) current.parent.remove(current); }
+
+function setModel() {
+  const v = DATA[itemSel.value].variants[variantSel.value];
+  const texMap = v.textures[stageSel.value];
+  const mat = {};
+  for (const [name, b64] of Object.entries(texMap)) mat[name] = material(b64);
+  const loaded = v.charged && document.getElementById('charged').checked;
+  const m = loaded ? v.charged : v.base;
+  detach();
+  current = new THREE.Group();
+  scene.remove(steve);
+  document.getElementById('slot').style.display = mode === 'gui' ? 'flex' : 'none';
+  controls.enabled = mode === 'free' || mode === 'tp';
+  let info = m.elements.length + ' piezas';
+  if (mode === 'tp' && v.worn) {
+    current.add(buildModel(v.worn, mat));
+    scene.add(steve); applyDisplay(current, { scale: [0.5, 0.5, 0.5] }); chestSlot.add(current);
+    persp.position.set(-1.0, 1.7, -2.4); controls.target.set(0, 1.2, 0); persp.fov = 50;
+    info += ' · puesto en el pecho (' + v.worn.elements.length + ' piezas)';
+  } else {
+    current.add(buildModel(m, mat));
+    if (mode === 'free') {
+      applyDisplay(current, {}); holder.add(current);
+      persp.position.set(1.2, 0.8, 1.6); persp.rotation.set(0, 0, 0); controls.target.set(0, 0, 0); persp.fov = 50;
+    } else if (mode === 'gui') {
+      applyDisplay(current, m.display && m.display.gui); holder.add(current);
+    } else if (mode === 'fp') {
+      persp.position.set(0, 0, 0); persp.rotation.set(0, 0, 0); persp.fov = 70;
+      applyDisplay(current, m.display && m.display.firstperson_righthand); fpHolder.add(current);
+    } else if (mode === 'tp') {
+      scene.add(steve);
+      applyDisplay(current, m.display && m.display.thirdperson_righthand); handSlot.add(current);
+      persp.position.set(2.2, 2.0, 2.6); controls.target.set(0, 1.1, 0); persp.fov = 50;
+    }
+  }
+  persp.updateProjectionMatrix();
+  controls.update();
+  document.getElementById('info').textContent = info;
+  draw();
+}
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  renderer.setSize(w, h);
+  persp.aspect = w / h; persp.updateProjectionMatrix();
+  const a = w / h;
+  ortho.left = -0.55 * a; ortho.right = 0.55 * a; ortho.top = 0.55; ortho.bottom = -0.55; ortho.updateProjectionMatrix();
+  draw();
+}
+function clearColor() {
+  const dark = document.getElementById('grid').checked;
+  renderer.setClearColor(dark ? 0x2b2c33 : 0x000000, dark ? 1 : 0);
+}
+function draw() {
+  clearColor();
+  renderer.render(scene, mode === 'gui' ? ortho : persp);
+  if (mode === 'gui') drawSlots();
+}
+function drawSlots() {
+  for (const [id, px] of [['s1', 16], ['s2', 32]]) {
+    const rt = new THREE.WebGLRenderTarget(px, px, { magFilter: THREE.NearestFilter, minFilter: THREE.NearestFilter });
+    const cam = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -10, 10); cam.position.set(0, 0, 5);
+    renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(scene, cam);
+    const buf = new Uint8Array(px * px * 4);
+    renderer.readRenderTargetPixels(rt, 0, 0, px, px, buf);
+    renderer.setRenderTarget(null);
+    const ctx = document.getElementById(id).getContext('2d'), img = ctx.createImageData(px, px);
+    for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) {
+      const s = ((px - 1 - y) * px + x) * 4, d = (y * px + x) * 4;
+      for (let k = 0; k < 4; k++) img.data[d + k] = buf[s + k];
+    }
+    ctx.clearRect(0, 0, px, px); ctx.putImageData(img, 0, 0);
+    rt.dispose();
+  }
+  clearColor();
+}
+
+document.querySelectorAll('button[data-mode]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('button[data-mode]').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); mode = b.dataset.mode; setModel();
+});
+itemSel.onchange = () => { fillVariants(); setModel(); };
+variantSel.onchange = () => { fillStages(); setModel(); };
+stageSel.onchange = setModel;
+document.getElementById('charged').onchange = setModel;
+document.getElementById('grid').onchange = draw;
+controls.addEventListener('change', draw);
+window.addEventListener('resize', resize);
+fillVariants();
+resize();
+setModel();
+</script>
+</body>
+</html>

@@ -22,9 +22,9 @@ import net.minecraft.world.phys.AABB;
 public final class BatCollar {
 	/** Clave de traducción de la tecla de ecolocación (se registra en el cliente). */
 	public static final String ECHOLOCATE_KEY = "key.misfitrelics.echolocate";
-	public static final double ECHOLOCATION_RADIUS = 16.0;
-	/** Duración del contorno brillante (5 s). */
-	public static final int ECHOLOCATION_GLOW = 100;
+	public static final double ECHOLOCATION_RADIUS = 32.0;
+	/** Duración del contorno brillante (6 s). */
+	public static final int ECHOLOCATION_GLOW = 120;
 	/** Enfriamiento de la ecolocación (10 s). */
 	public static final int ECHOLOCATION_COOLDOWN = 200;
 	/** Fracción del daño cuerpo a cuerpo que se recupera como vida (6 %). */
@@ -67,6 +67,10 @@ public final class BatCollar {
 		}
 		if (findWorn(attacker).isPresent()) {
 			attacker.heal(damageTaken * LIFESTEAL);
+			if (attacker.level() instanceof ServerLevel level) {
+				level.sendParticles(ParticleTypes.HEART, attacker.getX(), attacker.getEyeY() + 0.5, attacker.getZ(),
+						1, 0.2, 0.1, 0.2, 0.0);
+			}
 		}
 	}
 }
