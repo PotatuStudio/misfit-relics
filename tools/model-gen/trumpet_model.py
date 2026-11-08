@@ -89,7 +89,7 @@ if __name__ == "__main__":
     spec = {'hole': [[DARK] * 4 for _ in range(4)]}
     paint = repaint(els, UV, {}, spec, size=16)
     png(os.path.join(OUT, "copper_trumpet_details.png"), paint({}, spec))
-    tex = {"t": "misfitrelics:item/copper_trumpet_details", "copper": "minecraft:block/copper_block",
+    tex = {"t": "misfitrelics:block/copper_trumpet_details", "copper": "minecraft:block/copper_block",
            "cut_copper": "minecraft:block/cut_copper", "pearl": "minecraft:block/quartz_block_top", "particle": "#copper"}
     dump({"textures": tex, "gui_light": "side", "elements": els, "display": HELD_DISPLAY},
          os.path.join(OUT, "trumpet_base.json"))

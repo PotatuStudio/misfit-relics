@@ -1,6 +1,6 @@
 {
  "textures": {
-  "t": "misfitrelics:item/pressure_spud_cannon_details",
+  "t": "misfitrelics:block/pressure_spud_cannon_details",
   "copper": "minecraft:block/copper_block",
   "iron": "minecraft:block/anvil",
   "wood": "minecraft:block/dark_oak_planks",

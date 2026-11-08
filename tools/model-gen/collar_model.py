@@ -113,7 +113,7 @@ if __name__ == "__main__":
     specials = {'bat': cut(t16, [0, 6, 16, 16])}
     painters = {'leather': LEATHER, 'gem': GEM}
     paint = repaint(item + worn, UV, painters, specials, size=64)
-    tex_ref = {"t": "misfitrelics:item/bat_collar_details", "iron": "minecraft:block/anvil", "particle": "#t"}
+    tex_ref = {"t": "misfitrelics:block/bat_collar_details", "iron": "minecraft:block/anvil", "particle": "#t"}
     dump({"textures": tex_ref, "gui_light": "front", "elements": item, "display": ITEM_DISPLAY},
          os.path.join(OUT, "collar_base.json"))
     dump({"textures": tex_ref, "gui_light": "front", "elements": worn}, os.path.join(OUT, "collar_worn.json"))

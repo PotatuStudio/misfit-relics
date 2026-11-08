@@ -1,6 +1,6 @@
 {
  "textures": {
-  "t": "misfitrelics:item/spud_cannon_details",
+  "t": "misfitrelics:block/spud_cannon_details",
   "copper": "minecraft:block/copper_block",
   "piston_side": "minecraft:block/piston_side",
   "piston_top": "minecraft:block/piston_top",

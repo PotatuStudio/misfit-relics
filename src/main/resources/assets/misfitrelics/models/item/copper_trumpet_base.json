@@ -1,6 +1,6 @@
 {
  "textures": {
-  "t": "misfitrelics:item/copper_trumpet_details",
+  "t": "misfitrelics:block/copper_trumpet_details",
   "copper": "minecraft:block/copper_block",
   "cut_copper": "minecraft:block/cut_copper",
   "pearl": "minecraft:block/quartz_block_top",

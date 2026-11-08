@@ -25,6 +25,8 @@ python export_to_mod.py build ../../src/main/resources
 Cada script imprime cuántas caras quedan **solapadas en el mismo plano** (z-fighting): debe ser 0.
 
 ## Reglas que siguen
+- **Un solo atlas por modelo de ítem** (26.3 lanza error y muestra el cubo negro y morado si se mezclan):
+  como las texturas vanilla que usamos son de bloque, los detalles propios van en `textures/block/`.
 - 1 píxel de textura por unidad del modelo, sin estirar (cada cara toma un pedazo de su tamaño exacto).
 - Tubos redondos como octágonos de 3 piezas con extremos escalonados 0.04 px (evita parpadeos).
 - Las etapas de oxidación son modelos hijos que solo cambian las texturas de cobre.

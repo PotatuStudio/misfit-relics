@@ -1,6 +1,6 @@
 {
  "textures": {
-  "t": "misfitrelics:item/bat_collar_details",
+  "t": "misfitrelics:block/bat_collar_details",
   "iron": "minecraft:block/anvil",
   "particle": "#t"
  },

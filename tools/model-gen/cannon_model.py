@@ -196,7 +196,7 @@ _spec = {n: mclib.cut(_t0, UV[n]) for n in ('gauge', 'potato', 'bore')}
 _paint = mclib.repaint(_charged, UV, {}, _spec, size=16)
 mclib.png(os.path.join(OUT, "pressure_spud_cannon_details.png"), _paint({}, _spec))
 COPPER_BY_STAGE = {'spud_cannon': 'minecraft:block/copper_block', 'exposed_spud_cannon': 'minecraft:block/exposed_copper', 'weathered_spud_cannon': 'minecraft:block/weathered_copper', 'oxidized_spud_cannon': 'minecraft:block/oxidized_copper'}
-_tex = {"t": "misfitrelics:item/pressure_spud_cannon_details", "copper": "minecraft:block/copper_block",
+_tex = {"t": "misfitrelics:block/pressure_spud_cannon_details", "copper": "minecraft:block/copper_block",
         "iron": "minecraft:block/anvil", "wood": "minecraft:block/dark_oak_planks", "particle": "#copper"}
 for _name, _els in (("spud_cannon_base.json", _base), ("spud_cannon_base_charged.json", _charged)):
     dump({"textures": _tex, "gui_light": "side", "elements": _els, "display": DISPLAY}, _name)

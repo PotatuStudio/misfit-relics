@@ -13,7 +13,10 @@ import sys
 src, res = sys.argv[1], sys.argv[2]
 A = os.path.join(res, "assets", "misfitrelics")
 MODELS, TEXTURES, ITEMS = (os.path.join(A, d) for d in (os.path.join("models", "item"), os.path.join("textures", "item"), "items"))
-for d in (MODELS, TEXTURES, ITEMS):
+# Las texturas de detalles van en textures/block: en 26.3 un modelo de ítem no puede mezclar atlas,
+# y las texturas vanilla que usamos (cobre, pistón, yunque) son de bloque.
+BLOCK_TEXTURES = os.path.join(A, "textures", "block")
+for d in (MODELS, TEXTURES, ITEMS, BLOCK_TEXTURES):
     os.makedirs(d, exist_ok=True)
 
 PREFIXES = ["", "exposed_", "weathered_", "oxidized_"]
@@ -39,7 +42,7 @@ def model_ref(name):
 def cannon(base_id, scratch_base, details, charge_ticks):
     for suffix in ("", "_charged"):
         dump(load(scratch_base + suffix), os.path.join(MODELS, f"{base_id}_base{suffix}.json"))
-    shutil.copyfile(os.path.join(src, details + ".png"), os.path.join(TEXTURES, details + ".png"))
+    shutil.copyfile(os.path.join(src, details + ".png"), os.path.join(BLOCK_TEXTURES, details + ".png"))
     for p in PREFIXES:
         item_id = p + base_id
         for suffix in ("", "_charged"):
@@ -61,7 +64,7 @@ cannon("pressure_spud_cannon", "spud_cannon_base", "pressure_spud_cannon_details
 
 # Trompeta: base + 4 etapas (cobre y cobre cortado cambian con la oxidación)
 dump(load("trumpet_base"), os.path.join(MODELS, "copper_trumpet_base.json"))
-shutil.copyfile(os.path.join(src, "copper_trumpet_details.png"), os.path.join(TEXTURES, "copper_trumpet_details.png"))
+shutil.copyfile(os.path.join(src, "copper_trumpet_details.png"), os.path.join(BLOCK_TEXTURES, "copper_trumpet_details.png"))
 for p in PREFIXES:
     item_id = p + "copper_trumpet"
     dump({"parent": "misfitrelics:item/copper_trumpet_base",
@@ -71,6 +74,6 @@ for p in PREFIXES:
 # Collar: modelo del ítem y versión puesta (la dibuja Trinkets en el pecho)
 dump(load("collar_base"), os.path.join(MODELS, "bat_collar.json"))
 dump(load("collar_worn"), os.path.join(MODELS, "bat_collar_worn.json"))
-shutil.copyfile(os.path.join(src, "bat_collar_details.png"), os.path.join(TEXTURES, "bat_collar_details.png"))
+shutil.copyfile(os.path.join(src, "bat_collar_details.png"), os.path.join(BLOCK_TEXTURES, "bat_collar_details.png"))
 dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
 print("exportado: 8 cañones, 4 trompetas y el collar")
