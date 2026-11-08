@@ -83,7 +83,9 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		/** Vuela hacia un techo para colgarse. */
 		SEEK_ROOST,
 		/** Colgado boca abajo, descansando. */
-		ROOSTING
+		ROOSTING,
+		/** Posado sobre la cabeza del dueño (montado en él, así lo sigue sin tirones). */
+		PERCH
 	}
 
 	/** Cada cuánto decide qué hacer mientras acompaña (1 s). */
@@ -131,6 +133,10 @@ public class AlliedBat extends Bat implements OwnableEntity {
 			}
 			return;
 		}
+		if (mode == Mode.PERCH) {
+			perch(player);
+			return;
+		}
 		if (distanceToSqr(player) > TELEPORT_DISTANCE * TELEPORT_DISTANCE) {
 			wake();
 			setMode(Mode.FOLLOW);
@@ -146,13 +152,27 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		}
 	}
 
+	/** Radio y altura de la órbita alrededor del dueño; el rey, más grande, vuela más lejos para no estorbar. */
+	protected double orbitRadius() {
+		return 1.9;
+	}
+
+	protected double orbitHeight() {
+		return 1.1;
+	}
+
+	/** ¿Puede posarse sobre la cabeza del dueño? (El rey es demasiado grande.) */
+	protected boolean canPerch() {
+		return true;
+	}
+
 	private void follow(ServerLevel level, Player player) {
-		// De día y al sol, sin refugio a mano: se queda pegado a la cabeza del dueño, más bajo.
+		// De día y al sol, sin refugio a mano: se queda más cerca del dueño, pero sin estorbar.
 		boolean exposed = level.isBrightOutside() && level.canSeeSky(blockPosition());
-		double radius = exposed ? 0.7 : 1.1;
-		double angle = tickCount * 0.12 + getId();
+		double radius = orbitRadius() * (exposed ? 0.8 : 1.0);
+		double angle = tickCount * 0.09 + getId();
 		Vec3 goal = player.getEyePosition().add(Math.cos(angle) * radius,
-				(exposed ? 0.45 : 0.7) + Math.sin(tickCount * 0.07) * 0.25, Math.sin(angle) * radius);
+				orbitHeight() * (exposed ? 0.7 : 1.0) + Math.sin(tickCount * 0.07) * 0.25, Math.sin(angle) * radius);
 		fly(goal, 0.45);
 
 		if (modeTicks % DECIDE_EVERY != 0) {
@@ -166,6 +186,13 @@ public class AlliedBat extends Bat implements OwnableEntity {
 				return;
 			}
 			roostCooldown = 60;
+		}
+		if (canPerch() && random.nextInt(6) == 0 && !player.isFallFlying() && !player.isSprinting()
+				&& player.getPassengers().isEmpty() && startRiding(player, true, true)) {
+			// Se posa sobre la cabeza del dueño un rato.
+			setDeltaMovement(Vec3.ZERO);
+			setMode(Mode.PERCH);
+			return;
 		}
 		if (random.nextInt(level.isDarkOutside() ? 4 : 8) == 0) {
 			// Sale a cazar insectos un momento (de noche, más seguido).
@@ -217,6 +244,17 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		}
 	}
 
+	private void perch(Player player) {
+		boolean restless = modeTicks > 200 + random.nextInt(200) || player.isSprinting() || player.isFallFlying()
+				|| player.isInWater() || getVehicle() != player;
+		if (restless) {
+			stopRiding();
+			setMode(Mode.FOLLOW);
+			return;
+		}
+		setYRot(player.getYHeadRot());
+	}
+
 	/** De día siempre busca sombra; de noche solo descansa si el dueño lleva un rato quieto. */
 	private boolean wantsToRoost(ServerLevel level) {
 		return level.isBrightOutside() || ownerIdleTicks > NIGHT_IDLE_TO_ROOST;
@@ -255,6 +293,9 @@ public class AlliedBat extends Bat implements OwnableEntity {
 	private void wake() {
 		if (isResting()) {
 			setResting(false);
+		}
+		if (isPassenger()) {
+			stopRiding();
 		}
 		roost = null;
 	}

@@ -40,11 +40,12 @@ Arma cuerpo a cuerpo e instrumento.
 **Mientras mejor cuidados, mejor funcionan.** Se oxidan con el uso y pierden fuerza. Agachado, con la herramienta en la otra mano: el **hacha** raspa una etapa de óxido (o quita la cera) y el **panal** los encera para que no se sigan oxidando.
 
 ## Collar del murciélago
-Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto: un amuleto del murciélago colgando de un cordón en el pecho.
+Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto en el pecho.
 - **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. **Solo lo ves tú** (en multijugador, los demás no). Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
 - **Murciélago aliado:** mientras llevas el collar, un murciélago te acompaña con rutinas propias:
-  - gira alrededor de tu cabeza y de vez en cuando sale a cazar insectos (de noche, más seguido);
+  - vuela a tu alrededor (sin taparte la vista) y de vez en cuando sale a cazar insectos (de noche, más seguido);
+  - a ratos **se posa sobre tu cabeza** (el rey no: es muy grande y vuela más lejos);
   - **de día busca la sombra** bajo un techo cercano y se **cuelga boca abajo**; si no hay sombra, se queda pegado a ti;
   - de noche se cuelga a descansar si te quedas quieto un rato;
   - **muerde a lo que golpeas o a quien te golpea** (3 de daño; cada mordisco te cura con el robo de vida) y deja lo que esté haciendo para pelear;

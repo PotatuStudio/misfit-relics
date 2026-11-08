@@ -56,7 +56,6 @@ def cannon(base_name, charged_name, stages_file, label):
 
 
 trumpet = j("trumpet_base")
-collar = j("collar_worn_pendant")  # el ícono del inventario es 2D; aquí se revisa la versión puesta
 ITEMS = {
     "canon": {"label": "Cañón de papas", "variants": {
         "rustico": cannon("rustic_base", "rustic_base_charged", "rustic_stages", "Rústico (crafteable)"),
@@ -65,10 +64,6 @@ ITEMS = {
     "trompeta": {"label": "Trompeta de cobre", "variants": {
         "trompeta": {"label": "Trompeta", "base": trumpet,
                      "textures": stage_maps(trumpet["textures"], j("trumpet_stages"))},
-    }},
-    "collar": {"label": "Collar del murciélago", "variants": {
-        "collar": {"label": "Collar (dije puesto)", "base": collar,
-                   "textures": stage_maps(collar["textures"], {"": {}})},
     }},
 }
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "viewer_template.html"), encoding="utf-8") as f:

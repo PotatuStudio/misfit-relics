@@ -2,14 +2,14 @@
   "target": ["misfitrelics:bat_collar"],
   "render": [
     {
-      "type": "model",
+      "type": "item",
       "model_part": "body",
-      "model": "misfitrelics:item/bat_collar_worn_pendant",
+      "display_context": "none",
       "offset": [0, 1, 1],
       "transformation": {
-        "translation": [0, -0.2, 0.01],
-        "left_rotation": {"axis": [0, 1, 0], "angle": 0},
-        "scale": [0.5, 0.5, 0.5],
+        "translation": [0, -0.21, 0.03],
+        "left_rotation": {"axis": [0, 1, 0], "angle": 3.141},
+        "scale": [0.45, 0.45, 0.45],
         "right_rotation": {"axis": [0, 1, 0], "angle": 0}
       }
     }

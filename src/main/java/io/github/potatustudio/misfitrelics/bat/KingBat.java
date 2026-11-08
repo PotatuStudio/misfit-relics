@@ -41,6 +41,22 @@ public class KingBat extends AlliedBat {
 		return Bat.createAttributes().add(Attributes.MAX_HEALTH, KING_MAX_HEALTH);
 	}
 
+	/** Es grande: vuela más lejos y más alto para no tapar la vista, y no se posa en la cabeza. */
+	@Override
+	protected double orbitRadius() {
+		return 2.8;
+	}
+
+	@Override
+	protected double orbitHeight() {
+		return 1.6;
+	}
+
+	@Override
+	protected boolean canPerch() {
+		return false;
+	}
+
 	@Override
 	protected float biteDamage() {
 		return KING_BITE_DAMAGE;

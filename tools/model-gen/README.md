@@ -13,7 +13,7 @@ mkdir build
 python cannon_model.py build     # cañón a presión (steampunk)
 python rustic_model.py build     # cañón rústico (crafteable)
 python trumpet_model.py build    # trompeta de cobre
-python collar_model.py build     # collar del murciélago
+python collar_icon.py build      # íconos 2D de los collares (también se ven puestos)
 
 # Visor (abre el HTML en el navegador). Necesita el jar del cliente 26.3 solo para la vista previa:
 python make_viewer.py build build/visor.html <ruta>/client.jar

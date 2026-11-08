@@ -22,7 +22,8 @@ def read_rgba(path):
             trns = list(chunk)
         pos += 12 + length
     raw = zlib.decompress(idat)
-    bpp = 1 if ct == 3 else 4
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[ct]
+    bpp = max(1, channels * bd // 8)
     stride = (w * bpp * bd + 7) // 8
     rows, prev, i = [], bytearray(stride), 0
     for _ in range(h):
@@ -55,7 +56,15 @@ def read_rgba(path):
                     per = 8 // bd
                     idx = (line[x // per] >> (8 - bd * (x % per + 1))) & ((1 << bd) - 1)
                 r.append(tuple(pal[idx]) + (trns[idx] if idx < len(trns) else 255,))
-            else:
+            elif ct == 6:
                 r.append(tuple(line[x * 4:x * 4 + 4]))
+            elif ct == 2:
+                r.append(tuple(line[x * 3:x * 3 + 3]) + (255,))
+            elif ct == 4:
+                g, a = line[x * 2], line[x * 2 + 1]
+                r.append((g, g, g, a))
+            else:
+                g = line[x]
+                r.append((g, g, g, 255))
         img.append(r)
     return img

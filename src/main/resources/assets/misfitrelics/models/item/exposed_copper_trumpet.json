@@ -2,6 +2,7 @@
  "parent": "misfitrelics:item/copper_trumpet_base",
  "textures": {
   "copper": "minecraft:block/exposed_copper",
-  "cut_copper": "minecraft:block/exposed_cut_copper"
+  "cut_copper": "minecraft:block/exposed_copper",
+  "pearl": "minecraft:block/exposed_copper"
  }
 }
