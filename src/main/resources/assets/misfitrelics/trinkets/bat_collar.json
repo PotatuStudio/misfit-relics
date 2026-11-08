@@ -7,7 +7,7 @@
       "model": "misfitrelics:item/bat_collar_worn_pendant",
       "offset": [0, 1, 1],
       "transformation": {
-        "translation": [0, -0.2, 0.035],
+        "translation": [0, -0.2, 0.01],
         "left_rotation": {"axis": [0, 1, 0], "angle": 0},
         "scale": [0.5, 0.5, 0.5],
         "right_rotation": {"axis": [0, 1, 0], "angle": 0}
