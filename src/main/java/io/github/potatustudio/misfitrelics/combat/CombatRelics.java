@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -199,18 +198,28 @@ public final class CombatRelics {
 		return best;
 	}
 
-	private static final DustParticleOptions BOLT_CORE = new DustParticleOptions(0xE8FBFF, 0.7f);
-	private static final DustParticleOptions BOLT_GLOW = new DustParticleOptions(0x5FD3FF, 1.1f);
+	/** Cuántos ticks dura un arco: en cada uno se redibuja con otra forma (parpadea) y la corriente avanza. */
+	public static final int ARC_TICKS = 7;
+
+	/** Arco eléctrico vivo entre dos entidades (sigue sus posiciones mientras dura). */
+	private record Arc(ServerLevel level, LivingEntity from, LivingEntity to, int[] age) {
+	}
+
+	private static final List<Arc> ARCS = new ArrayList<>();
+
+	private static void arc(ServerLevel level, LivingEntity a, LivingEntity b) {
+		ARCS.add(new Arc(level, a, b, new int[1]));
+		drawArc(level, a.getBoundingBox().getCenter(), b.getBoundingBox().getCenter(), 0);
+	}
 
 	/**
-	 * Arco eléctrico entre dos entidades: un rayo quebrado (desplazamiento del punto medio) dibujado con polvo blanco
-	 * celeste por dentro y celeste por fuera, con chispas en cada quiebre. Se ve como una línea continua y clara.
+	 * Dibuja el arco una vez: rayo quebrado (desplazamiento del punto medio) con chispas eléctricas, que duran poco y
+	 * se ven brillar; como cada tick sale otra forma, el rayo parpadea. La "corriente" es una chispa brillante que
+	 * recorre el arco del origen al objetivo.
 	 */
-	private static void arc(ServerLevel level, LivingEntity a, LivingEntity b) {
-		Vec3 start = a.getBoundingBox().getCenter();
-		Vec3 end = b.getBoundingBox().getCenter();
+	private static void drawArc(ServerLevel level, Vec3 start, Vec3 end, int age) {
 		List<Vec3> points = new ArrayList<>(List.of(start, end));
-		double offset = start.distanceTo(end) * 0.18;
+		double offset = start.distanceTo(end) * 0.22;
 		for (int pass = 0; pass < 3; pass++) {
 			List<Vec3> refined = new ArrayList<>();
 			for (int i = 0; i < points.size() - 1; i++) {
@@ -228,25 +237,59 @@ public final class CombatRelics {
 		for (int i = 0; i < points.size() - 1; i++) {
 			Vec3 p = points.get(i);
 			Vec3 q = points.get(i + 1);
-			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.12));
+			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.18));
 			for (int k = 0; k < steps; k++) {
 				Vec3 t = p.add(q.subtract(p).scale((double) k / steps));
-				level.sendParticles(BOLT_CORE, t.x, t.y, t.z, 1, 0, 0, 0, 0);
-				if (k % 2 == 0) {
-					level.sendParticles(BOLT_GLOW, t.x, t.y, t.z, 1, 0.02, 0.02, 0.02, 0);
-				}
+				level.sendParticles(ParticleTypes.ELECTRIC_SPARK, t.x, t.y, t.z, 1, 0, 0, 0, 0);
 			}
-			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, q.x, q.y, q.z, 2, 0.05, 0.05, 0.05, 0.02);
 		}
+		// La corriente: avanza por el arco a lo largo de su duración.
+		double f = Math.min(1.0, (age + 1) / (double) ARC_TICKS);
+		Vec3 head = start.add(end.subtract(start).scale(f));
+		level.sendParticles(ParticleTypes.END_ROD, head.x, head.y, head.z, 2, 0.03, 0.03, 0.03, 0.0);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, head.x, head.y, head.z, 4, 0.08, 0.08, 0.08, 0.1);
 	}
 
-	/** Descarga sobre una entidad: un estallido de chispas y polvo celeste alrededor del cuerpo. */
+	/** Descarga sobre una entidad: chispas que saltan alrededor del cuerpo. */
 	private static void shockBurst(ServerLevel level, LivingEntity e, int intensity) {
 		Vec3 c = e.getBoundingBox().getCenter();
 		double w = e.getBbWidth() * 0.6;
 		double h = e.getBbHeight() * 0.4;
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 6 + intensity * 3, w, h, w, 0.15);
-		level.sendParticles(BOLT_GLOW, c.x, c.y, c.z, 4 + intensity * 2, w, h, w, 0);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 8 + intensity * 3, w, h, w, 0.25);
+	}
+
+	/** Arcos vivos y chisporroteo de la mano mientras hay carga. */
+	private static void tickElectricity(MinecraftServer server) {
+		Iterator<Arc> it = ARCS.iterator();
+		while (it.hasNext()) {
+			Arc arc = it.next();
+			int age = ++arc.age()[0];
+			if (age >= ARC_TICKS || arc.from().isRemoved() || arc.to().isRemoved()) {
+				it.remove();
+				continue;
+			}
+			drawArc(arc.level(), arc.from().getBoundingBox().getCenter(), arc.to().getBoundingBox().getCenter(), age);
+		}
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			Charge charge = CHARGES.get(player.getUUID());
+			if (charge == null || charge.level()[0] == 0) {
+				continue;
+			}
+			ServerLevel level = player.level();
+			if (level.getGameTime() - charge.lastHit()[0] > CHARGE_TIMEOUT) {
+				charge.level()[0] = 0;
+				continue;
+			}
+			// Cada pocos ticks, un arco chico salta entre dos puntos de la mano (más seguido con más carga).
+			if (player.tickCount % Math.max(1, 6 - charge.level()[0]) == 0) {
+				Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(0.5)).add(0, -0.45, 0);
+				Vec3 a = hand.add((level.getRandom().nextDouble() - 0.5) * 0.5, (level.getRandom().nextDouble() - 0.5) * 0.5,
+						(level.getRandom().nextDouble() - 0.5) * 0.5);
+				Vec3 b = hand.add((level.getRandom().nextDouble() - 0.5) * 0.5, (level.getRandom().nextDouble() - 0.5) * 0.5,
+						(level.getRandom().nextDouble() - 0.5) * 0.5);
+				drawArc(level, a, b, ARC_TICKS - 1);
+			}
+		}
 	}
 
 	// --- Corazón de creeper cargado ------------------------------------------------------------------------------------
@@ -276,6 +319,9 @@ public final class CombatRelics {
 			e.hurtServer(level, electrocution(level, player), HEART_DAMAGE);
 			e.addEffect(new MobEffectInstance(ModEffects.STUNNED, HEART_STUN), player);
 			shockBurst(level, e, 4);
+			if (e != target) {
+				arc(level, target, e);
+			}
 		}
 	}
 
@@ -290,6 +336,7 @@ public final class CombatRelics {
 	}
 
 	private static void tick(MinecraftServer server) {
+		tickElectricity(server);
 		Iterator<Map.Entry<AbstractArrow, Homing>> it = HOMING.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<AbstractArrow, Homing> entry = it.next();

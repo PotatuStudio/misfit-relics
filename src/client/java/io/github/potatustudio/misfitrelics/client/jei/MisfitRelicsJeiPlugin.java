@@ -6,6 +6,8 @@ import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.ArrayList;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,6 +46,13 @@ public class MisfitRelicsJeiPlugin implements IModPlugin {
 			lines.add(Component.translatable("jei.misfitrelics.where.note").withStyle(ChatFormatting.GRAY));
 			registration.addItemStackInfo(new ItemStack(item), lines.toArray(Component[]::new));
 		}
+	}
+
+	/** El ítem del ícono de la pestaña creativa no es una reliquia: se oculta de la lista de JEI. */
+	@Override
+	public void onRuntimeAvailable(IJeiRuntime runtime) {
+		runtime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
+				List.of(new ItemStack(ModItems.RELIC_ICON)));
 	}
 
 	private static String formatChance(float chance) {
