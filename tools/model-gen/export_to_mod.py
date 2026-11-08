@@ -39,6 +39,16 @@ def model_ref(name):
     return {"type": "minecraft:model", "model": f"misfitrelics:item/{name}"}
 
 
+def icon_2d(item_id, model_3d):
+    """Ícono 2D en el inventario, la hotbar, el suelo y los marcos; el modelo 3D en la mano."""
+    shutil.copyfile(os.path.join(src, item_id + "_icon.png"), os.path.join(TEXTURES, item_id + ".png"))
+    dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"misfitrelics:item/{item_id}"}},
+         os.path.join(MODELS, item_id + "_icon.json"))
+    return {"type": "minecraft:select", "property": "minecraft:display_context",
+            "cases": [{"when": ["gui", "ground", "fixed"], "model": model_ref(item_id + "_icon")}],
+            "fallback": model_3d}
+
+
 def cannon(base_id, scratch_base, details, charge_ticks):
     for suffix in ("", "_charged"):
         model = load(scratch_base + suffix)
@@ -55,13 +65,13 @@ def cannon(base_id, scratch_base, details, charge_ticks):
             dump({"parent": f"misfitrelics:item/{base_id}_base{suffix}", "textures": {"copper": COPPER[p]}},
                  os.path.join(MODELS, f"{item_id}{suffix}.json"))
         # Mismo modelo 3D en el inventario y en la mano; al terminar de cargar asoma la papa.
-        dump({"model": {
+        dump({"model": icon_2d(item_id, {
             "type": "minecraft:condition", "property": "minecraft:using_item",
             "on_false": model_ref(item_id),
             "on_true": {"type": "minecraft:range_dispatch", "property": "minecraft:use_duration",
                         "scale": round(1.0 / charge_ticks, 4),
                         "entries": [{"threshold": 1.0, "model": model_ref(item_id + "_charged")}],
-                        "fallback": model_ref(item_id)}}},
+                        "fallback": model_ref(item_id)}})},
             os.path.join(ITEMS, f"{item_id}.json"))
 
 
@@ -75,7 +85,7 @@ for p in PREFIXES:
     item_id = p + "copper_trumpet"
     dump({"parent": "misfitrelics:item/copper_trumpet_base",
           "textures": {"copper": COPPER[p], "cut_copper": CUT_COPPER[p]}}, os.path.join(MODELS, item_id + ".json"))
-    dump({"model": model_ref(item_id)}, os.path.join(ITEMS, item_id + ".json"))
+    dump({"model": icon_2d(item_id, model_ref(item_id))}, os.path.join(ITEMS, item_id + ".json"))
 
 # Collar: ícono 2D (como los ítems vanilla) y la versión puesta que dibuja Trinkets en el pecho
 # (cordones en diagonal y el murciélago, ver assets/misfitrelics/trinkets/bat_collar.json)

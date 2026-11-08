@@ -2,8 +2,8 @@
 
 Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** para Minecraft Java **26.3** (Fabric).
 
-Los objetos son **modelos 3D** que usan las **texturas del propio juego** (cobre, pistón, yunque, cuarzo…):
-se ven igual en el inventario y en la mano, y cambian con los resource packs.
+Los cañones y la trompeta tienen **ícono 2D** en el inventario y **modelo 3D** en la mano, hecho con las **texturas del propio juego** (cobre, pistón, yunque, cuarzo…):
+el modelo cambia con los resource packs.
 
 ## Hedor
 - **Efecto Hedor:** daño periódico que **se contagia en cadena** a las entidades cercanas, aliadas o enemigas. Puede matar. Lo acompañan moscas.
