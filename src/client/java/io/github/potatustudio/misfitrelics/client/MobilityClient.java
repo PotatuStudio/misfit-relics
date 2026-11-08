@@ -104,6 +104,7 @@ public final class MobilityClient {
 			if (jumpPressed && wallJumpsLeft > 0) {
 				// Salto de pared: subes y te vuelves a pegar más arriba.
 				wallJumpsLeft--;
+				Mobility.suppressClimb(player);
 				player.setDeltaMovement(v.x, Mobility.WALL_JUMP_SPEED, v.z);
 			} else if (v.y < WALL_JUMP_RISE_THRESHOLD) {
 				// Pegado: sin velocidad vertical. (El jugador se mueve con esta velocidad antes de que se le aplique la

@@ -82,6 +82,13 @@ public final class Mobility {
 	private static final Map<UUID, Ram> RAMS = new HashMap<>();
 	private static final Map<UUID, Integer> MAGMA_GRACE = new HashMap<>();
 	private static final Map<UUID, Long> LAST_DASH = new HashMap<>();
+	/**
+	 * Durante un salto de pared, la pared de los guantes de la viuda deja de contar como escalera (vanilla limita la
+	 * subida por escalera a 0,2 por tick y cortaría el salto). UUID -> tick hasta el que dura.
+	 */
+	private static final Map<UUID, Long> CLIMB_SUPPRESSED = new HashMap<>();
+	public static final int WALL_JUMP_NO_CLIMB_TICKS = 6;
+
 	/** Jugadores que no reciben daño de caída hasta volver a tocar el suelo (tras sus propios dashes): UUID -> tick. */
 	private static final Map<UUID, Long> SAFE_FALL = new HashMap<>();
 
@@ -129,6 +136,11 @@ public final class Mobility {
 				&& (player.isInLava() || MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
 	}
 
+	/** Lo llama el cliente al hacer un salto de pared. */
+	public static void suppressClimb(Player player) {
+		CLIMB_SUPPRESSED.put(player.getUUID(), player.level().getGameTime() + WALL_JUMP_NO_CLIMB_TICKS);
+	}
+
 	public static boolean hasSilk(LivingEntity entity) {
 		return isWearing(entity, ModItems.SILK_GLOVES) || isWearing(entity, ModItems.WIDOW_GLOVES);
 	}
@@ -136,7 +148,8 @@ public final class Mobility {
 	/** Toca una pared por algún costado (sin contar el suelo ni el techo). */
 	public static boolean touchingWall(LivingEntity entity) {
 		AABB bb = entity.getBoundingBox();
-		AABB probe = new AABB(bb.minX - 0.08, bb.minY + 0.1, bb.minZ - 0.08, bb.maxX + 0.08, bb.maxY - 0.1, bb.maxZ + 0.08);
+		// Desde los pies (sin tocar el suelo, que está justo bajo minY): así se detecta la pared hasta terminar de subir.
+		AABB probe = new AABB(bb.minX - 0.08, bb.minY + 0.01, bb.minZ - 0.08, bb.maxX + 0.08, bb.maxY - 0.05, bb.maxZ + 0.08);
 		return !entity.level().noCollision(entity, probe);
 	}
 
@@ -153,6 +166,10 @@ public final class Mobility {
 
 	/** Guantes de la viuda: la pared (o el techo, manteniendo el salto) cuenta como escalera. */
 	public static boolean widowClimbs(Player player, boolean jumping) {
+		Long until = CLIMB_SUPPRESSED.get(player.getUUID());
+		if (until != null && player.level().getGameTime() < until) {
+			return false;
+		}
 		return isWearing(player, ModItems.WIDOW_GLOVES) && !player.getAbilities().flying
 				&& (touchingWall(player) || (jumping && touchingCeiling(player)));
 	}
