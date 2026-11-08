@@ -84,6 +84,12 @@ shutil.copyfile(os.path.join(src, "bat_collar_icon.png.mcmeta"), os.path.join(TE
 dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics:item/bat_collar"}},
      os.path.join(MODELS, "bat_collar.json"))
 dump(load("collar_worn_pendant"), os.path.join(MODELS, "bat_collar_worn_pendant.json"))
+dump(load("king_collar_worn_pendant"), os.path.join(MODELS, "king_bat_collar_worn_pendant.json"))
+for _ext in (".png", ".png.mcmeta"):
+    shutil.copyfile(os.path.join(src, "king_bat_collar_icon" + _ext), os.path.join(TEXTURES, "king_bat_collar" + _ext))
+dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics:item/king_bat_collar"}},
+     os.path.join(MODELS, "king_bat_collar.json"))
+dump({"model": model_ref("king_bat_collar")}, os.path.join(ITEMS, "king_bat_collar.json"))
 shutil.copyfile(os.path.join(src, "bat_collar_details.png"), os.path.join(BLOCK_TEXTURES, "bat_collar_details.png"))
 dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
 print("exportado: 8 cañones, 4 trompetas y el collar")

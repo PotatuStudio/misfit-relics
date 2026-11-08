@@ -1,6 +1,9 @@
 package io.github.potatustudio.misfitrelics.bat;
 
 import io.github.potatustudio.misfitrelics.util.Allies;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,7 +34,7 @@ public class AlliedBat extends Bat implements OwnableEntity {
 	public static final double MAX_HEALTH = 12.0;
 	/** Ticks desde el golpe del dueño (o al dueño) en que todavía persigue a ese objetivo (6 s). */
 	private static final int TARGET_MEMORY = 120;
-	private static final double TARGET_RANGE = 16.0;
+	protected static final double TARGET_RANGE = 16.0;
 	private static final double TELEPORT_DISTANCE = 24.0;
 
 	private @Nullable EntityReference<LivingEntity> owner;
@@ -71,10 +74,36 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		return false;
 	}
 
-	/** Reemplaza el vuelo al azar del murciélago vanilla. */
+	/** Qué está haciendo el murciélago cuando no hay pelea. */
+	private enum Mode {
+		/** Gira alrededor de la cabeza del dueño. */
+		FOLLOW,
+		/** Un vuelo corto cerca del dueño, cazando insectos. */
+		WANDER,
+		/** Vuela hacia un techo para colgarse. */
+		SEEK_ROOST,
+		/** Colgado boca abajo, descansando. */
+		ROOSTING
+	}
+
+	/** Cada cuánto decide qué hacer mientras acompaña (1 s). */
+	private static final int DECIDE_EVERY = 20;
+	/** Distancia máxima del dueño a la que sigue colgado. */
+	private static final double ROOST_LEASH = 12.0;
+	/** De noche se cuelga si el dueño lleva quieto este tiempo (15 s). */
+	private static final int NIGHT_IDLE_TO_ROOST = 300;
+
+	private Mode mode = Mode.FOLLOW;
+	private @Nullable BlockPos roost;
+	private @Nullable Vec3 wanderGoal;
+	private int modeTicks;
+	private int roostCooldown;
+	private int ownerIdleTicks;
+	private Vec3 lastOwnerPos = Vec3.ZERO;
+
+	/** Reemplaza el vuelo al azar del murciélago vanilla por un compañero con rutinas. */
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
-		setResting(false);
 		if (!(getOwner() instanceof Player player) || !player.isAlive() || player.level() != level
 				|| BatCollar.findWorn(player).isEmpty()) {
 			discard();
@@ -83,25 +112,189 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		if (biteCooldown > 0) {
 			biteCooldown--;
 		}
+		if (roostCooldown > 0) {
+			roostCooldown--;
+		}
+		modeTicks++;
+		ownerIdleTicks = player.position().distanceToSqr(lastOwnerPos) < 0.01 ? ownerIdleTicks + 1 : 0;
+		lastOwnerPos = player.position();
+
 		LivingEntity target = pickTarget(level, player);
-		Vec3 goal;
-		double speed;
+		extraAi(level, player, target);
 		if (target != null) {
-			goal = target.getBoundingBox().getCenter();
-			speed = 0.7;
+			// Pelea: deja lo que estaba haciendo.
+			wake();
+			setMode(Mode.FOLLOW);
+			fly(target.getBoundingBox().getCenter(), 0.7);
 			if (biteCooldown == 0 && getBoundingBox().inflate(0.6).intersects(target.getBoundingBox())) {
 				bite(level, player, target);
 			}
-		} else {
-			double angle = tickCount * 0.12;
-			goal = player.getEyePosition().add(Math.cos(angle) * 1.1, 0.7 + Math.sin(tickCount * 0.07) * 0.25,
-					Math.sin(angle) * 1.1);
-			speed = 0.45;
-			if (distanceToSqr(player) > TELEPORT_DISTANCE * TELEPORT_DISTANCE) {
-				snapTo(goal.x, goal.y, goal.z, getYRot(), 0f);
+			return;
+		}
+		if (distanceToSqr(player) > TELEPORT_DISTANCE * TELEPORT_DISTANCE) {
+			wake();
+			setMode(Mode.FOLLOW);
+			Vec3 near = player.getEyePosition().add(0, 0.8, 0);
+			snapTo(near.x, near.y, near.z, getYRot(), 0f);
+			return;
+		}
+		switch (mode) {
+			case ROOSTING -> roosting(level, player);
+			case SEEK_ROOST -> seekRoost(level);
+			case WANDER -> wander(level, player);
+			default -> follow(level, player);
+		}
+	}
+
+	private void follow(ServerLevel level, Player player) {
+		// De día y al sol, sin refugio a mano: se queda pegado a la cabeza del dueño, más bajo.
+		boolean exposed = level.isBrightOutside() && level.canSeeSky(blockPosition());
+		double radius = exposed ? 0.7 : 1.1;
+		double angle = tickCount * 0.12 + getId();
+		Vec3 goal = player.getEyePosition().add(Math.cos(angle) * radius,
+				(exposed ? 0.45 : 0.7) + Math.sin(tickCount * 0.07) * 0.25, Math.sin(angle) * radius);
+		fly(goal, 0.45);
+
+		if (modeTicks % DECIDE_EVERY != 0) {
+			return;
+		}
+		if (roostCooldown == 0 && wantsToRoost(level)) {
+			BlockPos spot = findRoost(level, player);
+			if (spot != null) {
+				roost = spot;
+				setMode(Mode.SEEK_ROOST);
+				return;
+			}
+			roostCooldown = 60;
+		}
+		if (random.nextInt(level.isDarkOutside() ? 4 : 8) == 0) {
+			// Sale a cazar insectos un momento (de noche, más seguido).
+			wanderGoal = player.position().add(random.nextGaussian() * 3.5, 1.5 + random.nextDouble() * 2.5,
+					random.nextGaussian() * 3.5);
+			setMode(Mode.WANDER);
+		}
+	}
+
+	private void wander(ServerLevel level, Player player) {
+		if (wanderGoal == null || modeTicks > 80 || position().distanceToSqr(wanderGoal) < 0.4) {
+			setMode(Mode.FOLLOW);
+			return;
+		}
+		fly(wanderGoal, 0.55);
+		if (modeTicks % 15 == 0 && random.nextInt(3) == 0) {
+			// Atrapa un insecto al vuelo.
+			level.playSound(null, getX(), getY(), getZ(), SoundEvents.BAT_AMBIENT, SoundSource.NEUTRAL, 0.25f, 1.8f);
+			level.sendParticles(ParticleTypes.WHITE_ASH, getX(), getY() + 0.3, getZ(), 3, 0.1, 0.1, 0.1, 0.0);
+		}
+	}
+
+	private void seekRoost(ServerLevel level) {
+		if (roost == null || !canRoostAt(level, roost) || modeTicks > 200) {
+			roostCooldown = 200;
+			setMode(Mode.FOLLOW);
+			return;
+		}
+		Vec3 hang = hangPosition(roost);
+		fly(hang, 0.5);
+		if (position().distanceToSqr(hang) < 0.2) {
+			snapTo(hang.x, hang.y, hang.z, getYRot(), 0f);
+			setDeltaMovement(Vec3.ZERO);
+			setResting(true);
+			setMode(Mode.ROOSTING);
+		}
+	}
+
+	private void roosting(ServerLevel level, Player player) {
+		boolean tooFar = roost == null || player.distanceToSqr(Vec3.atCenterOf(roost)) > ROOST_LEASH * ROOST_LEASH;
+		if (!isResting() || roost == null || !canRoostAt(level, roost) || tooFar || !wantsToRoost(level)) {
+			wake();
+			roostCooldown = 100;
+			setMode(Mode.FOLLOW);
+			return;
+		}
+		if (random.nextInt(600) == 0) {
+			level.playSound(null, getX(), getY(), getZ(), SoundEvents.BAT_AMBIENT, SoundSource.NEUTRAL, 0.15f, 0.8f);
+		}
+	}
+
+	/** De día siempre busca sombra; de noche solo descansa si el dueño lleva un rato quieto. */
+	private boolean wantsToRoost(ServerLevel level) {
+		return level.isBrightOutside() || ownerIdleTicks > NIGHT_IDLE_TO_ROOST;
+	}
+
+	/** Un hueco de aire bajo un techo firme, cerca del dueño; de día, además, a la sombra. */
+	private @Nullable BlockPos findRoost(ServerLevel level, Player player) {
+		BlockPos base = player.blockPosition();
+		BlockPos best = null;
+		double bestDistance = Double.MAX_VALUE;
+		for (int i = 0; i < 64; i++) {
+			BlockPos p = base.offset(random.nextInt(15) - 7, random.nextInt(7) - 1, random.nextInt(15) - 7);
+			if (!canRoostAt(level, p) || (level.isBrightOutside() && level.canSeeSky(p))) {
+				continue;
+			}
+			double d = distanceToSqr(Vec3.atCenterOf(p));
+			if (d < bestDistance) {
+				bestDistance = d;
+				best = p;
 			}
 		}
-		fly(goal, speed);
+		return best;
+	}
+
+	private boolean canRoostAt(ServerLevel level, BlockPos p) {
+		BlockPos above = p.above();
+		return level.isEmptyBlock(p) && level.isEmptyBlock(p.below())
+				&& level.getBlockState(above).isFaceSturdy(level, above, Direction.DOWN);
+	}
+
+	/** Colgado: con la cabeza (el borde superior de su caja) tocando el techo. */
+	private Vec3 hangPosition(BlockPos p) {
+		return new Vec3(p.getX() + 0.5, p.getY() + 1.0 - getBbHeight(), p.getZ() + 0.5);
+	}
+
+	private void wake() {
+		if (isResting()) {
+			setResting(false);
+		}
+		roost = null;
+	}
+
+	private void setMode(Mode next) {
+		mode = next;
+		modeTicks = 0;
+	}
+
+	/**
+	 * Colgado, el murciélago vanilla se acomoda solo bajo el bloque de arriba suponiendo que mide menos de un bloque;
+	 * el rey es más alto, así que aquí se mantiene quieto donde se colgó (en el servidor y en el cliente).
+	 */
+	@Override
+	public void tick() {
+		if (!isResting()) {
+			super.tick();
+			return;
+		}
+		double x = getX();
+		double y = getY();
+		double z = getZ();
+		super.tick();
+		if (isResting()) {
+			setPos(x, y, z);
+			setDeltaMovement(Vec3.ZERO);
+		}
+	}
+
+	/** Para variantes con poderes extra (el rey murciélago). */
+	protected void extraAi(ServerLevel level, Player player, @Nullable LivingEntity target) {
+	}
+
+	protected float biteDamage() {
+		return BITE_DAMAGE;
+	}
+
+	/** Fracción del mordisco que cura al dueño. */
+	protected float lifesteal() {
+		return BatCollar.LIFESTEAL;
 	}
 
 	private void fly(Vec3 goal, double speed) {
@@ -130,15 +323,15 @@ public class AlliedBat extends Bat implements OwnableEntity {
 		return null;
 	}
 
-	private boolean isValidTarget(ServerLevel level, Player player, LivingEntity target) {
+	protected boolean isValidTarget(ServerLevel level, Player player, LivingEntity target) {
 		return target.isAlive() && target != this && target != player && !(target instanceof AlliedBat)
 				&& distanceToSqr(target) < TARGET_RANGE * TARGET_RANGE && !Allies.isAlly(level, target, player.getUUID());
 	}
 
 	private void bite(ServerLevel level, Player player, LivingEntity target) {
 		biteCooldown = BITE_COOLDOWN;
-		if (target.hurtServer(level, damageSources().mobAttack(this), BITE_DAMAGE)) {
-			player.heal(BITE_DAMAGE * BatCollar.LIFESTEAL);
+		if (target.hurtServer(level, damageSources().mobAttack(this), biteDamage())) {
+			player.heal(biteDamage() * lifesteal());
 			level.playSound(null, getX(), getY(), getZ(), SoundEvents.BAT_HURT, SoundSource.PLAYERS, 0.6f, 1.6f);
 		}
 	}

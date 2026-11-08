@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 
 /**
@@ -46,7 +48,9 @@ public final class ModLoot {
 			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_REWARD, List.of(trumpet(0.12f))),
 			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_SUPPLY, List.of(trumpet(0.04f))),
 			// Collar del murciélago: en la oscuridad de la ciudad antigua, junto a los fragmentos de eco.
-			Map.entry(BuiltInLootTables.ANCIENT_CITY, List.of(Drop.single(0.10f, () -> ModItems.BAT_COLLAR))),
+			Map.entry(BuiltInLootTables.ANCIENT_CITY, List.of(Drop.single(0.10f, () -> ModItems.BAT_COLLAR),
+					// Collar del rey murciélago: coleccionable, muy raro.
+					Drop.single(0.015f, () -> ModItems.KING_BAT_COLLAR))),
 			// Pata maldita: en el Nether, en tesoros de bastión y, rara vez, en portales en ruinas.
 			Map.entry(BuiltInLootTables.BASTION_TREASURE, List.of(Drop.single(0.20f, () -> ModItems.CURSED_RABBIT_FOOT))),
 			Map.entry(BuiltInLootTables.RUINED_PORTAL, List.of(Drop.single(0.03f, () -> ModItems.CURSED_RABBIT_FOOT))),
@@ -75,8 +79,17 @@ public final class ModLoot {
 				ModItems.trumpetFor(TrumpetStage.WEATHERED), 1));
 	}
 
+	/** El warden suelta el collar del rey murciélago (5 %) si lo mata un jugador. */
+	private static final float WARDEN_KING_COLLAR_CHANCE = 0.05f;
+
 	public static void init() {
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+			if (source.isBuiltin() && EntityTypes.WARDEN.getDefaultLootTable().map(key::equals).orElse(false)) {
+				tableBuilder.withPool(LootPool.lootPool()
+						.when(LootItemKilledByPlayerCondition.killedByPlayer())
+						.when(LootItemRandomChanceCondition.randomChance(WARDEN_KING_COLLAR_CHANCE))
+						.add(LootItem.lootTableItem(ModItems.KING_BAT_COLLAR)));
+			}
 			List<Drop> drops = DROPS.get(key);
 			if (drops == null || !source.isBuiltin()) {
 				return;

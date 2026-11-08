@@ -68,5 +68,9 @@
   "entity.misfitrelics.allied_bat": "Allied Bat",
   "item.misfitrelics.bat_collar.tooltip.bat": "Allied bat: bites what you fight (%s damage). Revives in %s s",
   "item.misfitrelics.bat_collar.tooltip.reviving": "Your bat revives in %s s",
-  "message.misfitrelics.allied_bat_died": "Your bat fell... it will return in %s s"
+  "message.misfitrelics.allied_bat_died": "Your bat fell... it will return in %s s",
+  "item.misfitrelics.king_bat_collar": "Bat King's Collar",
+  "entity.misfitrelics.king_bat": "Bat King",
+  "item.misfitrelics.king_bat_collar.tooltip.bat": "Bat King: bites for %s, heals you %s%% of it. Revives in %s s",
+  "item.misfitrelics.king_bat_collar.tooltip.screech": "Screech every %s s: stuns nearby enemies for %s s"
 }

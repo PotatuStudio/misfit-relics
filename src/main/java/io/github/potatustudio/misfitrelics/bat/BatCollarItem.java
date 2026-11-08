@@ -21,8 +21,11 @@ import net.minecraft.world.item.component.TooltipDisplay;
  * sus poderes viven en {@link BatCollar}. Se dibuja en el pecho con assets/misfitrelics/trinkets/bat_collar.json.
  */
 public class BatCollarItem extends Item implements TrinketCallback {
-	public BatCollarItem(Properties properties) {
+	private final boolean king;
+
+	public BatCollarItem(boolean king, Properties properties) {
 		super(properties);
+		this.king = king;
 	}
 
 	@Override
@@ -35,8 +38,16 @@ public class BatCollarItem extends Item implements TrinketCallback {
 				BatCollar.ECHOLOCATION_COOLDOWN / 20).withStyle(ChatFormatting.GRAY));
 		tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.lifesteal",
 				Math.round(BatCollar.LIFESTEAL * 100)).withStyle(ChatFormatting.GOLD));
-		tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.bat",
-				(int) AlliedBat.BITE_DAMAGE, BatCollar.REVIVE_TICKS / 20).withStyle(ChatFormatting.GOLD));
+		if (king) {
+			tooltip.accept(Component.translatable("item.misfitrelics.king_bat_collar.tooltip.bat",
+					(int) KingBat.KING_BITE_DAMAGE, Math.round(KingBat.KING_LIFESTEAL * 100), BatCollar.KING_REVIVE_TICKS / 20)
+					.withStyle(ChatFormatting.GOLD));
+			tooltip.accept(Component.translatable("item.misfitrelics.king_bat_collar.tooltip.screech",
+					KingBat.SCREECH_COOLDOWN / 20, KingBat.SCREECH_STUN / 20.0).withStyle(ChatFormatting.LIGHT_PURPLE));
+		} else {
+			tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.bat",
+					(int) AlliedBat.BITE_DAMAGE, BatCollar.REVIVE_TICKS / 20).withStyle(ChatFormatting.GOLD));
+		}
 		Integer revive = stack.get(ModComponents.BAT_REVIVE);
 		if (revive != null) {
 			tooltip.accept(Component.translatable("item.misfitrelics.bat_collar.tooltip.reviving", (revive + 19) / 20)
@@ -53,7 +64,7 @@ public class BatCollarItem extends Item implements TrinketCallback {
 	@Override
 	public int getBarWidth(ItemStack stack) {
 		int left = stack.getOrDefault(ModComponents.BAT_REVIVE, 0);
-		return Math.round(13.0f * (1.0f - (float) left / BatCollar.REVIVE_TICKS));
+		return Math.round(13.0f * (1.0f - (float) left / BatCollar.reviveTicks(stack)));
 	}
 
 	@Override

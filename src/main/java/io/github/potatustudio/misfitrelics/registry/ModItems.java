@@ -26,6 +26,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.Weapon;
@@ -62,8 +63,10 @@ public final class ModItems {
 	public static final Item WEATHERED_COPPER_TRUMPET = registerTrumpet("weathered_copper_trumpet", TrumpetStage.WEATHERED);
 	public static final Item OXIDIZED_COPPER_TRUMPET = registerTrumpet("oxidized_copper_trumpet", TrumpetStage.OXIDIZED);
 
-	public static final Item BAT_COLLAR = register("bat_collar", BatCollarItem::new,
-			new Item.Properties().stacksTo(1));
+	public static final Item BAT_COLLAR = register("bat_collar",
+			properties -> new BatCollarItem(false, properties), new Item.Properties().stacksTo(1));
+	public static final Item KING_BAT_COLLAR = register("king_bat_collar",
+			properties -> new BatCollarItem(true, properties), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
 
 	public static final Item LUCKY_RABBIT_FOOT = register("lucky_rabbit_foot",
 			properties -> new LuckyRabbitFootItem(false, properties), new Item.Properties().stacksTo(1));
@@ -109,6 +112,7 @@ public final class ModItems {
 	public static void init() {
 		// Trinkets: reacción al ponerse el collar (BatCollarItem#onEquip).
 		TrinketCallback.setCallback(BAT_COLLAR, (TrinketCallback) BAT_COLLAR);
+		TrinketCallback.setCallback(KING_BAT_COLLAR, (TrinketCallback) KING_BAT_COLLAR);
 		TrinketCallback.setCallback(LUCKY_RABBIT_FOOT, (TrinketCallback) LUCKY_RABBIT_FOOT);
 		TrinketCallback.setCallback(CURSED_RABBIT_FOOT, (TrinketCallback) CURSED_RABBIT_FOOT);
 		TrinketCallback.setCallback(PLAGUE_RING, (TrinketCallback) PLAGUE_RING);
@@ -127,6 +131,7 @@ public final class ModItems {
 					output.accept(WEATHERED_COPPER_TRUMPET);
 					output.accept(OXIDIZED_COPPER_TRUMPET);
 					output.accept(BAT_COLLAR);
+					output.accept(KING_BAT_COLLAR);
 					output.accept(LUCKY_RABBIT_FOOT);
 					output.accept(CURSED_RABBIT_FOOT);
 					output.accept(PLAGUE_RING);

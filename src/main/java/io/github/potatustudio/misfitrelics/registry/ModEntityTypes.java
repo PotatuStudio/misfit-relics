@@ -2,6 +2,7 @@ package io.github.potatustudio.misfitrelics.registry;
 
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.AlliedBat;
+import io.github.potatustudio.misfitrelics.bat.KingBat;
 import io.github.potatustudio.misfitrelics.spud.SpudProjectile;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
@@ -33,10 +34,21 @@ public final class ModEntityTypes {
 					.clientTrackingRange(8)
 					.build(ALLIED_BAT_KEY));
 
+	private static final ResourceKey<EntityType<?>> KING_BAT_KEY =
+			ResourceKey.create(Registries.ENTITY_TYPE, MisfitRelics.id("king_bat"));
+
+	/** Rey murciélago: variante especial, más grande. */
+	public static final EntityType<KingBat> KING_BAT = Registry.register(BuiltInRegistries.ENTITY_TYPE, KING_BAT_KEY,
+			EntityType.Builder.<KingBat>of(KingBat::new, MobCategory.MISC)
+					.sized(0.85f, 1.5f)
+					.clientTrackingRange(8)
+					.build(KING_BAT_KEY));
+
 	private ModEntityTypes() {
 	}
 
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(ALLIED_BAT, AlliedBat.createAttributes());
+		FabricDefaultAttributeRegistry.register(KING_BAT, KingBat.createKingAttributes());
 	}
 }

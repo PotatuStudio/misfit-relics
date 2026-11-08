@@ -18,6 +18,10 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
 - **Collar del murciélago** (espacio de collar de Trinkets; se ve puesto como amuleto en el pecho): ecolocación con tecla (B) a 32 bloques
   robo de vida del 10 % en golpes cuerpo a cuerpo y **murciélago aliado** que muerde a tus enemigos
   (revive a los 60 s si muere, con barra en el collar).
+- **Collar del rey murciélago** (coleccionable, ciudad antigua 1,5 % o warden 5 %): invoca al rey murciélago,
+  más grande, con mordisco de 6, robo de vida del 25 % y chillido aturdidor.
+- El murciélago aliado tiene rutinas: pasea cazando insectos, de día busca sombra y se cuelga boca abajo.
+- Brillo animado en los íconos de anillos, patas y collares.
 - **Patas de conejo** (espacio de cinturón de Trinkets), en minería, mobs, cofres de estructuras y pesca:
   la **de la suerte** (25 % de botín ×2, nunca pierde) y la **maldita** (15 % de jackpot ×4 a ×10, 10 % de perderlo todo).
 - **Anillo de la plaga** y **Anillo del festín** (espacios de anillo de Trinkets): la plaga suelta silverfish o endermites

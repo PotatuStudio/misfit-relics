@@ -40,6 +40,8 @@ public final class BatCollar {
 	public static final float LIFESTEAL = 0.10f;
 	/** Tiempo que tarda en revivir el murciélago aliado si muere (60 s). */
 	public static final int REVIVE_TICKS = 1200;
+	/** El rey murciélago revive antes (45 s). */
+	public static final int KING_REVIVE_TICKS = 900;
 
 	/** Murciélago aliado de cada jugador con collar. */
 	private static final Map<UUID, AlliedBat> BATS = new HashMap<>();
@@ -55,7 +57,7 @@ public final class BatCollar {
 	private static void tick(MinecraftServer server) {
 		BATS.values().removeIf(Entity::isRemoved);
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-			Optional<TrinketSlotAccess> access = TrinketsApi.getAttachment(player).findFirst(ModItems.BAT_COLLAR);
+			Optional<TrinketSlotAccess> access = findWornAccess(player);
 			if (access.isEmpty() || !player.isAlive() || player.isSpectator()) {
 				continue;
 			}
@@ -74,15 +76,25 @@ public final class BatCollar {
 				}
 				continue;
 			}
-			if (!BATS.containsKey(player.getUUID())) {
-				summon(player);
+			boolean king = isKing(collar);
+			AlliedBat current = BATS.get(player.getUUID());
+			if (current != null && (current instanceof KingBat) != king) {
+				// Cambió de collar: se va el murciélago anterior y llega el que corresponde.
+				current.discard();
+				BATS.remove(player.getUUID());
+				current = null;
+			}
+			if (current == null) {
+				summon(player, king);
 			}
 		}
 	}
 
-	private static void summon(ServerPlayer player) {
+	private static void summon(ServerPlayer player, boolean king) {
 		ServerLevel level = player.level();
-		AlliedBat bat = ModEntityTypes.ALLIED_BAT.create(level, EntitySpawnReason.MOB_SUMMONED);
+		AlliedBat bat = king
+				? ModEntityTypes.KING_BAT.create(level, EntitySpawnReason.MOB_SUMMONED)
+				: ModEntityTypes.ALLIED_BAT.create(level, EntitySpawnReason.MOB_SUMMONED);
 		if (bat == null) {
 			return;
 		}
@@ -96,15 +108,30 @@ public final class BatCollar {
 	/** El murciélago murió: el collar queda reviviendo y se ve con una barra que se va llenando. */
 	public static void onAlliedBatDied(Player player) {
 		BATS.remove(player.getUUID());
-		TrinketsApi.getAttachment(player).findFirst(ModItems.BAT_COLLAR).ifPresent(access -> {
-			access.get().set(ModComponents.BAT_REVIVE, REVIVE_TICKS);
+		findWornAccess(player).ifPresent(access -> {
+			int ticks = reviveTicks(access.get());
+			access.get().set(ModComponents.BAT_REVIVE, ticks);
 			access.inventory().setChanged();
+			player.sendOverlayMessage(Component.translatable("message.misfitrelics.allied_bat_died", ticks / 20));
 		});
-		player.sendOverlayMessage(Component.translatable("message.misfitrelics.allied_bat_died", REVIVE_TICKS / 20));
 	}
 
 	public static Optional<ItemStack> findWorn(LivingEntity entity) {
-		return TrinketsApi.getAttachment(entity).findFirst(ModItems.BAT_COLLAR).map(TrinketSlotAccess::get);
+		return findWornAccess(entity).map(TrinketSlotAccess::get);
+	}
+
+	/** El collar del murciélago o el del rey murciélago, el que lleve puesto. */
+	public static Optional<TrinketSlotAccess> findWornAccess(LivingEntity entity) {
+		Optional<TrinketSlotAccess> king = TrinketsApi.getAttachment(entity).findFirst(ModItems.KING_BAT_COLLAR);
+		return king.isPresent() ? king : TrinketsApi.getAttachment(entity).findFirst(ModItems.BAT_COLLAR);
+	}
+
+	public static boolean isKing(ItemStack collar) {
+		return collar.is(ModItems.KING_BAT_COLLAR);
+	}
+
+	public static int reviveTicks(ItemStack collar) {
+		return isKing(collar) ? KING_REVIVE_TICKS : REVIVE_TICKS;
 	}
 
 	/** Pulso de ecolocación: marca con contorno a las criaturas cercanas, incluso a través de paredes. */

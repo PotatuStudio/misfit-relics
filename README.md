@@ -43,8 +43,19 @@ Arma cuerpo a cuerpo e instrumento.
 Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto: un amuleto del murciélago colgando de un cordón en el pecho.
 - **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
-- **Murciélago aliado:** mientras llevas el collar, un murciélago revolotea sobre tu cabeza y **muerde a lo que golpeas o a quien te golpea** (3 de daño por mordisco; cada mordisco te cura con el robo de vida). No puedes herirlo tú. Si muere, el collar muestra una **barra morada** y vuelve a los **60 s**.
+- **Murciélago aliado:** mientras llevas el collar, un murciélago te acompaña con rutinas propias:
+  - gira alrededor de tu cabeza y de vez en cuando sale a cazar insectos (de noche, más seguido);
+  - **de día busca la sombra** bajo un techo cercano y se **cuelga boca abajo**; si no hay sombra, se queda pegado a ti;
+  - de noche se cuelga a descansar si te quedas quieto un rato;
+  - **muerde a lo que golpeas o a quien te golpea** (3 de daño; cada mordisco te cura con el robo de vida) y deja lo que esté haciendo para pelear;
+  - no puedes herirlo tú. Si muere, el collar muestra una **barra morada** y vuelve a los **60 s**.
 - **Dónde:** cofres de la ciudad antigua (10 %).
+
+### Collar del rey murciélago (coleccionable)
+Inspirado en los machos dominantes reales (el macho de harén del murciélago lancero mayor y el cabeza de martillo, cuyos machos pesan casi el doble que las hembras). Tiene los mismos poderes del collar, pero invoca al **rey murciélago**: más grande y gordo, teñido de rojo oscuro y con ojos que brillan en la oscuridad.
+- Muerde **6**, te cura el **25 %** de cada mordisco, tiene el doble de vida y revive en **45 s**.
+- **Chillido:** cada 10 s, en pelea, aturde 1 s a los enemigos cercanos.
+- **Dónde:** muy raro. Cofres de la ciudad antigua (1,5 %) o el **warden** (5 %, si lo matas tú).
 
 ## Patas de conejo
 Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
