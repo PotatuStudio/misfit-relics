@@ -91,12 +91,12 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**.
 ## Reliquias de combate
 | Reliquia | Espacio | Qué hace | Dónde |
 |---|---|---|---|
-| **Guantelete eléctrico** | guantes | Cada golpe **te carga** (hasta 5; se pierde a los 3 s sin golpear) y **electrocuta** al objetivo; la descarga **salta en cadena** a 3 enemigos cercanos. Más carga, más daño. | Bóvedas de las cámaras de desafío (6 %) |
+| **Guantelete eléctrico** | guantes | Cada golpe cuerpo a cuerpo (con o sin arma) **te carga** (hasta 5; se pierde a los 3 s sin golpear) y **electrocuta** al objetivo además del golpe: 1,8 de daño con 1 carga, +0,8 por carga (máx. 5). La descarga **salta en cadena** a 3 enemigos cercanos, cada uno con el 70 % de la anterior. | Bóvedas de las cámaras de desafío (6 %) |
 | **Corazón de creeper cargado** | collar | Al recibir daño, 20 % de que **caiga un rayo** sobre quien te pegó: electrocuta y **aturde 2 s** a los enemigos alrededor, nunca a ti. Recarga de 5 s. | Mazmorras (6 %), pirámides (5 %) |
 | **Carcaj del bosque** | espalda | Tus flechas **enredan**: enredaderas con espinas inmovilizan al objetivo 2 s y lo pinchan. | Templos de la jungla (10 %) |
-| **Carcaj del vigilante** | espalda | Tus flechas **persiguen** al enemigo más cercano delante de ellas. | Mansiones del bosque (5 %) |
-| **Concha de nautilus** | collar | Bajo el agua respiras más, nadas y picas más rápido, y tus golpes empujan con una corriente. | Tesoros enterrados (15 %), naufragios (5 %) |
-| **Anillo del berserker** | anillo | **−60 % de vida máxima** (4 corazones) a cambio de **+80 % de daño**. | Bastiones (6 %) |
+| **Carcaj del vigilante** | espalda | Tus flechas **persiguen** al enemigo más cercano delante de ellas, también bajo el agua. | Mansiones del bosque (5 %) |
+| **Concha de nautilus** | collar | Bajo el agua **nadas y caminas mucho más rápido** (gracia del delfín). | Tesoros enterrados (15 %), naufragios (5 %) |
+| **Anillo del berserker** | anillo | Te deja con **1 corazón** (−90 % de vida máxima) a cambio de **+150 % de daño**. | Bastiones (6 %) |
 
 ## Cómo se consiguen
 Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.

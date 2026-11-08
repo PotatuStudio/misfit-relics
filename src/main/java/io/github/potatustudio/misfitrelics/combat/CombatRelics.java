@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
@@ -52,8 +54,7 @@ import org.jspecify.annotations.Nullable;
  *       pegó: electrocuta y aturde a los enemigos alrededor (a ti no te daña).</li>
  *   <li><b>Carcaj del bosque</b> (espalda): tus flechas enredan con enredaderas con espinas.</li>
  *   <li><b>Carcaj del vigilante</b> (espalda): tus flechas persiguen al enemigo más cercano.</li>
- *   <li><b>Concha de nautilus</b> (collar): bajo el agua respiras más y nadas más rápido (atributos en el ítem) y tus
- *       golpes empujan con corriente.</li>
+ *   <li><b>Concha de nautilus</b> (collar): bajo el agua nadas mucho más rápido (gracia del delfín).</li>
  * </ul>
  */
 public final class CombatRelics {
@@ -74,7 +75,6 @@ public final class CombatRelics {
 	public static final int ENTANGLE_TICKS = 40;
 	public static final double HOMING_RANGE = 20.0;
 	public static final double HOMING_TURN = 0.35;
-	public static final double NAUTILUS_PUSH = 1.1;
 
 	private record Charge(int[] level, long[] lastHit) {
 	}
@@ -82,7 +82,13 @@ public final class CombatRelics {
 	private static final Map<UUID, Charge> CHARGES = new HashMap<>();
 	private static final Map<UUID, Long> HEART_LAST = new HashMap<>();
 	private static final Set<AbstractArrow> ENTANGLING = Collections.newSetFromMap(new WeakHashMap<>());
-	private static final Map<AbstractArrow, LivingEntity> HOMING = new WeakHashMap<>();
+	/** Flechas guiadas y su estado. */
+	private static final Map<AbstractArrow, Homing> HOMING = new WeakHashMap<>();
+
+	private static final class Homing {
+		@Nullable LivingEntity target;
+		double speed = -1;
+	}
 
 	private CombatRelics() {
 	}
@@ -99,9 +105,6 @@ public final class CombatRelics {
 				if (isWearing(attacker, ModItems.ELECTRIC_GAUNTLET)) {
 					electrify(level, attacker, entity);
 				}
-				if (attacker.isInWater() && isWearing(attacker, ModItems.NAUTILUS_SHELL)) {
-					currentPush(level, attacker, entity);
-				}
 			}
 			if (entity instanceof ServerPlayer player && isWearing(player, ModItems.CHARGED_CREEPER_HEART)
 					&& !source.is(ModDamageTypes.ELECTROCUTION) && !source.is(DamageTypeTags.IS_LIGHTNING)) {
@@ -113,7 +116,7 @@ public final class CombatRelics {
 				if (isWearing(owner, ModItems.FOREST_QUIVER)) {
 					ENTANGLING.add(arrow);
 				} else if (isWearing(owner, ModItems.WATCHER_QUIVER)) {
-					HOMING.put(arrow, null);
+					HOMING.put(arrow, new Homing());
 				}
 			}
 		});
@@ -149,6 +152,7 @@ public final class CombatRelics {
 		float shock = SHOCK_BASE + SHOCK_PER_CHARGE * c;
 
 		// Electrocución sobre el objetivo (se saltan los ticks de invulnerabilidad del golpe recién dado).
+		shockBurst(level, victim, c);
 		if (victim.isAlive()) {
 			victim.setInvulnerableTime(0);
 			victim.hurtServer(level, electrocution(level, player), shock);
@@ -165,6 +169,7 @@ public final class CombatRelics {
 			}
 			damage *= CHAIN_FALLOFF;
 			arc(level, from, next);
+			shockBurst(level, next, c);
 			next.setInvulnerableTime(0);
 			next.hurtServer(level, electrocution(level, player), damage);
 			hit.add(next);
@@ -172,8 +177,9 @@ public final class CombatRelics {
 		}
 		level.playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT,
 				SoundSource.PLAYERS, 0.25f + 0.08f * c, 1.8f);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getY() + 1.0, player.getZ(),
-				2 + c * 2, 0.4, 0.4, 0.4, 0.05);
+		// Chispas en la mano: más mientras más cargado.
+		Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(0.6)).add(0, -0.4, 0);
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, hand.x, hand.y, hand.z, 3 + c * 3, 0.15, 0.15, 0.15, 0.08);
 		player.sendOverlayMessage(Component.translatable("message.misfitrelics.electric_charge", "⚡".repeat(c), c, MAX_CHARGE)
 				.withStyle(c == MAX_CHARGE ? ChatFormatting.AQUA : ChatFormatting.YELLOW));
 	}
@@ -193,19 +199,54 @@ public final class CombatRelics {
 		return best;
 	}
 
-	/** Arco eléctrico entre dos entidades: chispas en zigzag a lo largo de la línea. */
+	private static final DustParticleOptions BOLT_CORE = new DustParticleOptions(0xE8FBFF, 0.7f);
+	private static final DustParticleOptions BOLT_GLOW = new DustParticleOptions(0x5FD3FF, 1.1f);
+
+	/**
+	 * Arco eléctrico entre dos entidades: un rayo quebrado (desplazamiento del punto medio) dibujado con polvo blanco
+	 * celeste por dentro y celeste por fuera, con chispas en cada quiebre. Se ve como una línea continua y clara.
+	 */
 	private static void arc(ServerLevel level, LivingEntity a, LivingEntity b) {
 		Vec3 start = a.getBoundingBox().getCenter();
 		Vec3 end = b.getBoundingBox().getCenter();
-		Vec3 delta = end.subtract(start);
-		int steps = Math.max(4, (int) (delta.length() * 4));
-		for (int i = 0; i <= steps; i++) {
-			Vec3 p = start.add(delta.scale((double) i / steps));
-			double jitter = (i == 0 || i == steps) ? 0 : 0.15;
-			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, p.x + (level.getRandom().nextDouble() - 0.5) * jitter,
-					p.y + (level.getRandom().nextDouble() - 0.5) * jitter, p.z + (level.getRandom().nextDouble() - 0.5) * jitter,
-					1, 0, 0, 0, 0);
+		List<Vec3> points = new ArrayList<>(List.of(start, end));
+		double offset = start.distanceTo(end) * 0.18;
+		for (int pass = 0; pass < 3; pass++) {
+			List<Vec3> refined = new ArrayList<>();
+			for (int i = 0; i < points.size() - 1; i++) {
+				Vec3 p = points.get(i);
+				Vec3 q = points.get(i + 1);
+				Vec3 mid = p.add(q).scale(0.5).add((level.getRandom().nextDouble() - 0.5) * offset,
+						(level.getRandom().nextDouble() - 0.5) * offset, (level.getRandom().nextDouble() - 0.5) * offset);
+				refined.add(p);
+				refined.add(mid);
+			}
+			refined.add(points.getLast());
+			points = refined;
+			offset *= 0.5;
 		}
+		for (int i = 0; i < points.size() - 1; i++) {
+			Vec3 p = points.get(i);
+			Vec3 q = points.get(i + 1);
+			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.12));
+			for (int k = 0; k < steps; k++) {
+				Vec3 t = p.add(q.subtract(p).scale((double) k / steps));
+				level.sendParticles(BOLT_CORE, t.x, t.y, t.z, 1, 0, 0, 0, 0);
+				if (k % 2 == 0) {
+					level.sendParticles(BOLT_GLOW, t.x, t.y, t.z, 1, 0.02, 0.02, 0.02, 0);
+				}
+			}
+			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, q.x, q.y, q.z, 2, 0.05, 0.05, 0.05, 0.02);
+		}
+	}
+
+	/** Descarga sobre una entidad: un estallido de chispas y polvo celeste alrededor del cuerpo. */
+	private static void shockBurst(ServerLevel level, LivingEntity e, int intensity) {
+		Vec3 c = e.getBoundingBox().getCenter();
+		double w = e.getBbWidth() * 0.6;
+		double h = e.getBbHeight() * 0.4;
+		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 6 + intensity * 3, w, h, w, 0.15);
+		level.sendParticles(BOLT_GLOW, c.x, c.y, c.z, 4 + intensity * 2, w, h, w, 0);
 	}
 
 	// --- Corazón de creeper cargado ------------------------------------------------------------------------------------
@@ -234,8 +275,7 @@ public final class CombatRelics {
 			e.setInvulnerableTime(0);
 			e.hurtServer(level, electrocution(level, player), HEART_DAMAGE);
 			e.addEffect(new MobEffectInstance(ModEffects.STUNNED, HEART_STUN), player);
-			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ(),
-					10, 0.3, 0.4, 0.3, 0.1);
+			shockBurst(level, e, 4);
 		}
 	}
 
@@ -250,31 +290,47 @@ public final class CombatRelics {
 	}
 
 	private static void tick(MinecraftServer server) {
-		Iterator<Map.Entry<AbstractArrow, LivingEntity>> it = HOMING.entrySet().iterator();
+		Iterator<Map.Entry<AbstractArrow, Homing>> it = HOMING.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry<AbstractArrow, LivingEntity> entry = it.next();
+			Map.Entry<AbstractArrow, Homing> entry = it.next();
 			AbstractArrow arrow = entry.getKey();
+			Homing homing = entry.getValue();
 			Vec3 v = arrow.getDeltaMovement();
 			double speed = v.length();
-			if (arrow.isRemoved() || speed < 0.4 || !(arrow.level() instanceof ServerLevel level)
+			if (homing.speed < 0) {
+				homing.speed = speed;
+			}
+			// Clavada o detenida: se deja de guiar. Bajo el agua el agua la frena, así que ahí se le devuelve la velocidad.
+			if (arrow.isRemoved() || speed < 0.05 || !(arrow.level() instanceof ServerLevel level)
 					|| !(arrow.getOwner() instanceof Player owner)) {
 				it.remove();
 				continue;
 			}
-			LivingEntity target = entry.getValue();
-			if (target == null || !target.isAlive()) {
-				target = findHomingTarget(level, owner, arrow, v);
-				entry.setValue(target);
+			double travel = arrow.isInWater() ? homing.speed : speed;
+			Vec3 forward = v.normalize().scale(travel);
+			if (homing.target == null || !homing.target.isAlive()) {
+				homing.target = findHomingTarget(level, owner, arrow, v);
 			}
-			if (target == null) {
+			if (homing.target == null) {
+				if (arrow.isInWater()) {
+					arrow.setDeltaMovement(forward);
+					arrow.needsSync = true;
+				}
 				continue;
 			}
-			Vec3 desired = target.getBoundingBox().getCenter().subtract(arrow.position()).normalize().scale(speed);
-			Vec3 steered = v.add(desired.subtract(v).scale(HOMING_TURN)).normalize().scale(speed);
+			Vec3 desired = homing.target.getBoundingBox().getCenter().subtract(arrow.position()).normalize().scale(travel);
+			Vec3 steered = forward.add(desired.subtract(forward).scale(HOMING_TURN)).normalize().scale(travel);
 			arrow.setDeltaMovement(steered);
 			arrow.needsSync = true;
 			if (arrow.tickCount % 2 == 0) {
-				level.sendParticles(ParticleTypes.END_ROD, arrow.getX(), arrow.getY(), arrow.getZ(), 1, 0, 0, 0, 0);
+				level.sendParticles(arrow.isInWater() ? ParticleTypes.BUBBLE : ParticleTypes.END_ROD,
+						arrow.getX(), arrow.getY(), arrow.getZ(), 1, 0, 0, 0, 0);
+			}
+		}
+		// Concha de nautilus: bajo el agua, la gracia del delfín (nado mucho más rápido) mientras la lleve.
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (player.isInWater() && isWearing(player, ModItems.NAUTILUS_SHELL)) {
+				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 40, 0, true, false, true));
 			}
 		}
 	}
@@ -297,21 +353,6 @@ public final class CombatRelics {
 			}
 		}
 		return best;
-	}
-
-	// --- Concha de nautilus ---------------------------------------------------------------------------------------------
-
-	private static void currentPush(ServerLevel level, ServerPlayer player, LivingEntity target) {
-		Vec3 away = target.position().subtract(player.position()).multiply(1, 0, 1);
-		if (away.lengthSqr() < 1.0E-4) {
-			return;
-		}
-		away = away.normalize();
-		target.push(away.x * NAUTILUS_PUSH, 0.2, away.z * NAUTILUS_PUSH);
-		target.needsSync = true;
-		level.sendParticles(ParticleTypes.BUBBLE, target.getX(), target.getY() + 0.5, target.getZ(), 15, 0.4, 0.4, 0.4, 0.1);
-		level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE,
-				SoundSource.PLAYERS, 0.8f, 1.2f);
 	}
 
 	/** Para el tooltip: carga actual del jugador (0 si no tiene). */

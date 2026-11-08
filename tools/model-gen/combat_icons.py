@@ -20,26 +20,29 @@ GAUNTLET = {'.': T, 'k': CU[0], 'a': CU[3], 'b': CU[2], 'B': CU[4], 'w': CU[5], 
 GAUNTLET_MARKS = [(5, 5, 'w'), (6, 6, 'w'), (8, 5, 'w'), (12, 1, 'z'), (13, 2, 'Z'), (12, 3, 'z'), (1, 8, 'Z'),
                   (2, 9, 'z'), (13, 9, 'Z'), (14, 8, 'z')]
 
+# Silueta del corazón del HUD de Minecraft, en verde de creeper, con su cara en verde oscuro (sutil) y unas
+# chispas celestes de creeper cargado.
 HEART = [
     "................",
-    "..ccc.....ccc...",
-    ".cgGgc...cgGgc..",
-    "cgGGggc.cgGggGc.",
-    "cGgdgGgcgGgdgGc.",
-    "cggdgggggggdggc.",
-    "cgGggdddddggGgc.",
-    ".cggGddgddGggc..",
-    "..cgggdgdgggc...",
-    "...cgGgggGgc....",
-    "....cggGggc.....",
-    ".....cgggc......",
-    "......cgc.......",
-    ".......c........",
+    "...kkk....kkk...",
+    "..kgGgk..kgGgk..",
+    ".kgGGggggggGGgk.",
+    ".kgGddggggddgGk.",
+    ".kggddggggddggk.",
+    ".kgggggddgggggk.",
+    "..kgggddddgggk..",
+    "...kggdggdggk...",
+    "....kggggggk....",
+    ".....kggggk.....",
+    "......kggk......",
+    ".......kk.......",
+    "................",
     "................",
     "................",
 ]
-# Verde de creeper con su cara (d) y el borde azul del creeper cargado (c).
-HEART_P = {'.': T, 'c': H('#5fd3ff'), 'g': H('#4fa83a'), 'G': H('#7ed05e'), 'd': H('#1b2a14')}
+HEART_P = {'.': T, 'k': H('#1f3d18'), 'g': H('#5aa646'), 'G': H('#8fd06a'), 'd': H('#2e5a24'),
+           'c': H('#8fe8ff'), 'C': H('#d8f8ff')}
+HEART_SPARKS = [(14, 1, 'C'), (15, 2, 'c'), (0, 6, 'c'), (13, 10, 'c')]
 
 
 def quiver(body, strap, extra):
@@ -125,13 +128,13 @@ if __name__ == "__main__":
     for shape in (HEART, NAUTILUS_CORD):
         assert len(shape) == 16 and all(len(r) == 16 for r in shape), [len(r) for r in shape]
     gauntlet = build(GLOVE, GAUNTLET, GAUNTLET_MARKS)
-    heart = build(HEART, HEART_P)
+    heart = build(HEART, HEART_P, HEART_SPARKS)
     forest = quiver(LEATHER, H('#3a2414'), FOREST_EXTRA)
     watcher = quiver(DARK, H('#5a4a7a'), WATCHER_EXTRA)
     cord = build(NAUTILUS_CORD, CORD)
     ring = build(RING, BERSERKER)
     save(out, "electric_gauntlet", gauntlet, lambda x, y: gauntlet[y][x][3] and GLOVE[y][x] != '.')
-    save(out, "charged_creeper_heart", heart, lambda x, y: HEART[y][x] == 'c')
+    save(out, "charged_creeper_heart", heart, lambda x, y: HEART[y][x] in "gG")
     save(out, "forest_quiver", forest)
     save(out, "watcher_quiver", watcher)
     save(out, "nautilus_shell_overlay", cord)

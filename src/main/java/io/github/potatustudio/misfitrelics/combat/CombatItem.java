@@ -24,16 +24,16 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 /** Reliquia de combate (ver {@link CombatRelics}). Cada tipo tiene su tooltip, su sonido y, si corresponde, atributos. */
 public class CombatItem extends Item implements TrinketCallback {
-	/** Anillo del berserker: vida máxima −60 % (4 corazones) y daño +80 %. */
-	public static final double BERSERKER_HEALTH = -0.6;
-	public static final double BERSERKER_DAMAGE = 0.8;
+	/** Anillo del berserker: vida máxima −90 % (te deja con 1 corazón) y daño +150 %. */
+	public static final double BERSERKER_HEALTH = -0.9;
+	public static final double BERSERKER_DAMAGE = 1.5;
 
 	public enum Kind {
-		ELECTRIC_GAUNTLET("electric_gauntlet", 3),
+		ELECTRIC_GAUNTLET("electric_gauntlet", 4),
 		CHARGED_CREEPER_HEART("charged_creeper_heart", 2),
 		FOREST_QUIVER("forest_quiver", 2),
 		WATCHER_QUIVER("watcher_quiver", 2),
-		NAUTILUS_SHELL("nautilus_shell", 2),
+		NAUTILUS_SHELL("nautilus_shell", 1),
 		BERSERKER_RING("berserker_ring", 2);
 
 		final String id;
@@ -52,11 +52,18 @@ public class CombatItem extends Item implements TrinketCallback {
 		this.kind = kind;
 	}
 
+	private static String fmt(float value) {
+		return value == Math.round(value) ? String.valueOf(Math.round(value)) : String.format("%.1f", value);
+	}
+
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
 			Consumer<Component> tooltip, TooltipFlag flag) {
 		Object[] args = switch (kind) {
-			case ELECTRIC_GAUNTLET -> new Object[] {CombatRelics.MAX_CHARGE, CombatRelics.CHAIN_JUMPS};
+			case ELECTRIC_GAUNTLET -> new Object[] {CombatRelics.MAX_CHARGE,
+					fmt(CombatRelics.SHOCK_BASE + CombatRelics.SHOCK_PER_CHARGE), fmt(CombatRelics.SHOCK_PER_CHARGE),
+					fmt(CombatRelics.SHOCK_BASE + CombatRelics.SHOCK_PER_CHARGE * CombatRelics.MAX_CHARGE),
+					CombatRelics.CHAIN_JUMPS, Math.round(CombatRelics.CHAIN_FALLOFF * 100), CombatRelics.CHARGE_TIMEOUT / 20};
 			case CHARGED_CREEPER_HEART -> new Object[] {Math.round(CombatRelics.HEART_CHANCE * 100),
 					CombatRelics.HEART_STUN / 20, CombatRelics.HEART_COOLDOWN / 20};
 			case FOREST_QUIVER -> new Object[] {CombatRelics.ENTANGLE_TICKS / 20};
@@ -75,11 +82,9 @@ public class CombatItem extends Item implements TrinketCallback {
 	public void forEachTrinketModifier(ItemStack stack, TrinketSlotAccess slot, LivingEntity entity, Identifier id,
 			BiConsumer<Holder<Attribute>, AttributeModifier> consumer) {
 		switch (kind) {
-			case NAUTILUS_SHELL -> {
-				consumer.accept(Attributes.OXYGEN_BONUS, new AttributeModifier(id, 3.0, AttributeModifier.Operation.ADD_VALUE));
-				consumer.accept(Attributes.WATER_MOVEMENT_EFFICIENCY, new AttributeModifier(id, 0.6, AttributeModifier.Operation.ADD_VALUE));
-				consumer.accept(Attributes.SUBMERGED_MINING_SPEED, new AttributeModifier(id, 0.8, AttributeModifier.Operation.ADD_VALUE));
-			}
+			case NAUTILUS_SHELL ->
+				// Caminar bajo el agua sin frenarse; nadando, la gracia del delfín (CombatRelics).
+				consumer.accept(Attributes.WATER_MOVEMENT_EFFICIENCY, new AttributeModifier(id, 1.0, AttributeModifier.Operation.ADD_VALUE));
 			case BERSERKER_RING -> {
 				consumer.accept(Attributes.MAX_HEALTH,
 						new AttributeModifier(id, BERSERKER_HEALTH, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));

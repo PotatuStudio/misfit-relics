@@ -144,9 +144,9 @@
   "loot.misfitrelics.chests.nether_bridge": "fortalezas del Nether",
   "message.misfitrelics.ram_no_horns": "Necesitas llevar puestos los cuernos del carnero (espacio de sombrero) para embestir",
   "item.misfitrelics.electric_gauntlet": "Guantelete eléctrico",
-  "item.misfitrelics.electric_gauntlet.tooltip.1": "Cada golpe cuerpo a cuerpo te carga (hasta %1$s) y electrocuta al objetivo",
-  "item.misfitrelics.electric_gauntlet.tooltip.2": "La descarga salta hasta %2$s enemigos cercanos",
-  "item.misfitrelics.electric_gauntlet.tooltip.3": "Más carga, más daño eléctrico; se pierde a los 3 s sin golpear",
+  "item.misfitrelics.electric_gauntlet.tooltip.1": "Cada golpe cuerpo a cuerpo (con o sin arma) te carga, hasta %1$s",
+  "item.misfitrelics.electric_gauntlet.tooltip.2": "Electrocución además de tu golpe: %2$s de daño con 1 carga, +%3$s por carga (máx. %4$s)",
+  "item.misfitrelics.electric_gauntlet.tooltip.3": "Salta a %5$s enemigos cercanos, cada uno con el %6$s%% de la descarga anterior",
   "item.misfitrelics.charged_creeper_heart": "Corazón de creeper cargado",
   "item.misfitrelics.charged_creeper_heart.tooltip.1": "Al recibir daño: %1$s%% de que caiga un rayo sobre quien te pegó",
   "item.misfitrelics.charged_creeper_heart.tooltip.2": "Electrocuta y aturde %2$s s a los enemigos alrededor, nunca a ti. Recarga %3$s s",
@@ -157,10 +157,9 @@
   "item.misfitrelics.watcher_quiver.tooltip.1": "Tus flechas persiguen al enemigo más cercano delante de ellas",
   "item.misfitrelics.watcher_quiver.tooltip.2": "Casi nunca fallan",
   "item.misfitrelics.nautilus_shell": "Concha de nautilus",
-  "item.misfitrelics.nautilus_shell.tooltip.1": "Bajo el agua: respiras más, nadas y picas más rápido",
-  "item.misfitrelics.nautilus_shell.tooltip.2": "Bajo el agua, tus golpes empujan a los enemigos con una corriente",
+  "item.misfitrelics.nautilus_shell.tooltip.1": "Bajo el agua: nadas y caminas mucho más rápido (gracia del delfín)",
   "item.misfitrelics.berserker_ring": "Anillo del berserker",
-  "item.misfitrelics.berserker_ring.tooltip.1": "−%1$s%% de vida máxima",
+  "item.misfitrelics.berserker_ring.tooltip.1": "Te deja con 1 corazón (−%1$s%% de vida máxima)",
   "item.misfitrelics.berserker_ring.tooltip.2": "+%2$s%% de daño de ataque",
   "effect.misfitrelics.entangled": "Enredado",
   "death.attack.misfitrelics.electrocution": "%1$s murió electrocutado",
@@ -168,5 +167,6 @@
   "message.misfitrelics.electric_charge": "%1$s Carga %2$s/%3$s",
   "loot.misfitrelics.chests.buried_treasure": "tesoros enterrados",
   "loot.misfitrelics.chests.bastion_other": "bastiones",
-  "loot.misfitrelics.chests.bastion_bridge": "puentes de bastión"
+  "loot.misfitrelics.chests.bastion_bridge": "puentes de bastión",
+  "item.misfitrelics.electric_gauntlet.tooltip.4": "La carga se pierde a los %7$s s sin golpear"
 }

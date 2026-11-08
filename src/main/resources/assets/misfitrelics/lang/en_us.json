@@ -144,9 +144,9 @@
   "loot.misfitrelics.chests.nether_bridge": "Nether fortresses",
   "message.misfitrelics.ram_no_horns": "You need Ram Horns on (hat slot) to ram",
   "item.misfitrelics.electric_gauntlet": "Electric Gauntlet",
-  "item.misfitrelics.electric_gauntlet.tooltip.1": "Each melee hit charges you (up to %1$s) and electrocutes the target",
-  "item.misfitrelics.electric_gauntlet.tooltip.2": "The shock arcs to up to %2$s nearby enemies",
-  "item.misfitrelics.electric_gauntlet.tooltip.3": "More charge, more shock damage; it fades after 3 s without hitting",
+  "item.misfitrelics.electric_gauntlet.tooltip.1": "Every melee hit (with or without a weapon) charges you, up to %1$s",
+  "item.misfitrelics.electric_gauntlet.tooltip.2": "Electrocution on top of your hit: %2$s damage with 1 charge, +%3$s per charge (max %4$s)",
+  "item.misfitrelics.electric_gauntlet.tooltip.3": "It arcs to %5$s nearby enemies, each with %6$s%% of the previous shock",
   "item.misfitrelics.charged_creeper_heart": "Charged Creeper Heart",
   "item.misfitrelics.charged_creeper_heart.tooltip.1": "When hurt: %1$s%% chance a lightning bolt strikes your attacker",
   "item.misfitrelics.charged_creeper_heart.tooltip.2": "It shocks and stuns enemies around it for %2$s s, never you. Cooldown %3$s s",
@@ -157,10 +157,9 @@
   "item.misfitrelics.watcher_quiver.tooltip.1": "Your arrows chase the nearest enemy in front of them",
   "item.misfitrelics.watcher_quiver.tooltip.2": "They almost never miss",
   "item.misfitrelics.nautilus_shell": "Nautilus Shell",
-  "item.misfitrelics.nautilus_shell.tooltip.1": "Underwater: breathe longer, swim and mine faster",
-  "item.misfitrelics.nautilus_shell.tooltip.2": "Your underwater hits push enemies away with a current",
+  "item.misfitrelics.nautilus_shell.tooltip.1": "Underwater: you swim and walk much faster (Dolphin's Grace)",
   "item.misfitrelics.berserker_ring": "Berserker Ring",
-  "item.misfitrelics.berserker_ring.tooltip.1": "−%1$s%% max health",
+  "item.misfitrelics.berserker_ring.tooltip.1": "Leaves you at 1 heart (−%1$s%% max health)",
   "item.misfitrelics.berserker_ring.tooltip.2": "+%2$s%% attack damage",
   "effect.misfitrelics.entangled": "Entangled",
   "death.attack.misfitrelics.electrocution": "%1$s was electrocuted",
@@ -168,5 +167,6 @@
   "message.misfitrelics.electric_charge": "%1$s Charge %2$s/%3$s",
   "loot.misfitrelics.chests.buried_treasure": "Buried treasure",
   "loot.misfitrelics.chests.bastion_other": "Bastions",
-  "loot.misfitrelics.chests.bastion_bridge": "Bastion bridges"
+  "loot.misfitrelics.chests.bastion_bridge": "Bastion bridges",
+  "item.misfitrelics.electric_gauntlet.tooltip.4": "The charge fades after %7$s s without hitting"
 }
