@@ -141,5 +141,6 @@
   "item.misfitrelics.ram_horns.tooltip.2": "Cooldown: %s s",
   "key.misfitrelics.ram": "Ram (Ram Horns)",
   "loot.misfitrelics.chests.woodland_mansion": "Woodland mansions",
-  "loot.misfitrelics.chests.nether_bridge": "Nether fortresses"
+  "loot.misfitrelics.chests.nether_bridge": "Nether fortresses",
+  "message.misfitrelics.ram_no_horns": "You need Ram Horns on (hat slot) to ram"
 }

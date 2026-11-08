@@ -84,9 +84,9 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**.
 |---|---|---|---|
 | **Guantes de seda** | guantes | Con **Shift** contra una pared te quedas pegado; saltando subes y te vuelves a pegar (6 saltos de pared hasta tocar el suelo). | Minas abandonadas (8 %) |
 | **Guantes de la viuda** | guantes | Además **caminas por las paredes** como una araña y te cuelgas del techo manteniendo el salto. | Mansiones del bosque (6 %) |
-| **Breeze en una botella** | cinturón | En el aire, **Shift + salto**: una ráfaga te impulsa hacia donde miras y empuja a los mobs. Una por salto; perdona la caída. | Bóvedas de las cámaras de desafío (10 %) |
+| **Breeze en una botella** | cinturón | En el aire, **Shift + salto**: una ráfaga te impulsa hacia donde miras y empuja a los mobs. Una por salto; no recibes daño de caída hasta volver al suelo. | Bóvedas de las cámaras de desafío (10 %) |
 | **Botas de magma** | zapatos | **Caminas sobre la lava** sin quemarte (Shift para hundirte); en el Nether, +15 % de velocidad. | Fortalezas del Nether (10 %) |
-| **Cuernos del carnero** | sombrero | Tecla **R**: embistes hacia adelante, **invulnerable** mientras dura; lo que golpeas recibe 10 de daño, sale volando y queda aturdido. Recarga de 3 s. | Puestos de saqueadores (10 %) |
+| **Cuernos del carnero** | sombrero | Tecla **R**: **dash en línea recta** de ~8 bloques, **invulnerable** mientras dura; lo que golpeas recibe 10 de daño, sale volando y queda aturdido. Recarga de 3 s. | Puestos de saqueadores (10 %) |
 
 ## Cómo se consiguen
 Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.

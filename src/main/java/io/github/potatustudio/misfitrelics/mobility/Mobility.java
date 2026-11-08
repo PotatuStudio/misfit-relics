@@ -63,6 +63,9 @@ public final class Mobility {
 	/** Velocidad horizontal con la que sale volando lo que embistes. */
 	public static final double RAM_KNOCKBACK = 2.2;
 	public static final int RAM_COOLDOWN = 60;
+	/** Dash de la embestida: velocidad constante (bloques por tick) durante RAM_DASH_TICKS, unos 8 bloques en línea recta. */
+	public static final double RAM_SPEED = 1.0;
+	public static final int RAM_DASH_TICKS = 8;
 	public static final int RAM_STUN = 20;
 	/** Ticks que dura la carrera: mientras tanto, el jugador es invulnerable (0,6 s). */
 	public static final int RAM_ACTIVE_TICKS = 12;
@@ -75,6 +78,8 @@ public final class Mobility {
 	private static final Map<UUID, Ram> RAMS = new HashMap<>();
 	private static final Map<UUID, Integer> MAGMA_GRACE = new HashMap<>();
 	private static final Map<UUID, Long> LAST_DASH = new HashMap<>();
+	/** Jugadores que no reciben daño de caída hasta volver a tocar el suelo (tras sus propios dashes): UUID -> tick. */
+	private static final Map<UUID, Long> SAFE_FALL = new HashMap<>();
 
 	private Mobility() {
 	}
@@ -87,6 +92,11 @@ public final class Mobility {
 			}
 			// Embistiendo: invulnerable.
 			if (RAMS.containsKey(player.getUUID())) {
+				return false;
+			}
+			// Tus propios dashes no te hacen daño por caída.
+			if (source.is(DamageTypeTags.IS_FALL) && SAFE_FALL.containsKey(player.getUUID())) {
+				SAFE_FALL.remove(player.getUUID());
 				return false;
 			}
 			return !(source.is(DamageTypeTags.IS_FIRE) && isWearing(player, ModItems.MAGMA_BOOTS)
@@ -130,6 +140,10 @@ public final class Mobility {
 
 	private static void tick(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			Long since = SAFE_FALL.get(player.getUUID());
+			if (since != null && (player.onGround() || player.isInWater()) && player.level().getGameTime() - since > 5) {
+				SAFE_FALL.remove(player.getUUID());
+			}
 			// Pegado a la pared no se acumula caída (el cliente lo sostiene; aquí se perdona la altura).
 			if (isClinging(player)) {
 				player.resetFallDistance();
@@ -178,7 +192,7 @@ public final class Mobility {
 			return;
 		}
 		LAST_DASH.put(player.getUUID(), now);
-		player.resetFallDistance();
+		safeFall(player);
 		ServerLevel level = player.level();
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),
 				SoundSource.PLAYERS, 0.8f, 1.2f);
@@ -190,6 +204,12 @@ public final class Mobility {
 			mob.push(away.x * 0.9, 0.35, away.z * 0.9);
 			mob.needsSync = true;
 		}
+	}
+
+	/** Desde ahora y hasta que vuelva a tocar el suelo, el jugador no recibe daño de caída. */
+	private static void safeFall(ServerPlayer player) {
+		player.resetFallDistance();
+		SAFE_FALL.put(player.getUUID(), player.level().getGameTime());
 	}
 
 	/** Embestida de los cuernos del carnero (tecla). */
@@ -204,8 +224,8 @@ public final class Mobility {
 			return;
 		}
 		dir = dir.normalize();
-		player.setDeltaMovement(dir.x * 1.9, Math.max(player.getDeltaMovement().y, 0.2), dir.z * 1.9);
-		player.needsSync = true;
+		// El dash lo hace el cliente (mueve a su propio personaje); aquí van los golpes, la invulnerabilidad y la recarga.
+		safeFall(player);
 		player.getCooldowns().addCooldown(RAM_COOLDOWN_GROUP, RAM_COOLDOWN);
 		RAMS.put(player.getUUID(), new Ram(dir, new HashSet<>(), new int[] {RAM_ACTIVE_TICKS}));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GOAT_PREPARE_RAM,

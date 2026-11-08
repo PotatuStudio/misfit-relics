@@ -141,5 +141,6 @@
   "item.misfitrelics.ram_horns.tooltip.2": "Recarga: %s s",
   "key.misfitrelics.ram": "Embestir (cuernos del carnero)",
   "loot.misfitrelics.chests.woodland_mansion": "mansiones del bosque",
-  "loot.misfitrelics.chests.nether_bridge": "fortalezas del Nether"
+  "loot.misfitrelics.chests.nether_bridge": "fortalezas del Nether",
+  "message.misfitrelics.ram_no_horns": "Necesitas llevar puestos los cuernos del carnero (espacio de sombrero) para embestir"
 }
