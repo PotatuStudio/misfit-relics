@@ -4,6 +4,7 @@ import eu.pb4.trinkets.api.callback.TrinketCallback;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.bat.BatCollarItem;
 import io.github.potatustudio.misfitrelics.luck.LuckyRabbitFootItem;
+import io.github.potatustudio.misfitrelics.plague.BugRingItem;
 import io.github.potatustudio.misfitrelics.spud.CannonDesign;
 import io.github.potatustudio.misfitrelics.spud.SpudCannonItem;
 import io.github.potatustudio.misfitrelics.trumpet.CopperTrumpetItem;
@@ -69,6 +70,11 @@ public final class ModItems {
 	public static final Item CURSED_RABBIT_FOOT = register("cursed_rabbit_foot",
 			properties -> new LuckyRabbitFootItem(true, properties), new Item.Properties().stacksTo(1));
 
+	public static final Item PLAGUE_RING = register("plague_ring",
+			properties -> new BugRingItem(false, properties), new Item.Properties().stacksTo(1));
+	public static final Item FEAST_RING = register("feast_ring",
+			properties -> new BugRingItem(true, properties), new Item.Properties().stacksTo(1));
+
 	private ModItems() {
 	}
 
@@ -105,6 +111,8 @@ public final class ModItems {
 		TrinketCallback.setCallback(BAT_COLLAR, (TrinketCallback) BAT_COLLAR);
 		TrinketCallback.setCallback(LUCKY_RABBIT_FOOT, (TrinketCallback) LUCKY_RABBIT_FOOT);
 		TrinketCallback.setCallback(CURSED_RABBIT_FOOT, (TrinketCallback) CURSED_RABBIT_FOOT);
+		TrinketCallback.setCallback(PLAGUE_RING, (TrinketCallback) PLAGUE_RING);
+		TrinketCallback.setCallback(FEAST_RING, (TrinketCallback) FEAST_RING);
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_TAB_KEY, FabricCreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.misfitrelics"))
 				.icon(() -> new ItemStack(SPUD_CANNON))
@@ -121,6 +129,8 @@ public final class ModItems {
 					output.accept(BAT_COLLAR);
 					output.accept(LUCKY_RABBIT_FOOT);
 					output.accept(CURSED_RABBIT_FOOT);
+					output.accept(PLAGUE_RING);
+					output.accept(FEAST_RING);
 					// Pociones y flechas de hedor en todas sus variantes.
 					for (Holder<Potion> potion : List.of(ModPotions.STENCH, ModPotions.LONG_STENCH, ModPotions.STRONG_STENCH)) {
 						for (Item container : List.of(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION, Items.TIPPED_ARROW)) {

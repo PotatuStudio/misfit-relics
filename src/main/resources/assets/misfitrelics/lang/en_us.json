@@ -58,5 +58,11 @@
   "item.misfitrelics.cursed_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% chance to multiply loot ×%s to ×%s",
   "item.misfitrelics.cursed_rabbit_foot.tooltip.lose": "Curse: %s%% chance to lose all of it",
   "item.misfitrelics.cursed_rabbit_foot.jackpot": "JACKPOT! ×%s",
-  "item.misfitrelics.cursed_rabbit_foot.lost": "The curse took your loot..."
+  "item.misfitrelics.cursed_rabbit_foot.lost": "The curse took your loot...",
+  "item.misfitrelics.plague_ring": "Ring of the Plague",
+  "item.misfitrelics.feast_ring": "Ring of the Feast",
+  "item.misfitrelics.plague_ring.tooltip.spawn": "Kills: %s%% chance to release up to %s allied silverfish or endermites",
+  "item.misfitrelics.plague_ring.tooltip.fight": "They fight for %s s, return to you and vanish after %s s",
+  "item.misfitrelics.feast_ring.tooltip.absorb": "Touching a silverfish or endermite absorbs it: heals %s hearts",
+  "item.misfitrelics.bug_ring.tooltip.combo": "Wear both: kill, release, devour"
 }

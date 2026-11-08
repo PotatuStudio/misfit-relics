@@ -58,5 +58,11 @@
   "item.misfitrelics.cursed_rabbit_foot.tooltip.jackpot": "Jackpot: %s%% de multiplicar el botín ×%s a ×%s",
   "item.misfitrelics.cursed_rabbit_foot.tooltip.lose": "Maldición: %s%% de perderlo todo",
   "item.misfitrelics.cursed_rabbit_foot.jackpot": "¡JACKPOT! ×%s",
-  "item.misfitrelics.cursed_rabbit_foot.lost": "La maldición se llevó tu botín..."
+  "item.misfitrelics.cursed_rabbit_foot.lost": "La maldición se llevó tu botín...",
+  "item.misfitrelics.plague_ring": "Anillo de la plaga",
+  "item.misfitrelics.feast_ring": "Anillo del festín",
+  "item.misfitrelics.plague_ring.tooltip.spawn": "Al matar: %s%% de soltar hasta %s silverfish o endermites aliados",
+  "item.misfitrelics.plague_ring.tooltip.fight": "Pelean %s s, vuelven a ti y se deshacen a los %s s",
+  "item.misfitrelics.feast_ring.tooltip.absorb": "Al tocar un silverfish o endermite lo absorbes: cura %s corazones",
+  "item.misfitrelics.bug_ring.tooltip.combo": "Con los dos: matas, sueltas, devoras"
 }

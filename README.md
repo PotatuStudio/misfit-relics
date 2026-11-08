@@ -34,7 +34,7 @@ Arma cuerpo a cuerpo e instrumento.
   | Expuesto | 1,5 s |
   | Desgastado | 1 s |
   | Oxidado | 0,6 s |
-- Receta: 4 lingotes de cobre y un bloque musical (`  C` / `CNC` / `  C`).
+- **Dónde:** bóvedas de las cámaras de desafío (12 %) y sus cofres de suministros (4 %), casi siempre con poco óxido.
 
 ## Oxidación (cañones y trompeta)
 **Mientras mejor cuidados, mejor funcionan.** Se oxidan con el uso y pierden fuerza. Agachado, con la herramienta en la otra mano: el **hacha** raspa una etapa de óxido (o quita la cera) y el **panal** los encera para que no se sigan oxidando.
@@ -43,7 +43,7 @@ Arma cuerpo a cuerpo e instrumento.
 Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto: un amuleto del murciélago colgando de un cordón en el pecho.
 - **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
-- Receta: 5 cuerdas, 2 membranas de phantom y un fragmento de eco (`SSS` / `S S` / `MEM`).
+- **Dónde:** cofres de la ciudad antigua (10 %).
 
 ## Patas de conejo
 Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
@@ -51,9 +51,20 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van
 | | **Pata de conejo de la suerte** | **Pata de conejo maldita** |
 |---|---|---|
 | Efecto | **25 %** de botín **×2**. Nunca pierde. | **15 %** de jackpot **×4 a ×10**, pero **10 %** de **perderlo todo**. |
-| Receta (sin forma) | Pata de conejo, cuerda, lingote de oro y esmeralda | Pata de la suerte, ojo de araña fermentado y arena de almas |
+| Dónde | Pirámides del desierto (12 %), cofres secretos de campamentos abandonados (10 %) y suministros de naufragios (5 %) | **Nether:** tesoros de bastión (20 %) y, rara vez, portales en ruinas (3 %) |
 
 - Aplican en **minerales y cultivos maduros** que rompes (con toque de seda no aplican), **mobs que matas**, **cofres de estructuras** la primera vez que se abren y **pesca**.
+
+## Anillos de la plaga y del festín
+Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van en los espacios de *anillo* (uno en cada mano). Por separado son modestos; juntos cierran un ciclo de sustento en combate.
+
+| | **Anillo de la plaga** | **Anillo del festín** |
+|---|---|---|
+| Efecto | Al matar un enemigo, **25 %** de soltar 1 o 2 silverfish o endermites (al azar) **aliados**: pelean contra los enemigos cercanos 8 s, nunca contra ti ni tus aliados, vuelven a ti y se deshacen a los 20 s. | Al **tocar** un silverfish o un endermite (aliado o salvaje) lo **absorbes** y te cura **2 corazones**. |
+| Dónde | **Fortaleza:** biblioteca (15 %), pasillos y cruces (8 %) | **End:** tesoros de las ciudades del End (12 %) |
+
+## Cómo se consiguen
+Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.
 
 ## Game rules
 | Regla | Por defecto | Qué hace |

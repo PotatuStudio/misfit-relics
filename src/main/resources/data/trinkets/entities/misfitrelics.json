@@ -4,6 +4,8 @@
   ],
   "slots": [
     "chest/necklace",
-    "legs/belt"
+    "legs/belt",
+    "hand/ring",
+    "offhand/ring"
   ]
 }
