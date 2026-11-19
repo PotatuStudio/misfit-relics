@@ -45,3 +45,6 @@ __pycache__/
 
 # Claude Code (permisos locales)
 .claude/settings.local.json
+
+# Registros que escribe Minecraft al arrancar en las pruebas unitarias
+logs/
