@@ -1,34 +1,20 @@
 package io.github.potatustudio.misfitrelics.mixin;
 
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
 import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.stench.StenchData;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import java.util.Optional;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.DifficultyInstance;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.effect.MobEffectInstance;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.entity.EntitySpawnReason;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.entity.SpawnGroupData;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.entity.monster.zombie.Zombie;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.level.ServerLevelAccessor;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import org.spongepowered.asm.mixin.Mixin;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import org.spongepowered.asm.mixin.injection.At;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import org.spongepowered.asm.mixin.injection.Inject;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**

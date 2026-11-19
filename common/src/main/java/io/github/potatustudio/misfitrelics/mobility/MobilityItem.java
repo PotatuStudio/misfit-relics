@@ -4,6 +4,7 @@ import io.github.potatustudio.misfitrelics.relic.AccessoryHooks;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -18,18 +19,16 @@ import net.minecraft.world.item.component.TooltipDisplay;
 /** Reliquia de movilidad (ver {@link Mobility}). Cada tipo tiene sus líneas de tooltip y su sonido al ponérsela. */
 public class MobilityItem extends Item implements AccessoryHooks {
 	public enum Kind {
-		SILK_GLOVES("silk_gloves", 2),
-		WIDOW_GLOVES("widow_gloves", 3),
-		BREEZE_BOTTLE("breeze_bottle", 2),
-		MAGMA_BOOTS("magma_boots", 2),
-		RAM_HORNS("ram_horns", 2);
+		SILK_GLOVES("silk_gloves"),
+		WIDOW_GLOVES("widow_gloves"),
+		BREEZE_BOTTLE("breeze_bottle"),
+		MAGMA_BOOTS("magma_boots"),
+		RAM_HORNS("ram_horns");
 
 		final String id;
-		final int lines;
 
-		Kind(String id, int lines) {
+		Kind(String id) {
 			this.id = id;
-			this.lines = lines;
 		}
 	}
 
@@ -43,7 +42,7 @@ public class MobilityItem extends Item implements AccessoryHooks {
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
 			Consumer<Component> tooltip, TooltipFlag flag) {
-		for (int i = 1; i <= kind.lines; i++) {
+		for (int i = 1; Language.getInstance().has("item.misfitrelics." + kind.id + ".tooltip." + i); i++) {
 			Object[] args = switch (kind) {
 				case SILK_GLOVES, WIDOW_GLOVES -> new Object[] {Mobility.WALL_JUMPS};
 				case MAGMA_BOOTS -> new Object[] {Math.round(Mobility.MAGMA_NETHER_SPEED * 100)};

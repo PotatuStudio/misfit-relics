@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 /**
  * Deja que la pata de la suerte cambie el botín ya tirado de cualquier tabla (bloques, mobs, cofres, pesca), en ambos
  * loaders. Es lo mismo que hace el evento {@code LootTableEvents.MODIFY_DROPS} de Fabric API, que Architectury no tiene.
+ * En NeoForge corre antes de los modificadores globales de botín.
  */
 @Mixin(LootTable.class)
 public abstract class LootTableMixin {
@@ -26,7 +27,11 @@ public abstract class LootTableMixin {
 	@Unique
 	private @Nullable Holder<LootTable> misfitrelics$holder;
 
-	@WrapOperation(method = "getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V",
+	// En vanilla (Fabric) la tirada está en getRandomItems(contexto, consumidor); NeoForge la mueve a la versión que
+	// devuelve la lista (para aplicar después sus modificadores globales). Se apunta a las dos: en cada loader calza una.
+	@WrapOperation(method = {
+			"getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V",
+			"getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"},
 			at = @At(value = "INVOKE",
 					target = "Lnet/minecraft/world/level/storage/loot/LootTable;getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V"))
 	private void misfitrelics$modifyDrops(LootTable table, LootContext context, Consumer<ItemStack> output, Operation<Void> original) {

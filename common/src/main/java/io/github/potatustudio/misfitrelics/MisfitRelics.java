@@ -14,6 +14,7 @@ import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import io.github.potatustudio.misfitrelics.registry.ModNetworking;
 import io.github.potatustudio.misfitrelics.registry.ModParticles;
 import io.github.potatustudio.misfitrelics.registry.ModPotions;
+import io.github.potatustudio.misfitrelics.relic.RelicCooldowns;
 import io.github.potatustudio.misfitrelics.relic.ServerState;
 import io.github.potatustudio.misfitrelics.trumpet.TrumpetSongs;
 import net.minecraft.resources.Identifier;
@@ -47,6 +48,7 @@ public final class MisfitRelics {
 		ModLoot.init();
 		ModNetworking.init();
 		ServerState.init();
+		RelicCooldowns.init();
 		TrumpetSongs.init();
 		PlagueRings.init();
 		BatCollar.init();

@@ -1,6 +1,11 @@
 package io.github.potatustudio.misfitrelics.mobility;
 
+import io.github.potatustudio.misfitrelics.relic.RelicCooldowns;
+import io.github.potatustudio.misfitrelics.relic.ServerState;
 import io.github.potatustudio.misfitrelics.relic.WornRelics;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageType;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
@@ -77,21 +82,51 @@ public final class Mobility {
 	private static final Identifier MAGMA_SPEED_ID = MisfitRelics.id("magma_boots_nether_speed");
 	public static final Identifier RAM_COOLDOWN_GROUP = MisfitRelics.id("ram_horns");
 
-	private record Ram(Vec3 direction, Set<UUID> hit, int[] ticksLeft) {
+	/** Embestida en curso. */
+	private static final class Ram {
+		final Vec3 direction;
+		final Set<UUID> hit = new HashSet<>();
+		int ticksLeft = RAM_ACTIVE_TICKS;
+
+		Ram(Vec3 direction) {
+			this.direction = direction;
+		}
 	}
 
+	/** Golpe de la embestida: tipo de daño propio, para que no cuente como golpe cuerpo a cuerpo (guantelete, collar). */
+	public static final ResourceKey<DamageType> RAM_DAMAGE_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, MisfitRelics.id("ram"));
+	/** Ticks en el suelo tras un dash antes de volver a recibir daño de caída. */
+	private static final int SAFE_FALL_GRACE_TICKS = 5;
+	/** Separación mínima entre dos ráfagas del breeze que acepta el servidor. */
+	private static final int BREEZE_MIN_INTERVAL = 5;
+	/** Fuerza con que la ráfaga empuja a los mobs (horizontal y hacia arriba). */
+	private static final double BREEZE_PUSH = 0.9;
+	private static final double BREEZE_LIFT = 0.35;
+	/** Alcance del golpe de la embestida alrededor del jugador. */
+	private static final double RAM_HIT_REACH = 0.8;
+
+	// Estado del servidor (hilo del servidor): se olvida al desconectarse y al cerrar el servidor.
 	private static final Map<UUID, Ram> RAMS = new HashMap<>();
 	private static final Map<UUID, Integer> MAGMA_GRACE = new HashMap<>();
 	private static final Map<UUID, Long> LAST_DASH = new HashMap<>();
-	/**
-	 * Durante un salto de pared, la pared de los guantes de la viuda deja de contar como escalera (vanilla limita la
-	 * subida por escalera a 0,2 por tick y cortaría el salto). UUID -> tick hasta el que dura.
-	 */
-	private static final Map<UUID, Long> CLIMB_SUPPRESSED = new HashMap<>();
-	public static final int WALL_JUMP_NO_CLIMB_TICKS = 6;
-
+	/** Ya usó la ráfaga en este salto (se libera al tocar el suelo o el agua). */
+	private static final Set<UUID> BREEZE_SPENT = new HashSet<>();
 	/** Jugadores que no reciben daño de caída hasta volver a tocar el suelo (tras sus propios dashes): UUID -> tick. */
 	private static final Map<UUID, Long> SAFE_FALL = new HashMap<>();
+
+	/**
+	 * Durante un salto de pared, la pared de los guantes de la viuda deja de contar como escalera (vanilla limita la
+	 * subida por escalera a 0,2 por tick y cortaría el salto). Lo decide el cliente, que mueve al jugador: este mapa es
+	 * solo del hilo del cliente. UUID -> tick hasta el que dura.
+	 */
+	private static final Map<UUID, Long> CLIMB_SUPPRESSED_CLIENT = new HashMap<>();
+	public static final int WALL_JUMP_NO_CLIMB_TICKS = 6;
+
+	static {
+		ServerState.perPlayer(RAMS, MAGMA_GRACE, LAST_DASH, SAFE_FALL);
+		ServerState.onQuit(player -> BREEZE_SPENT.remove(player.getUUID()));
+		ServerState.clearOnStop(BREEZE_SPENT);
+	}
 
 	private Mobility() {
 	}
@@ -116,17 +151,13 @@ public final class Mobility {
 			SAFE_FALL.remove(player.getUUID());
 			return false;
 		}
-		return !(source.is(DamageTypeTags.IS_FIRE) && isWearing(player, ModItems.MAGMA_BOOTS.get())
+		return !(source.is(DamageTypeTags.IS_FIRE) && WornRelics.isWearing(player, ModItems.MAGMA_BOOTS.get())
 				&& MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
-	}
-
-	public static boolean isWearing(LivingEntity entity, Item item) {
-		return WornRelics.isWearing(entity, item);
 	}
 
 	/** Lleva las botas de magma y no se está hundiendo a propósito (Shift). */
 	public static boolean walksOnLava(Player player) {
-		return !player.isShiftKeyDown() && isWearing(player, ModItems.MAGMA_BOOTS.get());
+		return !player.isShiftKeyDown() && WornRelics.isWearing(player, ModItems.MAGMA_BOOTS.get());
 	}
 
 	/** Superficie de lava que corre: a la altura de su propia superficie, como mucho la media altura de la fuente. */
@@ -135,19 +166,31 @@ public final class Mobility {
 		return top >= 8.0 ? LAVA_SURFACE : Block.column(16.0, 0.0, top);
 	}
 
-	/** Con las botas de magma: inmune al fuego tocando lava y durante la gracia al salir (la gracia solo la conoce el servidor). */
+	/**
+	 * Con las botas de magma: inmune al fuego tocando lava y durante la gracia al salir. La gracia solo la conoce el
+	 * servidor: en el cliente (que también pregunta, por ejemplo al dibujar el fuego) solo cuenta estar en la lava.
+	 */
 	public static boolean magmaProtected(Player player) {
-		return isWearing(player, ModItems.MAGMA_BOOTS.get())
-				&& (player.isInLava() || MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
+		if (!WornRelics.isWearing(player, ModItems.MAGMA_BOOTS.get())) {
+			return false;
+		}
+		return player.isInLava() || (!player.level().isClientSide() && MAGMA_GRACE.getOrDefault(player.getUUID(), 0) > 0);
 	}
 
 	/** Lo llama el cliente al hacer un salto de pared. */
 	public static void suppressClimb(Player player) {
-		CLIMB_SUPPRESSED.put(player.getUUID(), player.level().getGameTime() + WALL_JUMP_NO_CLIMB_TICKS);
+		if (player.level().isClientSide()) {
+			CLIMB_SUPPRESSED_CLIENT.put(player.getUUID(), player.level().getGameTime() + WALL_JUMP_NO_CLIMB_TICKS);
+		}
+	}
+
+	/** Al salir del mundo en el cliente. */
+	public static void clearClientState() {
+		CLIMB_SUPPRESSED_CLIENT.clear();
 	}
 
 	public static boolean hasSilk(LivingEntity entity) {
-		return isWearing(entity, ModItems.SILK_GLOVES.get()) || isWearing(entity, ModItems.WIDOW_GLOVES.get());
+		return WornRelics.isWearing(entity, ModItems.SILK_GLOVES.get()) || WornRelics.isWearing(entity, ModItems.WIDOW_GLOVES.get());
 	}
 
 	/** Toca una pared por algún costado (sin contar el suelo ni el techo). */
@@ -171,11 +214,13 @@ public final class Mobility {
 
 	/** Guantes de la viuda: la pared (o el techo, manteniendo el salto) cuenta como escalera. */
 	public static boolean widowClimbs(Player player, boolean jumping) {
-		Long until = CLIMB_SUPPRESSED.get(player.getUUID());
-		if (until != null && player.level().getGameTime() < until) {
+		Long until = player.level().isClientSide() ? CLIMB_SUPPRESSED_CLIENT.get(player.getUUID()) : null;
+		long now = player.level().getGameTime();
+		// Una marca de otro mundo (con otro tiempo) no cuenta: solo vale si vence dentro de la ventana del salto.
+		if (until != null && now < until && until - now <= WALL_JUMP_NO_CLIMB_TICKS) {
 			return false;
 		}
-		return isWearing(player, ModItems.WIDOW_GLOVES.get()) && !player.getAbilities().flying
+		return WornRelics.isWearing(player, ModItems.WIDOW_GLOVES.get()) && !player.getAbilities().flying
 				&& (touchingWall(player) || (jumping && touchingCeiling(player)));
 	}
 
@@ -184,8 +229,12 @@ public final class Mobility {
 	private static void tick(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			Long since = SAFE_FALL.get(player.getUUID());
-			if (since != null && (player.onGround() || player.isInWater()) && player.level().getGameTime() - since > 5) {
+			long now = player.level().getGameTime();
+			if (since != null && (player.onGround() || player.isInWater()) && (now - since > SAFE_FALL_GRACE_TICKS || now < since)) {
 				SAFE_FALL.remove(player.getUUID());
+			}
+			if (player.onGround() || player.isInWater()) {
+				BREEZE_SPENT.remove(player.getUUID());
 			}
 			// Pegado a la pared no se acumula caída (el cliente lo sostiene; aquí se perdona la altura).
 			if (isClinging(player)) {
@@ -197,7 +246,7 @@ public final class Mobility {
 	}
 
 	private static void magmaBoots(ServerPlayer player) {
-		boolean wearing = isWearing(player, ModItems.MAGMA_BOOTS.get());
+		boolean wearing = WornRelics.isWearing(player, ModItems.MAGMA_BOOTS.get());
 		UUID id = player.getUUID();
 		if (wearing && player.isInLava()) {
 			MAGMA_GRACE.put(id, MAGMA_GRACE_TICKS);
@@ -216,10 +265,12 @@ public final class Mobility {
 		}
 		AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {
-			if (wearing && player.level().dimension() == Level.NETHER) {
-				speed.addOrUpdateTransientModifier(new AttributeModifier(MAGMA_SPEED_ID, MAGMA_NETHER_SPEED,
+			// Solo se toca el atributo al cambiar: cada cambio se manda al cliente.
+			boolean fast = wearing && player.level().dimension() == Level.NETHER;
+			if (fast && !speed.hasModifier(MAGMA_SPEED_ID)) {
+				speed.addTransientModifier(new AttributeModifier(MAGMA_SPEED_ID, MAGMA_NETHER_SPEED,
 						AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-			} else {
+			} else if (!fast && speed.hasModifier(MAGMA_SPEED_ID)) {
 				speed.removeModifier(MAGMA_SPEED_ID);
 			}
 		}
@@ -227,14 +278,17 @@ public final class Mobility {
 
 	/** El cliente avisa que usó la ráfaga: efectos, empuje a los mobs y se perdona la caída. */
 	public static void onBreezeDash(ServerPlayer player) {
-		if (!isWearing(player, ModItems.BREEZE_BOTTLE.get()) || player.onGround()) {
+		if (!WornRelics.isWearing(player, ModItems.BREEZE_BOTTLE.get()) || player.onGround() || player.isInWater()
+				|| BREEZE_SPENT.contains(player.getUUID())) {
 			return;
 		}
 		long now = player.level().getGameTime();
-		if (now - LAST_DASH.getOrDefault(player.getUUID(), 0L) < 5) {
+		long last = LAST_DASH.getOrDefault(player.getUUID(), Long.MIN_VALUE);
+		if (now >= last && now - last < BREEZE_MIN_INTERVAL) {
 			return;
 		}
 		LAST_DASH.put(player.getUUID(), now);
+		BREEZE_SPENT.add(player.getUUID());
 		safeFall(player);
 		ServerLevel level = player.level();
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),
@@ -244,7 +298,7 @@ public final class Mobility {
 		for (LivingEntity mob : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(BREEZE_PUSH_RADIUS),
 				e -> e != player && e.isAlive() && !Allies.isAlly(level, e, player.getUUID()))) {
 			Vec3 away = mob.position().subtract(player.position()).normalize();
-			mob.push(away.x * 0.9, 0.35, away.z * 0.9);
+			mob.push(away.x * BREEZE_PUSH, BREEZE_LIFT, away.z * BREEZE_PUSH);
 			mob.needsSync = true;
 		}
 	}
@@ -269,8 +323,8 @@ public final class Mobility {
 		dir = dir.normalize();
 		// El dash lo hace el cliente (mueve a su propio personaje); aquí van los golpes, la invulnerabilidad y la recarga.
 		safeFall(player);
-		player.getCooldowns().addCooldown(RAM_COOLDOWN_GROUP, RAM_COOLDOWN);
-		RAMS.put(player.getUUID(), new Ram(dir, new HashSet<>(), new int[] {RAM_ACTIVE_TICKS}));
+		RelicCooldowns.start(player, RAM_COOLDOWN_GROUP, RAM_COOLDOWN);
+		RAMS.put(player.getUUID(), new Ram(dir));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GOAT_PREPARE_RAM,
 				SoundSource.PLAYERS, 1.0f, 1.0f);
 	}
@@ -281,19 +335,20 @@ public final class Mobility {
 			Map.Entry<UUID, Ram> entry = it.next();
 			ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
 			Ram ram = entry.getValue();
-			if (player == null || --ram.ticksLeft()[0] < 0) {
+			if (player == null || --ram.ticksLeft < 0) {
 				it.remove();
 				continue;
 			}
 			ServerLevel level = player.level();
 			level.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.2, player.getZ(), 2, 0.2, 0.05, 0.2, 0.0);
-			for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(0.8),
-					e -> e != player && e.isAlive() && !ram.hit().contains(e.getUUID())
+			for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(RAM_HIT_REACH),
+					e -> e != player && e.isAlive() && !ram.hit.contains(e.getUUID())
 							&& !Allies.isAlly(level, e, player.getUUID()))) {
-				ram.hit().add(target.getUUID());
-				target.hurtServer(level, player.damageSources().playerAttack(player), RAM_DAMAGE);
+				ram.hit.add(target.getUUID());
+				target.hurtServer(level, new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE)
+						.getOrThrow(RAM_DAMAGE_TYPE), player), RAM_DAMAGE);
 				// Empuje directo en la dirección de la embestida (más fuerte que el knockback normal).
-				target.push(ram.direction().x * RAM_KNOCKBACK, 0.5, ram.direction().z * RAM_KNOCKBACK);
+				target.push(ram.direction.x * RAM_KNOCKBACK, 0.5, ram.direction.z * RAM_KNOCKBACK);
 				target.needsSync = true;
 				target.addEffect(new MobEffectInstance(ModEffects.STUNNED.asHolder(), RAM_STUN), player);
 				level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.GOAT_RAM_IMPACT,

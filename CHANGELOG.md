@@ -4,6 +4,21 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/);
 el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecraft como metadato (`0.1.0+26.3`).
 
 ## [Unreleased]
+### Fixed (auditoría del 2026-11-19, ver docs/AUDITORIA.md)
+- La **pata de la suerte** funciona con los cultivos maduros; el jackpot de la maldita ya no pierde ítems en los cofres.
+- Un **zombi portador** sigue siéndolo aunque le vuelva a llegar el Hedor.
+- **Guantelete eléctrico**: carga una vez por golpe (los barridos no suman), solo con golpes cuerpo a cuerpo y solo contra
+  enemigos; la electrocución ya no alcanza a animales pacíficos, mascotas ni soportes de armadura.
+- **Corazón de creeper**: solo reacciona a golpes de alguien (no a caídas, fuego ni hambre).
+- La **embestida** tiene su propio tipo de daño (no carga el guantelete ni roba vida con el collar).
+- Las reliquias de movilidad y el corazón ya no fallan al cambiar a un mundo con menos tiempo jugado.
+- Recargas de la embestida y la ecolocación guardadas con el mundo (no se reinician al reconectar ni al morir).
+- Bichos de la plaga: no se meten en la piedra ni apuntan al dueño, y su tiempo de vida sobrevive a recargar el mundo.
+- Una ráfaga del breeze por salto también en el servidor; la trompeta deja de sonar al cambiar de dimensión.
+- Memoria: el estado de las reliquias se limpia al desconectarse y al cerrar el mundo.
+- Rendimiento: los arcos eléctricos se dibujan en el cliente (un paquete por arco); flechas guiadas, botas de magma y
+  concha hacen menos trabajo por tick.
+
 ### Added
 - Efecto **Hedor**: daño periódico que puede matar y se contagia en cadena a 1,5 bloques; cada salto dura un 25 % menos.
 - **Pociones de hedor** (normal, larga y fuerte) con versiones arrojadiza y persistente, y flechas de hedor.

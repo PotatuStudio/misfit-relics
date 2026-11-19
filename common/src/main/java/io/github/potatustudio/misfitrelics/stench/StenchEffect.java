@@ -1,34 +1,20 @@
 package io.github.potatustudio.misfitrelics.stench;
 
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModDamageTypes;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.registry.ModParticles;
 import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.core.particles.ParticleOptions;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.core.registries.Registries;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.server.level.ServerLevel;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.effect.MobEffect;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.effect.MobEffectCategory;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.effect.MobEffectInstance;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.entity.LivingEntity;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.entity.player.Player;
-import io.github.potatustudio.misfitrelics.relic.EntityData;
 import net.minecraft.world.phys.AABB;
 
 /**
@@ -57,7 +43,8 @@ public class StenchEffect extends MobEffect {
 
 	/** Nivel I: cada 2 s. Cada nivel extra divide el intervalo, como el veneno. */
 	static int damageInterval(int amplifier) {
-		return Math.max(10, 40 >> amplifier);
+		// El desplazamiento de Java usa solo 5 bits: sin el tope, un amplificador de 32 o más volvería a 40.
+		return Math.max(10, 40 >> Math.min(amplifier, 31));
 	}
 
 	/** En vez de los remolinos de color de los efectos, revolotean moscas. */

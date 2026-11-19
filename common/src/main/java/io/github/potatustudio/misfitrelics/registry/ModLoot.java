@@ -97,8 +97,27 @@ public final class ModLoot {
 	private ModLoot() {
 	}
 
+	/** Lugares por reliquia, calculados la primera vez que se piden (los ítems ya están registrados). */
+	private static java.util.@org.jspecify.annotations.Nullable Map<Item, List<Source>> sourcesByItem;
+
 	/** Todos los lugares donde se encuentra una reliquia (cualquiera de sus etapas de oxidación), de más a menos probable. */
 	public static List<Source> sources(Item item) {
+		if (sourcesByItem == null) {
+			Map<Item, List<Source>> all = new java.util.IdentityHashMap<>();
+			for (List<Drop> drops : DROPS.values()) {
+				for (Drop drop : drops) {
+					for (Item relic : drop.items().get().keySet()) {
+						all.computeIfAbsent(relic, ModLoot::computeSources);
+					}
+				}
+			}
+			all.computeIfAbsent(ModItems.KING_BAT_COLLAR.get(), ModLoot::computeSources);
+			sourcesByItem = all;
+		}
+		return sourcesByItem.getOrDefault(item, List.of());
+	}
+
+	private static List<Source> computeSources(Item item) {
 		List<Source> found = new ArrayList<>();
 		for (Map.Entry<ResourceKey<LootTable>, List<Drop>> entry : DROPS.entrySet()) {
 			for (Drop drop : entry.getValue()) {
@@ -111,7 +130,7 @@ public final class ModLoot {
 			EntityTypes.WARDEN.getDefaultLootTable().ifPresent(key -> found.add(new Source(key, WARDEN_KING_COLLAR_CHANCE)));
 		}
 		found.sort((a, b) -> Float.compare(b.chance(), a.chance()));
-		return found;
+		return List.copyOf(found);
 	}
 
 	/** Línea discreta para el tooltip: "Se encuentra en: ciudad antigua, warden". */

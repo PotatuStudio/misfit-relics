@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import dev.architectury.networking.NetworkManager;
+import io.github.potatustudio.misfitrelics.relic.RelicCooldowns;
+import io.github.potatustudio.misfitrelics.relic.ServerState;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -58,6 +61,14 @@ public final class BatCollar {
 
 	public static void init() {
 		TickEvent.SERVER_POST.register(BatCollar::tick);
+		// El murciélago se va con su dueño; al volver, el tick invoca otro.
+		ServerState.onQuit(player -> {
+			AlliedBat bat = BATS.remove(player.getUUID());
+			if (bat != null) {
+				bat.discard();
+			}
+		});
+		ServerState.clearOnStop(BATS);
 	}
 
 	/** Mantiene un murciélago aliado por cada jugador con collar, salvo mientras el collar está "reviviendo". */
@@ -175,19 +186,20 @@ public final class BatCollar {
 		// El contorno lo dibuja solo el cliente de quien ecolocalizó: los demás jugadores no lo ven.
 		List<Integer> found = new ArrayList<>();
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-				t -> t != player && t.isAlive() && t.distanceToSqr(player) <= ECHOLOCATION_RADIUS * ECHOLOCATION_RADIUS)) {
+				t -> t != player && t.isAlive() && !t.isSpectator()
+						&& t.distanceToSqr(player) <= ECHOLOCATION_RADIUS * ECHOLOCATION_RADIUS)) {
 			found.add(target.getId());
 		}
 		NetworkManager.sendToPlayer(player, new EcholocationPulsePayload(found, ECHOLOCATION_GLOW));
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BAT_AMBIENT,
 				SoundSource.PLAYERS, 1.0f, 1.6f);
 		level.sendParticles(ParticleTypes.SONIC_BOOM, player.getX(), player.getEyeY(), player.getZ(), 1, 0, 0, 0, 0);
-		player.getCooldowns().addCooldown(COOLDOWN_GROUP, ECHOLOCATION_COOLDOWN);
+		RelicCooldowns.start(player, COOLDOWN_GROUP, ECHOLOCATION_COOLDOWN);
 	}
 
-	/** Robo de vida: solo golpes directos (no proyectiles, nubes ni efectos). */
+	/** Robo de vida: solo golpes cuerpo a cuerpo (no proyectiles, nubes, efectos ni la embestida). */
 	public static void onDamageDealt(LivingEntity victim, DamageSource source, float damageTaken, boolean blocked) {
-		if (blocked || damageTaken <= 0 || !(source.getEntity() instanceof Player attacker)
+		if (blocked || damageTaken <= 0 || !source.is(DamageTypes.PLAYER_ATTACK) || !(source.getEntity() instanceof Player attacker)
 				|| source.getDirectEntity() != attacker || attacker == victim) {
 			return;
 		}

@@ -1,11 +1,13 @@
 package io.github.potatustudio.misfitrelics.combat;
 
 import io.github.potatustudio.misfitrelics.relic.AccessoryHooks;
+import static io.github.potatustudio.misfitrelics.relic.TooltipNumbers.fmt;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -28,19 +30,17 @@ public class CombatItem extends Item implements AccessoryHooks {
 	public static final double BERSERKER_DAMAGE = 1.5;
 
 	public enum Kind {
-		ELECTRIC_GAUNTLET("electric_gauntlet", 4),
-		CHARGED_CREEPER_HEART("charged_creeper_heart", 2),
-		FOREST_QUIVER("forest_quiver", 2),
-		WATCHER_QUIVER("watcher_quiver", 2),
-		NAUTILUS_SHELL("nautilus_shell", 1),
-		BERSERKER_RING("berserker_ring", 2);
+		ELECTRIC_GAUNTLET("electric_gauntlet"),
+		CHARGED_CREEPER_HEART("charged_creeper_heart"),
+		FOREST_QUIVER("forest_quiver"),
+		WATCHER_QUIVER("watcher_quiver"),
+		NAUTILUS_SHELL("nautilus_shell"),
+		BERSERKER_RING("berserker_ring");
 
 		final String id;
-		final int lines;
 
-		Kind(String id, int lines) {
+		Kind(String id) {
 			this.id = id;
-			this.lines = lines;
 		}
 	}
 
@@ -49,10 +49,6 @@ public class CombatItem extends Item implements AccessoryHooks {
 	public CombatItem(Kind kind, Properties properties) {
 		super(properties);
 		this.kind = kind;
-	}
-
-	private static String fmt(float value) {
-		return value == Math.round(value) ? String.valueOf(Math.round(value)) : String.format("%.1f", value);
 	}
 
 	@Override
@@ -69,7 +65,7 @@ public class CombatItem extends Item implements AccessoryHooks {
 			case BERSERKER_RING -> new Object[] {Math.round(-BERSERKER_HEALTH * 100), Math.round(BERSERKER_DAMAGE * 100)};
 			default -> new Object[0];
 		};
-		for (int i = 1; i <= kind.lines; i++) {
+		for (int i = 1; Language.getInstance().has("item.misfitrelics." + kind.id + ".tooltip." + i); i++) {
 			tooltip.accept(Component.translatable("item.misfitrelics." + kind.id + ".tooltip." + i, args)
 					.withStyle(i == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
 		}

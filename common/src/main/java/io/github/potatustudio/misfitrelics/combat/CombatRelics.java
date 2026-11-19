@@ -1,5 +1,8 @@
 package io.github.potatustudio.misfitrelics.combat;
 
+import dev.architectury.networking.NetworkManager;
+import io.github.potatustudio.misfitrelics.network.ArcPayload;
+import io.github.potatustudio.misfitrelics.relic.ServerState;
 import io.github.potatustudio.misfitrelics.relic.WornRelics;
 import io.github.potatustudio.misfitrelics.registry.ModDamageTypes;
 import io.github.potatustudio.misfitrelics.registry.ModEffects;
@@ -28,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +43,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -74,9 +79,22 @@ public final class CombatRelics {
 	public static final double HOMING_RANGE = 20.0;
 	public static final double HOMING_TURN = 0.35;
 
-	private record Charge(int[] level, long[] lastHit) {
+	/** Carga del guantelete de un jugador. */
+	private static final class Charge {
+		int level;
+		long lastHit;
+		/** Tick del último golpe que cargó: un barrido golpea a varios en el mismo tick y solo carga una vez. */
+		long lastChargedTick = Long.MIN_VALUE;
 	}
 
+	/** Radio en que el corazón busca un enemigo si quien te pegó no lo es. */
+	private static final double HEART_SEARCH_RADIUS = 8.0;
+	/** Cada cuántos ticks busca objetivo una flecha guiada que todavía no tiene. */
+	private static final int HOMING_SEARCH_INTERVAL = 4;
+	/** Distancia hasta la que se mandan los arcos a los jugadores. */
+	private static final double ARC_VIEW_DISTANCE = 64.0;
+
+	// Estado solo del servidor (hilo del servidor); se olvida al desconectarse y al cerrar el servidor.
 	private static final Map<UUID, Charge> CHARGES = new HashMap<>();
 	private static final Map<UUID, Long> HEART_LAST = new HashMap<>();
 	private static final Set<AbstractArrow> ENTANGLING = Collections.newSetFromMap(new WeakHashMap<>());
@@ -86,6 +104,11 @@ public final class CombatRelics {
 	private static final class Homing {
 		@Nullable LivingEntity target;
 		double speed = -1;
+	}
+
+	static {
+		ServerState.perPlayer(CHARGES, HEART_LAST);
+		ServerState.clearOnStop(ENTANGLING, HOMING);
 	}
 
 	private CombatRelics() {
@@ -99,21 +122,24 @@ public final class CombatRelics {
 			if (source.getDirectEntity() instanceof AbstractArrow arrow && ENTANGLING.remove(arrow)) {
 				entangle(level, entity);
 			}
-			if (source.getEntity() instanceof ServerPlayer attacker && source.getDirectEntity() == attacker && attacker != entity) {
-				if (isWearing(attacker, ModItems.ELECTRIC_GAUNTLET.get())) {
-					electrify(level, attacker, entity);
-				}
+			// Solo golpes cuerpo a cuerpo del jugador (no la embestida ni otros daños con él como causa) a un enemigo.
+			if (source.is(DamageTypes.PLAYER_ATTACK) && source.getEntity() instanceof ServerPlayer attacker
+					&& source.getDirectEntity() == attacker && Allies.isEnemy(level, entity, attacker)
+					&& WornRelics.isWearing(attacker, ModItems.ELECTRIC_GAUNTLET.get())) {
+				electrify(level, attacker, entity);
 			}
-			if (entity instanceof ServerPlayer player && isWearing(player, ModItems.CHARGED_CREEPER_HEART.get())
+			// Reacciona a golpes de alguien (no a caídas, fuego o hambre).
+			if (entity instanceof ServerPlayer player && source.getEntity() instanceof LivingEntity && source.getEntity() != player
+					&& WornRelics.isWearing(player, ModItems.CHARGED_CREEPER_HEART.get())
 					&& !source.is(ModDamageTypes.ELECTROCUTION) && !source.is(DamageTypeTags.IS_LIGHTNING)) {
 				creeperHeart(level, player, source);
 			}
 		});
 		EntityEvent.ADD.register((entity, level) -> {
 			if (!level.isClientSide() && entity instanceof AbstractArrow arrow && arrow.tickCount == 0 && arrow.getOwner() instanceof ServerPlayer owner) {
-				if (isWearing(owner, ModItems.FOREST_QUIVER.get())) {
+				if (WornRelics.isWearing(owner, ModItems.FOREST_QUIVER.get())) {
 					ENTANGLING.add(arrow);
-				} else if (isWearing(owner, ModItems.WATCHER_QUIVER.get())) {
+				} else if (WornRelics.isWearing(owner, ModItems.WATCHER_QUIVER.get())) {
 					HOMING.put(arrow, new Homing());
 				}
 			}
@@ -122,13 +148,8 @@ public final class CombatRelics {
 		TickEvent.SERVER_POST.register(CombatRelics::tick);
 	}
 
-	public static boolean isWearing(LivingEntity entity, Item item) {
-		return WornRelics.isWearing(entity, item);
-	}
-
 	private static boolean isEnemyOf(ServerLevel level, LivingEntity target, Player player) {
-		return target != player && target.isAlive() && !target.isSpectator() && !Allies.isAlly(level, target, player.getUUID())
-				&& !(target instanceof Player other && other.isCreative());
+		return Allies.isEnemy(level, target, player);
 	}
 
 	private static DamageSource electrocution(ServerLevel level, Player player) {
@@ -141,13 +162,17 @@ public final class CombatRelics {
 
 	private static void electrify(ServerLevel level, ServerPlayer player, LivingEntity victim) {
 		long now = level.getGameTime();
-		Charge charge = CHARGES.computeIfAbsent(player.getUUID(), id -> new Charge(new int[1], new long[1]));
-		if (now - charge.lastHit()[0] > CHARGE_TIMEOUT) {
-			charge.level()[0] = 0;
+		Charge charge = CHARGES.computeIfAbsent(player.getUUID(), id -> new Charge());
+		if (charge.lastChargedTick == now) {
+			return;
 		}
-		charge.level()[0] = Math.min(MAX_CHARGE, charge.level()[0] + 1);
-		charge.lastHit()[0] = now;
-		int c = charge.level()[0];
+		charge.lastChargedTick = now;
+		if (now - charge.lastHit > CHARGE_TIMEOUT || now < charge.lastHit) {
+			charge.level = 0;
+		}
+		charge.level = Math.min(MAX_CHARGE, charge.level + 1);
+		charge.lastHit = now;
+		int c = charge.level;
 		float shock = SHOCK_BASE + SHOCK_PER_CHARGE * c;
 
 		// Electrocución sobre el objetivo (se saltan los ticks de invulnerabilidad del golpe recién dado).
@@ -188,7 +213,7 @@ public final class CombatRelics {
 		LivingEntity best = null;
 		double bestDistance = range * range;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class,
-				new net.minecraft.world.phys.AABB(from, from).inflate(range), e -> !exclude.contains(e) && isEnemyOf(level, e, player))) {
+				new AABB(from, from).inflate(range), e -> !exclude.contains(e) && isEnemyOf(level, e, player))) {
 			double d = e.position().distanceToSqr(from);
 			if (d < bestDistance) {
 				bestDistance = d;
@@ -199,55 +224,23 @@ public final class CombatRelics {
 	}
 
 	/** Cuántos ticks dura un arco: en cada uno se redibuja con otra forma (parpadea) y la corriente avanza. */
-	public static final int ARC_TICKS = 6;
+	private static final int ARC_TICKS = 6;
 
-	/** Arco eléctrico vivo entre dos entidades (sigue sus posiciones mientras dura). */
-	private record Arc(ServerLevel level, LivingEntity from, LivingEntity to, int[] age) {
-	}
-
-	private static final List<Arc> ARCS = new ArrayList<>();
-
+	/** Arco eléctrico entre dos entidades (lo dibuja el cliente siguiendo sus posiciones: ver ArcClient). */
 	private static void arc(ServerLevel level, LivingEntity a, LivingEntity b) {
-		ARCS.add(new Arc(level, a, b, new int[1]));
-		drawArc(level, a.getBoundingBox().getCenter(), b.getBoundingBox().getCenter(), 0);
+		sendArc(level, new ArcPayload(a.getId(), b.getId(), a.getBoundingBox().getCenter(), b.getBoundingBox().getCenter(), ARC_TICKS));
 	}
 
-	/**
-	 * Dibuja el arco una vez: rayo quebrado (desplazamiento del punto medio) con chispas eléctricas, que duran poco y
-	 * se ven brillar; como cada tick sale otra forma, el rayo parpadea. La "corriente" es una chispa brillante que
-	 * recorre el arco del origen al objetivo.
-	 */
-	private static void drawArc(ServerLevel level, Vec3 start, Vec3 end, int age) {
-		List<Vec3> points = new ArrayList<>(List.of(start, end));
-		double offset = start.distanceTo(end) * 0.22;
-		for (int pass = 0; pass < 3; pass++) {
-			List<Vec3> refined = new ArrayList<>();
-			for (int i = 0; i < points.size() - 1; i++) {
-				Vec3 p = points.get(i);
-				Vec3 q = points.get(i + 1);
-				Vec3 mid = p.add(q).scale(0.5).add((level.getRandom().nextDouble() - 0.5) * offset,
-						(level.getRandom().nextDouble() - 0.5) * offset, (level.getRandom().nextDouble() - 0.5) * offset);
-				refined.add(p);
-				refined.add(mid);
-			}
-			refined.add(points.getLast());
-			points = refined;
-			offset *= 0.5;
-		}
-		for (int i = 0; i < points.size() - 1; i++) {
-			Vec3 p = points.get(i);
-			Vec3 q = points.get(i + 1);
-			int steps = Math.max(1, (int) (p.distanceTo(q) / 0.26));
-			for (int k = 0; k < steps; k++) {
-				Vec3 t = p.add(q.subtract(p).scale((double) k / steps));
-				level.sendParticles(ParticleTypes.ELECTRIC_SPARK, t.x, t.y, t.z, 1, 0, 0, 0, 0);
+	private static void sendArc(ServerLevel level, ArcPayload arc) {
+		List<ServerPlayer> viewers = new ArrayList<>();
+		for (ServerPlayer p : level.players()) {
+			if (p.position().distanceToSqr(arc.from()) < ARC_VIEW_DISTANCE * ARC_VIEW_DISTANCE) {
+				viewers.add(p);
 			}
 		}
-		// La corriente: avanza por el arco a lo largo de su duración.
-		double f = Math.min(1.0, (age + 1) / (double) ARC_TICKS);
-		Vec3 head = start.add(end.subtract(start).scale(f));
-		level.sendParticles(ParticleTypes.END_ROD, head.x, head.y, head.z, 1, 0.02, 0.02, 0.02, 0.0);
-		level.sendParticles(ParticleTypes.ELECTRIC_SPARK, head.x, head.y, head.z, 2, 0.06, 0.06, 0.06, 0.08);
+		if (!viewers.isEmpty()) {
+			NetworkManager.sendToPlayers(viewers, arc);
+		}
 	}
 
 	/** Descarga sobre una entidad: chispas que saltan alrededor del cuerpo. */
@@ -260,34 +253,25 @@ public final class CombatRelics {
 
 	/** Arcos vivos y chisporroteo de la mano mientras hay carga. */
 	private static void tickElectricity(MinecraftServer server) {
-		Iterator<Arc> it = ARCS.iterator();
-		while (it.hasNext()) {
-			Arc arc = it.next();
-			int age = ++arc.age()[0];
-			if (age >= ARC_TICKS || arc.from().isRemoved() || arc.to().isRemoved()) {
-				it.remove();
-				continue;
-			}
-			drawArc(arc.level(), arc.from().getBoundingBox().getCenter(), arc.to().getBoundingBox().getCenter(), age);
-		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			Charge charge = CHARGES.get(player.getUUID());
-			if (charge == null || charge.level()[0] == 0) {
+			if (charge == null || charge.level == 0) {
 				continue;
 			}
 			ServerLevel level = player.level();
-			if (level.getGameTime() - charge.lastHit()[0] > CHARGE_TIMEOUT) {
-				charge.level()[0] = 0;
+			long now = level.getGameTime();
+			if (now - charge.lastHit > CHARGE_TIMEOUT || now < charge.lastHit) {
+				charge.level = 0;
 				continue;
 			}
 			// Cada pocos ticks, un arco chico salta entre dos puntos de la mano (más seguido con más carga).
-			if (player.tickCount % Math.max(1, 6 - charge.level()[0]) == 0) {
+			if (player.tickCount % Math.max(1, 6 - charge.level) == 0) {
 				Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(0.5)).add(0, -0.45, 0);
 				Vec3 a = hand.add((level.getRandom().nextDouble() - 0.5) * 0.5, (level.getRandom().nextDouble() - 0.5) * 0.5,
 						(level.getRandom().nextDouble() - 0.5) * 0.5);
 				Vec3 b = hand.add((level.getRandom().nextDouble() - 0.5) * 0.5, (level.getRandom().nextDouble() - 0.5) * 0.5,
 						(level.getRandom().nextDouble() - 0.5) * 0.5);
-				drawArc(level, a, b, ARC_TICKS - 1);
+				sendArc(level, new ArcPayload(-1, -1, a, b, 1));
 			}
 		}
 	}
@@ -296,12 +280,13 @@ public final class CombatRelics {
 
 	private static void creeperHeart(ServerLevel level, ServerPlayer player, DamageSource source) {
 		long now = level.getGameTime();
-		if (now - HEART_LAST.getOrDefault(player.getUUID(), -HEART_COOLDOWN * 2L) < HEART_COOLDOWN
+		long last = HEART_LAST.getOrDefault(player.getUUID(), Long.MIN_VALUE);
+		if ((now >= last && now - last < HEART_COOLDOWN)
 				|| player.getRandom().nextFloat() >= HEART_CHANCE) {
 			return;
 		}
 		LivingEntity target = source.getEntity() instanceof LivingEntity attacker && isEnemyOf(level, attacker, player)
-				? attacker : nearestEnemy(level, player, player.position(), 8.0, List.of());
+				? attacker : nearestEnemy(level, player, player.position(), HEART_SEARCH_RADIUS, List.of());
 		if (target == null) {
 			return;
 		}
@@ -355,7 +340,8 @@ public final class CombatRelics {
 			}
 			double travel = arrow.isInWater() ? homing.speed : speed;
 			Vec3 forward = v.normalize().scale(travel);
-			if (homing.target == null || !homing.target.isAlive()) {
+			// Buscar es caro (caja grande y línea de visión): una flecha sin objetivo busca cada pocos ticks.
+			if ((homing.target == null || !homing.target.isAlive()) && arrow.tickCount % HOMING_SEARCH_INTERVAL == 0) {
 				homing.target = findHomingTarget(level, owner, arrow, v);
 			}
 			if (homing.target == null) {
@@ -376,8 +362,12 @@ public final class CombatRelics {
 		}
 		// Concha de nautilus: bajo el agua, la gracia del delfín (nado mucho más rápido) mientras la lleve.
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-			if (player.isInWater() && isWearing(player, ModItems.NAUTILUS_SHELL.get())) {
-				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 40, 0, true, false, true));
+			// Se renueva solo cuando le queda poco, para no reenviar el efecto al cliente en cada tick.
+			if (player.isInWater() && WornRelics.isWearing(player, ModItems.NAUTILUS_SHELL.get())) {
+				MobEffectInstance grace = player.getEffect(MobEffects.DOLPHINS_GRACE);
+				if (grace == null || grace.getDuration() < 10) {
+					player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 40, 0, true, false, true));
+				}
 			}
 		}
 	}
@@ -400,11 +390,5 @@ public final class CombatRelics {
 			}
 		}
 		return best;
-	}
-
-	/** Para el tooltip: carga actual del jugador (0 si no tiene). */
-	public static int chargeOf(Entity entity) {
-		Charge c = CHARGES.get(entity.getUUID());
-		return c == null ? 0 : c.level()[0];
 	}
 }

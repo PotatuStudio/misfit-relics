@@ -37,6 +37,7 @@ public final class MisfitRelicsClient {
 		EntityRendererRegistry.register(ModEntityTypes.ALLIED_BAT, BatRenderer::new);
 		EntityRendererRegistry.register(ModEntityTypes.KING_BAT, KingBatRenderer::new);
 		EcholocationClient.init();
+		ArcClient.init();
 		MobilityClient.init(CATEGORY);
 		// Moscas del Hedor: comportamiento errático de la luciérnaga vanilla con textura propia. Los efectos sueltan
 		// partículas casi en cada tick y las luciérnagas viven mucho, así que solo se crea una de cada FLY_KEEP_ONE_IN.

@@ -162,6 +162,8 @@
   "item.misfitrelics.berserker_ring.tooltip.1": "Leaves you at 1 heart (−%1$s%% max health)",
   "item.misfitrelics.berserker_ring.tooltip.2": "+%2$s%% attack damage",
   "effect.misfitrelics.entangled": "Entangled",
+  "death.attack.misfitrelics.ram": "%1$s was rammed",
+  "death.attack.misfitrelics.ram.player": "%1$s was rammed by %2$s",
   "death.attack.misfitrelics.electrocution": "%1$s was electrocuted",
   "death.attack.misfitrelics.electrocution.player": "%1$s was electrocuted by %2$s",
   "message.misfitrelics.electric_charge": "%1$s Charge %2$s/%3$s",

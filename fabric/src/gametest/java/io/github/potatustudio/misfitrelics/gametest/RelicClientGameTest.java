@@ -8,7 +8,15 @@ import eu.pb4.trinkets.api.TrinketsApi;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.registry.ModAttachments;
 import io.github.potatustudio.misfitrelics.registry.ModGameRules;
+import io.github.potatustudio.misfitrelics.registry.ModEffects;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
+import io.github.potatustudio.misfitrelics.registry.ModLoot;
+import io.github.potatustudio.misfitrelics.stench.StenchData;
+import java.util.Optional;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import io.github.potatustudio.misfitrelics.relic.EntityData;
 import io.github.potatustudio.misfitrelics.relic.WornRelics;
 import java.io.IOException;
@@ -94,6 +102,31 @@ public class RelicClientGameTest implements FabricClientGameTest {
 			check(EntityData.getOrElse(p, ModAttachments.BAT_REVIVE, 0) == 42, "dato de entidad bat_revive se guarda");
 			EntityData.remove(p, ModAttachments.BAT_REVIVE);
 			check(!EntityData.has(p, ModAttachments.BAT_REVIVE), "dato de entidad bat_revive se borra");
+
+			// Un zombi portador que vuelve a recibir Hedor sigue siendo portador (antes empezaba a dañarse).
+			Zombie zombie = EntityTypes.ZOMBIE.create(p.level(), EntitySpawnReason.COMMAND);
+			if (zombie != null) {
+				zombie.snapTo(p.getX() + 3, p.getY(), p.getZ(), 0, 0);
+				p.level().addFreshEntity(zombie);
+				EntityData.set(zombie, ModAttachments.STENCH, new StenchData(Optional.empty(), true, true));
+				zombie.addEffect(new MobEffectInstance(ModEffects.STENCH.asHolder(), 200), p);
+				StenchData after = EntityData.get(zombie, ModAttachments.STENCH);
+				check(after != null && after.carrier(), "el zombi portador sigue siéndolo tras recibir Hedor");
+				zombie.discard();
+			}
+
+			// Cada reliquia se encuentra en algún lado, salvo el cañón rústico (se fabrica), la trompeta oxidada (las cámaras
+			// de desafío están cuidadas: se oxida usándola) y el ícono.
+			for (Item item : relics()) {
+				String id = id(item);
+				if (id.endsWith("spud_cannon") && !id.contains("pressure") || id.equals("oxidized_copper_trumpet")
+						|| item == ModItems.RELIC_ICON.get()) {
+					continue;
+				}
+				List<ModLoot.Source> sources = ModLoot.sources(item);
+				check(!sources.isEmpty() && sources.stream().allMatch(src -> src.chance() > 0 && src.chance() <= 1),
+						"botín de " + id + " (" + sources.size() + " lugares)");
+			}
 		});
 	}
 

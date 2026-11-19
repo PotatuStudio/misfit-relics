@@ -13,7 +13,9 @@ import java.util.UUID;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.TickEvent;
+import io.github.potatustudio.misfitrelics.mixin.MobAccessor;
 import io.github.potatustudio.misfitrelics.relic.EntityData;
+import io.github.potatustudio.misfitrelics.relic.ServerState;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -70,15 +72,33 @@ public final class PlagueRings {
 				allowDamage(target, source, amount) ? EventResult.pass() : EventResult.interruptFalse());
 		EntityEvent.ADD.register((entity, level) -> {
 			if (!level.isClientSide() && entity instanceof Mob mob && EntityData.has(mob, ModAttachments.PLAGUE_OWNER)) {
+				tame(mob);
 				BUGS.add(mob);
 			}
 			return EventResult.pass();
 		});
 		TickEvent.SERVER_POST.register(PlagueRings::tick);
+		ServerState.clearOnStop(BUGS);
 	}
 
-	public static boolean isWearing(LivingEntity entity, Item ring) {
-		return WornRelics.isWearing(entity, ring);
+	/**
+	 * Un bicho aliado no tiene objetivos propios (los decide el anillo cada tick) y el silverfish no se mete en la
+	 * piedra: si no, al terminar se esconde y después sale un silverfish salvaje.
+	 */
+	private static void tame(Mob bug) {
+		MobAccessor goals = (MobAccessor) bug;
+		goals.misfitrelics$targetSelector().removeAllGoals(goal -> true);
+		goals.misfitrelics$goalSelector().removeAllGoals(goal -> goal.getClass().getSimpleName().contains("MergeWithStone"));
+	}
+
+	/** Ticks desde que nació el bicho (guardado con el mundo: tickCount vuelve a 0 al recargar). */
+	private static long age(Mob bug, ServerLevel level) {
+		Long born = EntityData.get(bug, ModAttachments.PLAGUE_BORN);
+		if (born == null || born > level.getGameTime()) {
+			born = level.getGameTime() - bug.tickCount;
+			EntityData.set(bug, ModAttachments.PLAGUE_BORN, born);
+		}
+		return level.getGameTime() - born;
 	}
 
 	private static boolean isBug(Entity entity) {
@@ -93,7 +113,7 @@ public final class PlagueRings {
 
 	private static void onDeath(LivingEntity victim, DamageSource source) {
 		if (!(victim instanceof Enemy) || isBug(victim) || !(victim.level() instanceof ServerLevel level)
-				|| !(source.getEntity() instanceof ServerPlayer player) || !isWearing(player, ModItems.PLAGUE_RING.get())) {
+				|| !(source.getEntity() instanceof ServerPlayer player) || !WornRelics.isWearing(player, ModItems.PLAGUE_RING.get())) {
 			return;
 		}
 		RandomSource random = player.getRandom();
@@ -111,6 +131,7 @@ public final class PlagueRings {
 			bug.snapTo(victim.getX() + random.nextGaussian() * 0.3, victim.getY(), victim.getZ() + random.nextGaussian() * 0.3,
 					random.nextFloat() * 360f, 0f);
 			EntityData.set(bug, ModAttachments.PLAGUE_OWNER, player.getUUID());
+			EntityData.set(bug, ModAttachments.PLAGUE_BORN, level.getGameTime());
 			level.addFreshEntity(bug);
 			BUGS.add(bug);
 		}
@@ -138,7 +159,8 @@ public final class PlagueRings {
 				it.remove();
 				continue;
 			}
-			if (bug.tickCount >= LIFETIME_TICKS) {
+			long age = age(bug, level);
+			if (age >= LIFETIME_TICKS) {
 				level.sendParticles(ParticleTypes.POOF, bug.getX(), bug.getY() + 0.2, bug.getZ(), 6, 0.2, 0.1, 0.2, 0.02);
 				bug.discard();
 				it.remove();
@@ -147,7 +169,7 @@ public final class PlagueRings {
 			UUID ownerId = ownerOf(bug);
 			Player owner = ownerId == null ? null : level.getPlayerByUUID(ownerId);
 			LivingEntity target = bug.getTarget();
-			if (bug.tickCount < FIGHT_TICKS) {
+			if (age < FIGHT_TICKS) {
 				if (target == null || !target.isAlive() || !isValidTarget(level, target, ownerId)) {
 					target = findTarget(level, bug, ownerId);
 					bug.setTarget(target);
@@ -164,7 +186,7 @@ public final class PlagueRings {
 			}
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-			if (isWearing(player, ModItems.FEAST_RING.get())) {
+			if (WornRelics.isWearing(player, ModItems.FEAST_RING.get())) {
 				feast(player);
 			}
 		}

@@ -15,6 +15,9 @@ public final class ModAttachments {
 	/** Bicho aliado del Anillo de la plaga: UUID de su dueño. */
 	public static final EntityData.Key<UUID> PLAGUE_OWNER = EntityData.key(MisfitRelics.id("plague_owner"), UUIDUtil.CODEC, false);
 
+	/** Bicho aliado del Anillo de la plaga: tick del mundo en que nació (su vida no se reinicia al recargar). */
+	public static final EntityData.Key<Long> PLAGUE_BORN = EntityData.key(MisfitRelics.id("plague_born"), Codec.LONG, false);
+
 	/**
 	 * Ticks que faltan para que reviva el murciélago aliado. Va en el jugador (no en el collar) para que cambiar de
 	 * collar no salte la espera; se conserva al morir.

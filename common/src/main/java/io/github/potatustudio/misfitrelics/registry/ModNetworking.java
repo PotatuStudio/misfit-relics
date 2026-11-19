@@ -6,6 +6,7 @@ import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import io.github.potatustudio.misfitrelics.bat.BatCollar;
 import io.github.potatustudio.misfitrelics.mobility.Mobility;
+import io.github.potatustudio.misfitrelics.network.ArcPayload;
 import io.github.potatustudio.misfitrelics.network.BreezeDashPayload;
 import io.github.potatustudio.misfitrelics.network.EcholocatePayload;
 import io.github.potatustudio.misfitrelics.network.EcholocationPulsePayload;
@@ -36,9 +37,10 @@ public final class ModNetworking {
 						Mobility.onRam(player);
 					}
 				}));
-		// En el cliente, el tipo lo registra el receptor (EcholocationClient); en el servidor dedicado, aquí.
+		// En el cliente, los tipos los registran los receptores (EcholocationClient, ArcClient); en el servidor dedicado, aquí.
 		if (Platform.getEnvironment() == Env.SERVER) {
 			NetworkManager.registerS2CPayloadType(EcholocationPulsePayload.TYPE, EcholocationPulsePayload.CODEC);
+			NetworkManager.registerS2CPayloadType(ArcPayload.TYPE, ArcPayload.CODEC);
 		}
 
 		EntityEvent.LIVING_DAMAGE_POST.register((entity, source, baseDamage, damageTaken, blocked) ->

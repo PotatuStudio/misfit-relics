@@ -6,6 +6,7 @@ import io.github.potatustudio.misfitrelics.mobility.Mobility;
 import io.github.potatustudio.misfitrelics.network.BreezeDashPayload;
 import io.github.potatustudio.misfitrelics.network.RamPayload;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
@@ -40,6 +41,17 @@ public final class MobilityClient {
 		ram = new KeyMapping(RAM_KEY, InputConstants.Type.KEYBOARD, InputConstants.KEY_R, category);
 		KeyMappingRegistry.register(ram);
 		ClientTickEvent.CLIENT_POST.register(MobilityClient::tick);
+		ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> reset());
+	}
+
+	/** Al salir del mundo: nada de una embestida o un salto a medias pasa al siguiente. */
+	private static void reset() {
+		jumpWasDown = false;
+		wallJumpsLeft = Mobility.WALL_JUMPS;
+		breezeReady = true;
+		ramDir = Vec3.ZERO;
+		ramTicksLeft = 0;
+		Mobility.clearClientState();
 	}
 
 	/**
@@ -114,7 +126,7 @@ public final class MobilityClient {
 			return;
 		}
 		if (jumpPressed && !player.onGround() && player.isShiftKeyDown() && breezeReady
-				&& Mobility.isWearing(player, ModItems.BREEZE_BOTTLE.get()) && NetworkManager.canServerReceive(BreezeDashPayload.TYPE)) {
+				&& WornRelics.isWearing(player, ModItems.BREEZE_BOTTLE.get()) && NetworkManager.canServerReceive(BreezeDashPayload.TYPE)) {
 			breezeReady = false;
 			Vec3 look = player.getLookAngle();
 			player.setDeltaMovement(look.x * Mobility.BREEZE_DASH_SPEED, Math.max(look.y * Mobility.BREEZE_DASH_SPEED, 0.35),

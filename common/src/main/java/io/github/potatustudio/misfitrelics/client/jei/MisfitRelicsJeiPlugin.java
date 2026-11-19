@@ -3,6 +3,7 @@ package io.github.potatustudio.misfitrelics.client.jei;
 import io.github.potatustudio.misfitrelics.MisfitRelics;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
 import io.github.potatustudio.misfitrelics.registry.ModLoot;
+import io.github.potatustudio.misfitrelics.relic.TooltipNumbers;
 import java.util.ArrayList;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
@@ -41,7 +42,7 @@ public class MisfitRelicsJeiPlugin implements IModPlugin {
 			lines.add(Component.translatable("jei.misfitrelics.where.title").withStyle(ChatFormatting.BOLD));
 			for (ModLoot.Source source : sources) {
 				lines.add(Component.translatable("jei.misfitrelics.where.entry",
-						Component.translatable(source.translationKey()), formatChance(source.chance())));
+						Component.translatable(source.translationKey()), TooltipNumbers.fmt(source.chance() * 100f)));
 			}
 			lines.add(Component.translatable("jei.misfitrelics.where.note").withStyle(ChatFormatting.GRAY));
 			registration.addItemStackInfo(new ItemStack(item), lines.toArray(Component[]::new));
@@ -55,8 +56,4 @@ public class MisfitRelicsJeiPlugin implements IModPlugin {
 				List.of(new ItemStack(ModItems.RELIC_ICON.get())));
 	}
 
-	private static String formatChance(float chance) {
-		float percent = chance * 100f;
-		return percent == Math.round(percent) ? String.valueOf(Math.round(percent)) : String.format("%.1f", percent);
-	}
 }

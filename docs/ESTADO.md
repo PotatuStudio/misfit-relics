@@ -28,8 +28,9 @@ Misfit Relics quedó con la misma arquitectura que Mythic Relics (rama `feat/mul
   **Sin probar en el juego**: el cliente de NeoForge, en especial cómo se ven las reliquias puestas con Curios.
 
 ## Auditoría
-[AUDITORIA.md](AUDITORIA.md): bugs, fugas, rendimiento, pruebas y diseño, con lo que cambia el juego marcado para
-aprobar antes de tocarlo.
+[AUDITORIA.md](AUDITORIA.md): corregida el mismo día (el usuario aprobó todo, también lo que cambia el juego). Quedan
+pendientes: partir las clases grandes, números mágicos de `AlliedBat` y `PlagueRings`, y pruebas de juego con azar o
+varios mundos. Pruebas unitarias: `./gradlew :common:test`.
 
 ## Cómo se trabaja
 - Se desarrolla en el PC de desarrollo y **se prueba en el otro PC** (`git pull` + `./gradlew :fabric:runClient` o
@@ -42,7 +43,9 @@ aprobar antes de tocarlo.
 
 ## Pendiente
 1. Que el usuario pruebe en NeoForge (Curios): reliquias puestas, ponerse y quitarse (sonido), atributos del anillo del
-   berserker y la concha, la barra de revivir del collar, y la pata de la suerte.
+   berserker y la concha, la barra de revivir del collar, y la pata de la suerte. En los dos loaders, los cambios de la
+   auditoría que se notan en el juego: pata en cultivos, guantelete (una carga por golpe, solo enemigos), corazón de
+   creeper (solo golpes), arcos eléctricos (ahora los dibuja el cliente) y bichos de la plaga.
 2. **Libro de reliquias en el juego** con Modonomicon y **wiki en `docs/wiki/`**, generados desde los mismos datos que
    el botín (`ModLoot.sources`) y los tooltips.
 3. Ideas aprobadas sin implementar (elegir con el usuario): anillo de escarcha, anillo lunar, pulsera del evocador,

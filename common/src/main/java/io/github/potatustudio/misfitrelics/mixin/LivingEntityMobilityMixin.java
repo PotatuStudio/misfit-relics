@@ -1,5 +1,6 @@
 package io.github.potatustudio.misfitrelics.mixin;
 
+import io.github.potatustudio.misfitrelics.relic.WornRelics;
 import io.github.potatustudio.misfitrelics.mobility.Mobility;
 import io.github.potatustudio.misfitrelics.registry.ModItems;
 import net.minecraft.tags.FluidTags;
@@ -42,8 +43,7 @@ public abstract class LivingEntityMobilityMixin {
 
 	@Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
 	private void misfitrelics$magmaWalk(FluidState fluid, CallbackInfoReturnable<Boolean> cir) {
-		if ((Object) this instanceof Player player && fluid.is(FluidTags.LAVA) && !player.isShiftKeyDown()
-				&& Mobility.isWearing(player, ModItems.MAGMA_BOOTS.get())) {
+		if ((Object) this instanceof Player player && fluid.is(FluidTags.LAVA) && Mobility.walksOnLava(player)) {
 			cir.setReturnValue(true);
 		}
 	}

@@ -63,10 +63,6 @@ public final class LuckyRabbitFoot {
 	private static final TagKey<Block> ORES = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores"));
 
 
-	public static boolean isWearing(LivingEntity entity, Item foot) {
-		return WornRelics.isWearing(entity, foot);
-	}
-
 	/** Lo llama {@code LootTableMixin} con el botín ya tirado de cualquier tabla. */
 	public static void onDrops(Holder<LootTable> table, LootContext context, List<ItemStack> drops) {
 		if (drops.isEmpty()) {
@@ -77,7 +73,7 @@ public final class LuckyRabbitFoot {
 			return;
 		}
 		RandomSource random = context.getRandom();
-		if (isWearing(player, ModItems.CURSED_RABBIT_FOOT.get())) {
+		if (WornRelics.isWearing(player, ModItems.CURSED_RABBIT_FOOT.get())) {
 			float roll = random.nextFloat();
 			if (roll < LOSE_CHANCE) {
 				drops.clear();
@@ -85,13 +81,17 @@ public final class LuckyRabbitFoot {
 				Advancements.award(player, "cursed_loss", "lost");
 			} else if (roll < LOSE_CHANCE + JACKPOT_CHANCE) {
 				int multiplier = MIN_MULTIPLIER + random.nextInt(MAX_MULTIPLIER - MIN_MULTIPLIER + 1);
+				if (isChest(table)) {
+					// En un cofre, lo que no cabe en sus casillas se pierde: el multiplicador baja hasta que todo quepa.
+					multiplier = fittingMultiplier(drops, multiplier, CHEST_SLOTS);
+				}
 				multiply(drops, multiplier);
 				jackpot(context, player, multiplier);
 				if (multiplier == MAX_MULTIPLIER) {
 					Advancements.award(player, "jackpot", "jackpot");
 				}
 			}
-		} else if (isWearing(player, ModItems.LUCKY_RABBIT_FOOT.get()) && random.nextFloat() < LUCKY_CHANCE) {
+		} else if (WornRelics.isWearing(player, ModItems.LUCKY_RABBIT_FOOT.get()) && random.nextFloat() < LUCKY_CHANCE) {
 			multiply(drops, LUCKY_MULTIPLIER);
 			lucky(context, player);
 		}
@@ -104,10 +104,12 @@ public final class LuckyRabbitFoot {
 		String path = table.unwrapKey().map(key -> key.identifier().getPath()).orElse("");
 
 		if (block != null) {
-			boolean lucky = block.is(ORES)
-					|| (block.getBlock() instanceof CropBlock crop && crop.isMaxAge(block));
-			boolean silkTouch = drops.stream().anyMatch(stack -> stack.is(block.getBlock().asItem()));
-			return lucky && !silkTouch && thisEntity instanceof Player player ? player : null;
+			boolean ore = block.is(ORES);
+			boolean crop = block.getBlock() instanceof CropBlock cropBlock && cropBlock.isMaxAge(block);
+			// Toque de seda: solo en menas (la mena misma cae como ítem). En los cultivos, el ítem del bloque es la semilla o
+			// el fruto, que siempre está entre lo cosechado.
+			boolean silkTouch = ore && drops.stream().anyMatch(stack -> stack.is(block.getBlock().asItem()));
+			return (ore || crop) && !silkTouch && thisEntity instanceof Player player ? player : null;
 		}
 		if (path.startsWith("chests/")) {
 			return thisEntity instanceof Player player ? player : null;
@@ -122,6 +124,33 @@ public final class LuckyRabbitFoot {
 	}
 
 	/** Multiplica cada pila; lo que no cabe en una pila sale en pilas extra (y los objetos únicos, en copias). */
+	/** Casillas de un cofre normal (las tablas "chests/..." llenan cofres, barriles y vagonetas de ese tamaño). */
+	static final int CHEST_SLOTS = 27;
+
+	private static boolean isChest(Holder<LootTable> table) {
+		return table.unwrapKey().map(key -> key.identifier().getPath().startsWith("chests/")).orElse(false);
+	}
+
+	/** Cuántas pilas ocupa una cantidad de ítems con ese tamaño máximo de pila, multiplicada. */
+	static int stacksFor(int count, int maxStackSize, int multiplier) {
+		long total = (long) count * multiplier;
+		return (int) ((total + maxStackSize - 1) / maxStackSize);
+	}
+
+	/** El mayor multiplicador (hasta {@code multiplier}, al menos 1) con el que el botín cabe en {@code slots} pilas. */
+	static int fittingMultiplier(List<ItemStack> drops, int multiplier, int slots) {
+		for (int m = multiplier; m > 1; m--) {
+			int stacks = 0;
+			for (ItemStack stack : drops) {
+				stacks += stacksFor(stack.getCount(), stack.getMaxStackSize(), m);
+			}
+			if (stacks <= slots) {
+				return m;
+			}
+		}
+		return 1;
+	}
+
 	private static void multiply(List<ItemStack> drops, int multiplier) {
 		List<ItemStack> result = new ArrayList<>();
 		for (ItemStack stack : drops) {

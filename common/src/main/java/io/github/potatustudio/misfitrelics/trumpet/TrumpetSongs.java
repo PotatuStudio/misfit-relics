@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import dev.architectury.event.events.common.TickEvent;
+import io.github.potatustudio.misfitrelics.relic.ServerState;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -60,7 +61,20 @@ public final class TrumpetSongs {
 
 	public static final List<Song> ALL = List.of(CHARGE, DOOT, SAD, BLAST, WARMUP);
 
-	private record Performance(ServerLevel level, LivingEntity player, Song song, Holder<SoundEvent> sound, int[] tick) {
+	/** Una melodía sonando. */
+	private static final class Performance {
+		final ServerLevel level;
+		final LivingEntity player;
+		final Song song;
+		final Holder<SoundEvent> sound;
+		int tick;
+
+		Performance(ServerLevel level, LivingEntity player, Song song, Holder<SoundEvent> sound) {
+			this.level = level;
+			this.player = player;
+			this.song = song;
+			this.sound = sound;
+		}
 	}
 
 	private static final List<Performance> PLAYING = new ArrayList<>();
@@ -70,6 +84,7 @@ public final class TrumpetSongs {
 
 	public static void init() {
 		TickEvent.SERVER_POST.register(server -> tick());
+		ServerState.clearOnStop(PLAYING);
 	}
 
 	public static Song random(RandomSource random) {
@@ -77,8 +92,8 @@ public final class TrumpetSongs {
 	}
 
 	public static void play(ServerLevel level, LivingEntity player, Song song, Holder<SoundEvent> sound) {
-		PLAYING.removeIf(p -> p.player() == player);
-		PLAYING.add(new Performance(level, player, song, sound, new int[] {0}));
+		PLAYING.removeIf(p -> p.player == player);
+		PLAYING.add(new Performance(level, player, song, sound));
 		level.gameEvent(player, GameEvent.INSTRUMENT_PLAY, player.position());
 	}
 
@@ -86,12 +101,12 @@ public final class TrumpetSongs {
 		Iterator<Performance> it = PLAYING.iterator();
 		while (it.hasNext()) {
 			Performance p = it.next();
-			if (!p.player().isAlive() || p.player().isRemoved() || p.tick()[0] >= p.song().length()) {
+			if (!p.player.isAlive() || p.player.isRemoved() || p.player.level() != p.level || p.tick >= p.song.length()) {
 				it.remove();
 				continue;
 			}
-			int now = p.tick()[0]++;
-			for (Note note : p.song().notes()) {
+			int now = p.tick++;
+			for (Note note : p.song.notes()) {
 				if (note.tick() == now) {
 					playNote(p, note);
 				}
@@ -100,12 +115,12 @@ public final class TrumpetSongs {
 	}
 
 	private static void playNote(Performance p, Note note) {
-		LivingEntity player = p.player();
+		LivingEntity player = p.player;
 		float pitch = (float) Math.pow(2.0, (note.pitch() - 12) / 12.0);
-		p.level().playSound(null, player.getX(), player.getEyeY(), player.getZ(), p.sound().value(),
+		p.level.playSound(null, player.getX(), player.getEyeY(), player.getZ(), p.sound.value(),
 				SoundSource.RECORDS, note.volume(), pitch);
 		Vec3 mouth = player.getEyePosition().add(player.getLookAngle().scale(0.8));
 		// La partícula de nota toma su color de la velocidad X (0 a 1 recorre la paleta del bloque musical).
-		p.level().sendParticles(ParticleTypes.NOTE, mouth.x, mouth.y, mouth.z, 0, note.pitch() / 24.0, 0, 0, 1);
+		p.level.sendParticles(ParticleTypes.NOTE, mouth.x, mouth.y, mouth.z, 0, note.pitch() / 24.0, 0, 0, 1);
 	}
 }
