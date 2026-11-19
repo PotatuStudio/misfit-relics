@@ -1,6 +1,6 @@
 # Misfit Relics
 
-Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** para Minecraft Java **26.3** (Fabric).
+Lo olvidado de Minecraft convertido en equipo RPG. Un mod de **PotatuStudio** para Minecraft Java **26.3** (Fabric y NeoForge).
 
 Los cañones y la trompeta tienen **ícono 2D** en el inventario y **modelo 3D** en la mano, hecho con las **texturas del propio juego** (cobre, pistón, yunque, cuarzo…):
 el modelo cambia con los resource packs.
@@ -40,7 +40,7 @@ Arma cuerpo a cuerpo e instrumento.
 **Mientras mejor cuidados, mejor funcionan.** Se oxidan con el uso y pierden fuerza. Agachado, con la herramienta en la otra mano: el **hacha** raspa una etapa de óxido (o quita la cera) y el **panal** los encera para que no se sigan oxidando.
 
 ## Collar del murciélago
-Requiere **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: va en el espacio *collar* y se ve puesto en el pecho.
+Va en el espacio *collar* y se ve puesto en el pecho.
 - **Ecolocación** (tecla **B**, configurable): marca con contorno a todas las criaturas en 32 bloques durante 6 s, incluso a través de paredes. **Solo lo ves tú** (en multijugador, los demás no). Recarga de 10 s.
 - **Robo de vida:** los golpes cuerpo a cuerpo recuperan un 10 % del daño hecho.
 - **Murciélago aliado:** mientras llevas el collar, un murciélago te acompaña con rutinas propias:
@@ -60,7 +60,7 @@ Inspirado en los machos dominantes reales (el macho de harén del murciélago la
 - **Dónde:** muy raro. Cofres de la ciudad antigua (1,5 %) o el **warden** (5 %, si lo matas tú).
 
 ## Patas de conejo
-Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
+Van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
 
 | | **Pata de conejo de la suerte** | **Pata de conejo maldita** |
 |---|---|---|
@@ -70,7 +70,7 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van
 - Aplican en **minerales y cultivos maduros** que rompes (con toque de seda no aplican), **mobs que matas**, **cofres de estructuras** la primera vez que se abren y **pesca**.
 
 ## Anillos de la plaga y del festín
-Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van en los espacios de *anillo* (uno en cada mano). Por separado son modestos; juntos cierran un ciclo de sustento en combate.
+Van en los espacios de *anillo* (uno en cada mano). Por separado son modestos; juntos cierran un ciclo de sustento en combate.
 
 | | **Anillo de la plaga** | **Anillo del festín** |
 |---|---|---|
@@ -78,7 +78,6 @@ Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**: van
 | Dónde | **Fortaleza:** biblioteca (15 %), pasillos y cruces (8 %) | **End:** tesoros de las ciudades del End (12 %) |
 
 ## Reliquias de movilidad
-Requieren **[Trinkets Updated](https://modrinth.com/mod/trinkets-updated)**.
 
 | Reliquia | Espacio | Qué hace | Dónde |
 |---|---|---|---|
@@ -117,14 +116,26 @@ Un árbol propio de 13 logros: encontrar cada reliquia, el rey murciélago, saca
 | `misfitrelics:trumpet_friendly_fire` | `true` | Los golpes de la trompeta de cobre aturden a los aliados. |
 
 ## Requisitos
-Minecraft 26.3, Fabric Loader 0.20.1 o superior, Fabric API, [Trinkets Updated](https://modrinth.com/mod/trinkets-updated) 4.2.1 o superior y Java 25.
+Minecraft 26.3, Java 25 y [Architectury API](https://modrinth.com/mod/architectury-api) 22.0.5 o superior. Además,
+según el loader:
+- **Fabric:** Fabric Loader 0.20.1 o superior, Fabric API y
+  [Trinkets Updated](https://modrinth.com/mod/trinkets-updated) 4.2.1 o superior (espacios de accesorios).
+- **NeoForge:** NeoForge 26.3.0.101 o superior y [Curios API](https://modrinth.com/mod/curios) 17.0.0 o superior
+  (espacios de accesorios).
+
+Los espacios se llaman igual que en cada biblioteca: en Curios, los guantes van en *manos* y se ven en las dos.
+
+Opcional: [JEI](https://modrinth.com/mod/jei) muestra dónde se encuentra cada reliquia.
 
 ## Desarrollo
 ```sh
-./gradlew runClient
-./gradlew runServer
-./gradlew build
+./gradlew :fabric:runClient     # o :neoforge:runClient
+./gradlew :fabric:runServer     # o :neoforge:runServer
+./gradlew build                 # jars en fabric/build/libs y neoforge/build/libs
+./gradlew :fabric:runClientGameTest   # prueba automática (capturas y registro en fabric/build/run/clientGameTest/misfit-test)
 ```
+El código va en `common/` (Architectury); `fabric/` y `neoforge/` solo conectan cada loader (Trinkets o Curios, datos de
+entidad y metadatos).
 Los modelos 3D se generan y se revisan con las herramientas de [`tools/model-gen`](tools/model-gen/README.md).
 
 ## Licencia

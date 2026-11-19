@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "misfitrelics",
+	"version": "${version}",
+	"name": "Misfit Relics",
+	"description": "Forgotten Minecraft things turned into RPG gear.",
+	"authors": ["PotatuStudio"],
+	"contact": {
+		"homepage": "https://github.com/PotatuStudio/misfit-relics",
+		"sources": "https://github.com/PotatuStudio/misfit-relics",
+		"issues": "https://github.com/PotatuStudio/misfit-relics/issues"
+	},
+	"license": "MIT",
+	"icon": "misfitrelics_icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["io.github.potatustudio.misfitrelics.fabric.MisfitRelicsFabric"],
+		"client": ["io.github.potatustudio.misfitrelics.fabric.client.MisfitRelicsFabricClient"],
+		"jei_mod_plugin": ["io.github.potatustudio.misfitrelics.client.jei.MisfitRelicsJeiPlugin"]
+	},
+	"mixins": ["misfitrelics.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"architectury": ">=22.0.5",
+		"trinkets_updated": ">=4.2.1"
+	},
+	"suggests": {
+		"jei": "*",
+		"jade": "*"
+	}
+}

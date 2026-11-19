@@ -1,21 +1,48 @@
 # Estado del proyecto (para retomar)
 
-Última sesión: 2026-11-08. Todo lo hecho está en `main` (último commit de código: "Arte de reliquias más vanilla, rayos
-animados en los íconos e ícono del mod nuevo"). Las reliquias, sus números y dónde encontrarlas están en el
-[README](../README.md); la historia, en el [CHANGELOG](../CHANGELOG.md).
+Última sesión: 2026-11-19. Las reliquias, sus números y dónde encontrarlas están en el [README](../README.md); la
+historia, en el [CHANGELOG](../CHANGELOG.md).
+
+## Sesión del 2026-11-19: port a Architectury
+Misfit Relics quedó con la misma arquitectura que Mythic Relics (rama `feat/multiloader`):
+- Módulos `common/` (todo el juego), `fabric/` y `neoforge/`, con los mismos `build.gradle`, versiones y herramientas
+  de desarrollo (Mod Menu, Jade, JEI, Sodium, Iris, shaders Complementary). Sin Modonomicon por ahora (punto 2).
+- Ayudantes comunes en `relic/`, iguales a los de Mythic donde aplica:
+  - `WornRelics` (accesorio puesto, con caché por tick; `find` devuelve la pila viva para el collar);
+  - `AccessoryHooks` (ponerse, quitarse y atributos; Fabric los conecta con `TrinketCallback`, NeoForge con `ICurioItem`);
+  - `EntityData` (datos guardados con la entidad: attachments de Fabric API o de NeoForge, con los mismos ids que antes,
+    así que los mundos de Fabric anteriores conservan sus datos);
+  - `ServerState` (limpieza de mapas estáticos al desconectarse o cerrar el servidor; todavía no se usa en los mapas
+    viejos: ver la auditoría).
+- Registros con `DeferredRegister` de Architectury (`RegistrySupplier`: `.get()` para ítems y `.asHolder()` para
+  efectos y pociones). Las gamerules se registran como las de vanilla (`Registries.GAME_RULE`).
+- La pata de la suerte usaba `LootTableEvents.MODIFY_DROPS` de Fabric API, que Architectury no tiene: lo reemplaza
+  `mixin/LootTableMixin` (misma inyección que Fabric API).
+- Curios: `neoforge/.../TrinketsJsonCurioRenderer` dibuja las reliquias puestas leyendo los mismos
+  `assets/misfitrelics/trinkets/*.json` de Trinkets (una sola fuente). Los collares usan su modelo puesto en el
+  contexto `none` de la definición del ítem.
+- Prueba automática: `./gradlew :fabric:runClientGameTest` (gamerules, datos de entidad, tooltips, cada accesorio puesto
+  con capturas; falla si algo falla). Pasó entera el 2026-11-19. Al cerrar el juego sale un crash «Watchdog (post-main)»
+  por hilos de un mod de desarrollo; también pasa en Mythic y no es del mod.
+- NeoForge: `./gradlew :neoforge:runServer` arranca hasta «Done» con el mod cargado (servidor dedicado sin errores).
+  **Sin probar en el juego**: el cliente de NeoForge, en especial cómo se ven las reliquias puestas con Curios.
+
+## Auditoría
+[AUDITORIA.md](AUDITORIA.md): bugs, fugas, rendimiento, pruebas y diseño, con lo que cambia el juego marcado para
+aprobar antes de tocarlo.
 
 ## Cómo se trabaja
-- Se desarrolla en el PC de desarrollo y **se prueba en el otro PC** (`git pull` + `./gradlew runClient`) cuando está en `main`.
-  No lanzar el cliente en el PC de desarrollo salvo que se pida.
-- Verificar la compilación con el build de IntelliJ (MCP) o, si se cuelga, con javac (los únicos errores esperables son los
-  métodos que inyecta Loom: attachments y `CreativeModeTab.Output`).
+- Se desarrolla en el PC de desarrollo y **se prueba en el otro PC** (`git pull` + `./gradlew :fabric:runClient` o
+  `:neoforge:runClient`). En el PC de desarrollo, la prueba automática de cliente sí se puede correr.
+- Compilar con `./gradlew build` y `JAVA_HOME` apuntando al JDK 25.
 - Arte: herramientas en `tools/model-gen` (íconos 2D: `ring_icons.py`, `relic_art.py`, `combat_icons.py`,
   `mobility_icons.py`, `collar_icon.py`, `mod_icon.py`; modelos 3D de cañones y trompeta; `export_to_mod.py` lo copia todo
-  al mod; `gui_icons.py` genera los íconos 2D de cañones y trompeta a partir del render del visor).
+  a `common/src/main/resources` y el ícono del mod a `fabric/` y `neoforge/`; `gui_icons.py` genera los íconos 2D de
+  cañones y trompeta a partir del render del visor).
 
 ## Pendiente
-1. **Portar a Fabric + NeoForge con Architectury** (decisión del 2026-11-08), con el mismo esquema que Mythic Relics
-   (ver `docs/ESTADO.md` de ese repo para la tabla Fabric API → Architectury API). Trinkets Updated ya funciona en ambos.
+1. Que el usuario pruebe en NeoForge (Curios): reliquias puestas, ponerse y quitarse (sonido), atributos del anillo del
+   berserker y la concha, la barra de revivir del collar, y la pata de la suerte.
 2. **Libro de reliquias en el juego** con Modonomicon y **wiki en `docs/wiki/`**, generados desde los mismos datos que
    el botín (`ModLoot.sources`) y los tooltips.
 3. Ideas aprobadas sin implementar (elegir con el usuario): anillo de escarcha, anillo lunar, pulsera del evocador,

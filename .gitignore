@@ -38,3 +38,10 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# Capturas de las revisiones del visor con Playwright
+.playwright-mcp/
+__pycache__/
+
+# Claude Code (permisos locales)
+.claude/settings.local.json

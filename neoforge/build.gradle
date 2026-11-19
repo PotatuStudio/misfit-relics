@@ -1,0 +1,99 @@
+apply plugin: "com.gradleup.shadow"
+
+architectury {
+	platformSetupLoomIde()
+	neoForge()
+}
+
+configurations {
+	common {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentNeoForge.extendsFrom common
+
+	// Lo que se empaqueta dentro del jar del loader (el módulo común ya transformado).
+	shadowBundle {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+}
+
+dependencies {
+	neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+	implementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+	// Curios: se compila contra su API y en desarrollo corre el mod completo. El jugador instala Curios aparte.
+	compileOnly "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version:api"
+	localRuntime "top.theillusivec4.curios:curios-neoforge:$rootProject.curios_version"
+
+	// JEI: compila contra la API común; en desarrollo (runClient) corre JEI completo. No va dentro del jar.
+	compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:$rootProject.jei_version"
+	localRuntime "mezz.jei:jei-${rootProject.minecraft_version}-neoforge:$rootProject.jei_version"
+	// Jade: al mirar un mob muestra su vida (para probar el daño de las reliquias).
+	localRuntime "maven.modrinth:jade:${rootProject.jade_version}+neoforge"
+	// Rendimiento y shaders (solo desarrollo): para grabar contenido y probar estabilidad con mods de rendimiento.
+	localRuntime "maven.modrinth:sodium:${rootProject.sodium_neoforge_version}-neoforge"
+	localRuntime "maven.modrinth:iris:${rootProject.iris_version}-neoforge"
+
+	common(project(path: ":common")) { transitive false }
+	shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("META-INF/neoforge.mods.toml") {
+		expand "version": project.version
+	}
+}
+
+// Como en Architectury API: el jar "raw" es solo de este módulo; el jar final (sin clasificador) lo arma Shadow
+// juntando este módulo con el común ya transformado para el loader.
+jar {
+	archiveClassifier = "raw"
+}
+
+shadowJar {
+	dependsOn jar
+	mainSpec.sourcePaths.clear()
+	from(zipTree(jar.archiveFile))
+	configurations = [project.configurations.shadowBundle]
+	archiveClassifier = null
+	exclude "architectury.common.json"
+}
+
+assemble.dependsOn shadowJar
+
+// Shaders para grabar en desarrollo: Complementary Unbound y Reimagined (de Modrinth) en run/shaderpacks. Se bajan una
+// vez antes de runClient y no se suben al repo (run/ está en .gitignore). En el juego: Opciones > Video > Shaders.
+tasks.register("downloadShaderpacks") {
+	group = "misfitrelics"
+	description = "Baja Complementary Unbound y Reimagined a run/shaderpacks"
+	def dir = file("run/shaderpacks")
+	def v = rootProject.complementary_version
+	def packs = [
+		"ComplementaryUnbound_${v}.zip"   : "complementary-unbound",
+		"ComplementaryReimagined_${v}.zip": "complementary-reimagined",
+	]
+	outputs.dir dir
+	doLast {
+		dir.mkdirs()
+		packs.each { name, project ->
+			def target = new File(dir, name)
+			if (target.exists()) {
+				return
+			}
+			def api = new URL("https://api.modrinth.com/v2/project/${project}/version")
+			def versions = new groovy.json.JsonSlurper().parse(api.newReader("UTF-8"))
+			def version = versions.find { it.version_number == v }
+			if (version == null) {
+				throw new GradleException("No encontré ${project} ${v} en Modrinth")
+			}
+			def url = version.files.find { it.primary }?.url ?: version.files[0].url
+			logger.lifecycle("Bajando ${name}")
+			new URL(url).withInputStream { input -> target.withOutputStream { out -> out << input } }
+		}
+	}
+}
+tasks.matching { it.name == "runClient" }.configureEach { dependsOn "downloadShaderpacks" }

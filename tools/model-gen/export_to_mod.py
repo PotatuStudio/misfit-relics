@@ -3,7 +3,9 @@
 Los modelos referencian texturas vanilla (minecraft:block/...) y un atlas pequeño de detalles propios;
 cada etapa de oxidación es un modelo hijo que solo cambia las texturas de cobre.
 
-Uso: python export_to_mod.py <carpeta_scratch_modelo> <carpeta_resources_del_mod>
+Uso: python export_to_mod.py <carpeta_scratch_modelo> common/src/main/resources
+
+El ícono del mod se copia además a fabric/ y neoforge/ (cada loader lo lee de la raíz de su jar).
 """
 import json
 import os
@@ -98,8 +100,17 @@ for _ext in (".png", ".png.mcmeta"):
     shutil.copyfile(os.path.join(src, "king_bat_collar_icon" + _ext), os.path.join(TEXTURES, "king_bat_collar" + _ext))
 dump({"parent": "minecraft:item/generated", "textures": {"layer0": "misfitrelics:item/king_bat_collar"}},
      os.path.join(MODELS, "king_bat_collar.json"))
-dump({"model": model_ref("king_bat_collar")}, os.path.join(ITEMS, "king_bat_collar.json"))
-dump({"model": model_ref("bat_collar")}, os.path.join(ITEMS, "bat_collar.json"))
+
+
+def collar_definition(name):
+    # En el contexto "none" se usa el modelo puesto: así lo dibuja Curios en NeoForge (Trinkets usa el modelo directo).
+    return {"model": {"type": "minecraft:select", "property": "minecraft:display_context",
+                      "cases": [{"when": "none", "model": model_ref(name + "_worn")}],
+                      "fallback": model_ref(name)}}
+
+
+dump(collar_definition("king_bat_collar"), os.path.join(ITEMS, "king_bat_collar.json"))
+dump(collar_definition("bat_collar"), os.path.join(ITEMS, "bat_collar.json"))
 # Collares puestos: lámina plana con la parte recortada del ícono (la cadena bajando del cuello y el dije),
 # en el atlas de bloques para que Trinkets la dibuje como modelo en el pecho.
 for collar in ("bat_collar", "king_bat_collar"):
@@ -149,6 +160,8 @@ dump({"model": {"type": "minecraft:model", "model": "misfitrelics:item/nautilus_
                 "tints": [{"type": "minecraft:constant", "value": 0x8FE3D8}, {"type": "minecraft:constant", "value": -1}]}},
      os.path.join(ITEMS, "nautilus_shell.json"))
 # Ícono del mod (panel de inventario con reliquias) y el de la pestaña creativa.
-shutil.copyfile(os.path.join(src, "icon.png"), os.path.join(A, "icon.png"))
+ROOT = os.path.normpath(os.path.join(res, "..", "..", "..", ".."))
+for loader in ("fabric", "neoforge"):
+    shutil.copyfile(os.path.join(src, "icon.png"), os.path.join(ROOT, loader, "src", "main", "resources", "misfitrelics_icon.png"))
 shutil.copyfile(os.path.join(src, "relic_icon.png"), os.path.join(TEXTURES, "relic_icon.png"))
 print("exportado: 8 cañones, 4 trompetas y el collar")

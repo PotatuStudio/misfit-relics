@@ -1,0 +1,13 @@
+{
+	"schemaVersion": 1,
+	"id": "misfitrelics-gametest",
+	"version": "1.0.0",
+	"name": "Misfit Relics (pruebas)",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": ["io.github.potatustudio.misfitrelics.gametest.RelicClientGameTest"]
+	},
+	"depends": {
+		"misfitrelics": "*"
+	}
+}

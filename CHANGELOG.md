@@ -41,5 +41,10 @@ el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecra
   `stench_carrier_chance` y `trumpet_friendly_fire` (prefijo `misfitrelics:`).
 - Traducciones en inglés y español (todas las variantes: España, Chile, México, Argentina, etc.).
 
+- Soporte para **NeoForge** (además de Fabric), con Architectury: las reliquias van en los espacios de **Curios** y se
+  ven puestas igual que con Trinkets.
+
 ### Dependencias
-- Fabric API y Trinkets Updated 4.2.1+26.3.
+- Architectury API 22.0.5 o superior.
+- Fabric: Fabric API y Trinkets Updated 4.2.1+26.3.
+- NeoForge: NeoForge 26.3.0.101 o superior y Curios API 17.0.0+26.3.
