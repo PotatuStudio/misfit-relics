@@ -34,57 +34,57 @@ public final class ModLoot {
 
 	private static final Map<ResourceKey<LootTable>, List<Drop>> DROPS = Map.ofEntries(
 			// Cañón a presión (steampunk): lleva tiempo abandonado, suele aparecer algo oxidado.
-			Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, List.of(pressureCannon(0.08f),
+			Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, List.of(pressureCannon(0.16f),
 					// Corazón de creeper cargado: en mazmorras y pirámides, donde abundan los creepers.
-					Drop.single(0.06f, () -> ModItems.CHARGED_CREEPER_HEART.get()))),
-			Map.entry(BuiltInLootTables.ABANDONED_MINESHAFT, List.of(pressureCannon(0.05f),
+					Drop.single(0.12f, () -> ModItems.CHARGED_CREEPER_HEART.get()))),
+			Map.entry(BuiltInLootTables.ABANDONED_MINESHAFT, List.of(pressureCannon(0.10f),
 					// Guantes de seda: entre las arañas de cueva de las minas.
-					Drop.single(0.08f, () -> ModItems.SILK_GLOVES.get()))),
+					Drop.single(0.16f, () -> ModItems.SILK_GLOVES.get()))),
 			// Guantes de la viuda: en la mansión del bosque, más difíciles.
-			Map.entry(BuiltInLootTables.WOODLAND_MANSION, List.of(Drop.single(0.06f, () -> ModItems.WIDOW_GLOVES.get()),
+			Map.entry(BuiltInLootTables.WOODLAND_MANSION, List.of(Drop.single(0.12f, () -> ModItems.WIDOW_GLOVES.get()),
 					// Carcaj del vigilante: en la mansión, donde vigilan los illagers.
-					Drop.single(0.05f, () -> ModItems.WATCHER_QUIVER.get()))),
+					Drop.single(0.10f, () -> ModItems.WATCHER_QUIVER.get()))),
 			// Botas de magma: en las fortalezas del Nether, cerca de los striders.
-			Map.entry(BuiltInLootTables.NETHER_BRIDGE, List.of(Drop.single(0.10f, () -> ModItems.MAGMA_BOOTS.get()))),
-			Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, List.of(pressureCannon(0.10f),
+			Map.entry(BuiltInLootTables.NETHER_BRIDGE, List.of(Drop.single(0.20f, () -> ModItems.MAGMA_BOOTS.get()))),
+			Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, List.of(pressureCannon(0.20f),
 					// Carcaj del bosque: entre las enredaderas del templo de la jungla.
-					Drop.single(0.10f, () -> ModItems.FOREST_QUIVER.get()))),
+					Drop.single(0.20f, () -> ModItems.FOREST_QUIVER.get()))),
 			// Concha de nautilus: en tesoros enterrados y, menos, en naufragios.
-			Map.entry(BuiltInLootTables.BURIED_TREASURE, List.of(Drop.single(0.15f, () -> ModItems.NAUTILUS_SHELL.get()))),
+			Map.entry(BuiltInLootTables.BURIED_TREASURE, List.of(Drop.single(0.30f, () -> ModItems.NAUTILUS_SHELL.get()))),
 			// Anillo del berserker: en los bastiones, entre los brutos piglin.
-			Map.entry(BuiltInLootTables.BASTION_OTHER, List.of(Drop.single(0.06f, () -> ModItems.BERSERKER_RING.get()))),
-			Map.entry(BuiltInLootTables.BASTION_BRIDGE, List.of(Drop.single(0.06f, () -> ModItems.BERSERKER_RING.get()))),
-			Map.entry(BuiltInLootTables.PILLAGER_OUTPOST, List.of(pressureCannon(0.08f),
+			Map.entry(BuiltInLootTables.BASTION_OTHER, List.of(Drop.single(0.12f, () -> ModItems.BERSERKER_RING.get()))),
+			Map.entry(BuiltInLootTables.BASTION_BRIDGE, List.of(Drop.single(0.12f, () -> ModItems.BERSERKER_RING.get()))),
+			Map.entry(BuiltInLootTables.PILLAGER_OUTPOST, List.of(pressureCannon(0.16f),
 					// Cuernos del carnero: los puestos de saqueadores ya guardan cuernos de cabra.
-					Drop.single(0.10f, () -> ModItems.RAM_HORNS.get()))),
-			Map.entry(BuiltInLootTables.SHIPWRECK_TREASURE, List.of(pressureCannon(0.06f),
-					Drop.single(0.05f, () -> ModItems.NAUTILUS_SHELL.get()))),
-			Map.entry(BuiltInLootTables.DESERT_PYRAMID, List.of(pressureCannon(0.10f),
-					Drop.single(0.05f, () -> ModItems.CHARGED_CREEPER_HEART.get()),
-					Drop.single(0.12f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
-			Map.entry(BuiltInLootTables.ABANDONED_CAMP_SECRET_CHEST, List.of(pressureCannon(0.12f),
-					Drop.single(0.10f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
-			Map.entry(BuiltInLootTables.SHIPWRECK_SUPPLY, List.of(Drop.single(0.05f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
+					Drop.single(0.20f, () -> ModItems.RAM_HORNS.get()))),
+			Map.entry(BuiltInLootTables.SHIPWRECK_TREASURE, List.of(pressureCannon(0.12f),
+					Drop.single(0.10f, () -> ModItems.NAUTILUS_SHELL.get()))),
+			Map.entry(BuiltInLootTables.DESERT_PYRAMID, List.of(pressureCannon(0.20f),
+					Drop.single(0.10f, () -> ModItems.CHARGED_CREEPER_HEART.get()),
+					Drop.single(0.24f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
+			Map.entry(BuiltInLootTables.ABANDONED_CAMP_SECRET_CHEST, List.of(pressureCannon(0.24f),
+					Drop.single(0.20f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
+			Map.entry(BuiltInLootTables.SHIPWRECK_SUPPLY, List.of(Drop.single(0.10f, () -> ModItems.LUCKY_RABBIT_FOOT.get()))),
 			// Trompeta de cobre: en las cámaras de desafío, que son de cobre y están cuidadas (cobre casi nuevo).
-			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_REWARD, List.of(trumpet(0.12f),
+			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_REWARD, List.of(trumpet(0.24f),
 					// Guantelete eléctrico: cobre de las cámaras de desafío.
-					Drop.single(0.06f, () -> ModItems.ELECTRIC_GAUNTLET.get()),
+					Drop.single(0.12f, () -> ModItems.ELECTRIC_GAUNTLET.get()),
 					// Breeze en una botella: donde vive el breeze.
-					Drop.single(0.10f, () -> ModItems.BREEZE_BOTTLE.get()))),
-			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_SUPPLY, List.of(trumpet(0.04f))),
+					Drop.single(0.20f, () -> ModItems.BREEZE_BOTTLE.get()))),
+			Map.entry(BuiltInLootTables.TRIAL_CHAMBERS_SUPPLY, List.of(trumpet(0.08f))),
 			// Collar del murciélago: en la oscuridad de la ciudad antigua, junto a los fragmentos de eco.
-			Map.entry(BuiltInLootTables.ANCIENT_CITY, List.of(Drop.single(0.10f, () -> ModItems.BAT_COLLAR.get()),
+			Map.entry(BuiltInLootTables.ANCIENT_CITY, List.of(Drop.single(0.20f, () -> ModItems.BAT_COLLAR.get()),
 					// Collar del rey murciélago: coleccionable, muy raro.
-					Drop.single(0.015f, () -> ModItems.KING_BAT_COLLAR.get()))),
+					Drop.single(0.030f, () -> ModItems.KING_BAT_COLLAR.get()))),
 			// Pata maldita: en el Nether, en tesoros de bastión y, rara vez, en portales en ruinas.
-			Map.entry(BuiltInLootTables.BASTION_TREASURE, List.of(Drop.single(0.20f, () -> ModItems.CURSED_RABBIT_FOOT.get()))),
-			Map.entry(BuiltInLootTables.RUINED_PORTAL, List.of(Drop.single(0.03f, () -> ModItems.CURSED_RABBIT_FOOT.get()))),
+			Map.entry(BuiltInLootTables.BASTION_TREASURE, List.of(Drop.single(0.40f, () -> ModItems.CURSED_RABBIT_FOOT.get()))),
+			Map.entry(BuiltInLootTables.RUINED_PORTAL, List.of(Drop.single(0.06f, () -> ModItems.CURSED_RABBIT_FOOT.get()))),
 			// Anillo de la plaga: en la fortaleza, hogar de los silverfish.
-			Map.entry(BuiltInLootTables.STRONGHOLD_LIBRARY, List.of(Drop.single(0.15f, () -> ModItems.PLAGUE_RING.get()))),
-			Map.entry(BuiltInLootTables.STRONGHOLD_CORRIDOR, List.of(Drop.single(0.08f, () -> ModItems.PLAGUE_RING.get()))),
-			Map.entry(BuiltInLootTables.STRONGHOLD_CROSSING, List.of(Drop.single(0.08f, () -> ModItems.PLAGUE_RING.get()))),
+			Map.entry(BuiltInLootTables.STRONGHOLD_LIBRARY, List.of(Drop.single(0.30f, () -> ModItems.PLAGUE_RING.get()))),
+			Map.entry(BuiltInLootTables.STRONGHOLD_CORRIDOR, List.of(Drop.single(0.16f, () -> ModItems.PLAGUE_RING.get()))),
+			Map.entry(BuiltInLootTables.STRONGHOLD_CROSSING, List.of(Drop.single(0.16f, () -> ModItems.PLAGUE_RING.get()))),
 			// Anillo del festín: en el End, donde abundan los endermites. El par completo pide ir hasta allá.
-			Map.entry(BuiltInLootTables.END_CITY_TREASURE, List.of(Drop.single(0.12f, () -> ModItems.FEAST_RING.get()))));
+			Map.entry(BuiltInLootTables.END_CITY_TREASURE, List.of(Drop.single(0.24f, () -> ModItems.FEAST_RING.get()))));
 
 	/** Dónde aparece una reliquia: tabla de botín y probabilidad por cofre (o por muerte). */
 	public record Source(ResourceKey<LootTable> table, float chance) {
@@ -166,7 +166,7 @@ public final class ModLoot {
 	}
 
 	/** El warden suelta el collar del rey murciélago (5 %) si lo mata un jugador. */
-	private static final float WARDEN_KING_COLLAR_CHANCE = 0.05f;
+	private static final float WARDEN_KING_COLLAR_CHANCE = 0.10f;
 
 	public static void init() {
 		LootEvent.MODIFY_LOOT_TABLE.register((lookup, key, context, builtin) -> {

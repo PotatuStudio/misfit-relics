@@ -25,9 +25,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 /** Reliquia de combate (ver {@link CombatRelics}). Cada tipo tiene su tooltip, su sonido y, si corresponde, atributos. */
 public class CombatItem extends Item implements AccessoryHooks {
-	/** Anillo del berserker: vida máxima −90 % (te deja con 1 corazón) y daño +150 %. */
+	/** Anillo del berserker: vida máxima −90 % (te deja con 1 corazón) y daño +200 %. */
 	public static final double BERSERKER_HEALTH = -0.9;
-	public static final double BERSERKER_DAMAGE = 1.5;
+	public static final double BERSERKER_DAMAGE = 2.0;
 
 	public enum Kind {
 		ELECTRIC_GAUNTLET("electric_gauntlet"),

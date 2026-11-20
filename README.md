@@ -34,7 +34,7 @@ Arma cuerpo a cuerpo e instrumento.
   | Expuesto | 1,5 s |
   | Desgastado | 1 s |
   | Oxidado | 0,6 s |
-- **Dónde:** bóvedas de las cámaras de desafío (12 %) y sus cofres de suministros (4 %), casi siempre con poco óxido.
+- **Dónde:** bóvedas de las cámaras de desafío (24 %) y sus cofres de suministros (8 %), casi siempre con poco óxido.
 
 ## Oxidación (cañones y trompeta)
 **Mientras mejor cuidados, mejor funcionan.** Se oxidan con el uso y pierden fuerza. Agachado, con la herramienta en la otra mano: el **hacha** raspa una etapa de óxido (o quita la cera) y el **panal** los encera para que no se sigan oxidando.
@@ -51,13 +51,13 @@ Va en el espacio *collar* y se ve puesto en el pecho.
   - **muerde a lo que golpeas o a quien te golpea** (3 de daño; cada mordisco te cura con el robo de vida) y deja lo que esté haciendo para pelear;
   - no puedes herirlo tú. Si muere, vuelve a los **60 s** (una **barra morada** en el collar muestra cuánto falta).
   - Es **un murciélago por jugador**. La espera para revivir y la recarga de la ecolocación son tuyas, no del collar: cambiar de collar no las salta.
-- **Dónde:** cofres de la ciudad antigua (10 %).
+- **Dónde:** cofres de la ciudad antigua (20 %).
 
 ### Collar del rey murciélago (coleccionable)
 Inspirado en los machos dominantes reales (el macho de harén del murciélago lancero mayor y el cabeza de martillo, cuyos machos pesan casi el doble que las hembras). Tiene los mismos poderes del collar, pero invoca al **rey murciélago**: más grande y gordo, teñido de rojo oscuro y con ojos que brillan en la oscuridad.
 - Muerde **6**, te cura el **25 %** de cada mordisco, tiene el doble de vida y revive en **45 s**.
 - **Chillido:** cada 10 s, en pelea, aturde 1 s a los enemigos cercanos.
-- **Dónde:** muy raro. Cofres de la ciudad antigua (1,5 %) o el **warden** (5 %, si lo matas tú).
+- **Dónde:** muy raro. Cofres de la ciudad antigua (3 %) o el **warden** (10 %, si lo matas tú).
 
 ## Patas de conejo
 Van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
@@ -65,7 +65,7 @@ Van en el espacio *cinturón* (se lleva una u otra) y cuelgan de la cadera.
 | | **Pata de conejo de la suerte** | **Pata de conejo maldita** |
 |---|---|---|
 | Efecto | **25 %** de botín **×2**. Nunca pierde. | **15 %** de jackpot **×4 a ×10**, pero **10 %** de **perderlo todo**. |
-| Dónde | Pirámides del desierto (12 %), cofres secretos de campamentos abandonados (10 %) y suministros de naufragios (5 %) | **Nether:** tesoros de bastión (20 %) y, rara vez, portales en ruinas (3 %) |
+| Dónde | Pirámides del desierto (24 %), cofres secretos de campamentos abandonados (20 %) y suministros de naufragios (10 %) | **Nether:** tesoros de bastión (40 %) y, rara vez, portales en ruinas (6 %) |
 
 - Aplican en **minerales y cultivos maduros** que rompes (con toque de seda no aplican), **mobs que matas**, **cofres de estructuras** la primera vez que se abren y **pesca**.
 
@@ -75,27 +75,27 @@ Van en los espacios de *anillo* (uno en cada mano). Por separado son modestos; j
 | | **Anillo de la plaga** | **Anillo del festín** |
 |---|---|---|
 | Efecto | Al matar un enemigo, **25 %** de soltar de 1 a 3 bichos, cada uno al azar entre silverfish y endermite, **aliados**: pelean contra los enemigos cercanos 8 s, nunca contra ti ni tus aliados, vuelven a ti y se deshacen a los 20 s. | Al **tocar** un silverfish o un endermite (aliado o salvaje) lo **absorbes** y te cura **2 corazones**. |
-| Dónde | **Fortaleza:** biblioteca (15 %), pasillos y cruces (8 %) | **End:** tesoros de las ciudades del End (12 %) |
+| Dónde | **Fortaleza:** biblioteca (30 %), pasillos y cruces (16 %) | **End:** tesoros de las ciudades del End (24 %) |
 
 ## Reliquias de movilidad
 
 | Reliquia | Espacio | Qué hace | Dónde |
 |---|---|---|---|
-| **Guantes de seda** | guantes | Con **Shift** contra una pared te quedas pegado; saltando subes y te vuelves a pegar (6 saltos de pared hasta tocar el suelo). | Minas abandonadas (8 %) |
-| **Guantes de la viuda** | guantes | Además **caminas por las paredes** como una araña y te cuelgas del techo manteniendo el salto. | Mansiones del bosque (6 %) |
-| **Breeze en una botella** | cinturón | En el aire, **Shift + salto**: una ráfaga te impulsa hacia donde miras y empuja a los mobs. Una por salto; no recibes daño de caída hasta volver al suelo. | Bóvedas de las cámaras de desafío (10 %) |
-| **Botas de magma** | zapatos | **Caminas sobre la lava** (quieta o que corre) sin quemarte; Shift para hundirte. En el Nether, +15 % de velocidad. | Fortalezas del Nether (10 %) |
-| **Cuernos del carnero** | sombrero | Tecla **R**: **dash en línea recta** de ~8 bloques, **invulnerable** mientras dura; lo que golpeas recibe 10 de daño, sale volando y queda aturdido. Recarga de 3 s. | Puestos de saqueadores (10 %) |
+| **Guantes de seda** | guantes | Con **Shift** contra una pared te quedas pegado; saltando subes y te vuelves a pegar (6 saltos de pared hasta tocar el suelo). | Minas abandonadas (16 %) |
+| **Guantes de la viuda** | guantes | Además **caminas por las paredes** como una araña y te cuelgas del techo manteniendo el salto. | Mansiones del bosque (12 %) |
+| **Breeze en una botella** | cinturón | En el aire, **Shift + salto**: una ráfaga te impulsa hacia donde miras y empuja a los mobs. Una por salto; no recibes daño de caída hasta volver al suelo. | Bóvedas de las cámaras de desafío (20 %) |
+| **Botas de magma** | zapatos | **Caminas sobre la lava** (quieta o que corre) sin quemarte; Shift para hundirte. En el Nether, +15 % de velocidad. | Fortalezas del Nether (20 %) |
+| **Cuernos del carnero** | sombrero | Tecla **R**: **dash en línea recta** de ~8 bloques, **invulnerable** mientras dura; lo que golpeas recibe 10 de daño, sale volando y queda aturdido. Recarga de 3 s. | Puestos de saqueadores (20 %) |
 
 ## Reliquias de combate
 | Reliquia | Espacio | Qué hace | Dónde |
 |---|---|---|---|
-| **Guantelete eléctrico** | guantes | Cada golpe cuerpo a cuerpo (con o sin arma) **te carga** (hasta 5; se pierde a los 3 s sin golpear) y **electrocuta** al objetivo además del golpe: 1,8 de daño con 1 carga, +0,8 por carga (máx. 5). La descarga **salta en cadena** a 3 enemigos cercanos, cada uno con el 70 % de la anterior. | Bóvedas de las cámaras de desafío (6 %) |
-| **Corazón de creeper cargado** | collar | Al recibir daño, 20 % de que **caiga un rayo** sobre quien te pegó: electrocuta y **aturde 2 s** a los enemigos alrededor, nunca a ti. Recarga de 5 s. | Mazmorras (6 %), pirámides (5 %) |
-| **Carcaj del bosque** | espalda | Tus flechas **enredan**: enredaderas con espinas inmovilizan al objetivo 2 s y lo pinchan. | Templos de la jungla (10 %) |
-| **Carcaj del vigilante** | espalda | Tus flechas **persiguen** al enemigo más cercano delante de ellas, también bajo el agua. | Mansiones del bosque (5 %) |
-| **Concha de nautilus** | collar | Bajo el agua **nadas y caminas mucho más rápido** (gracia del delfín). | Tesoros enterrados (15 %), naufragios (5 %) |
-| **Anillo del berserker** | anillo | Te deja con **1 corazón** (−90 % de vida máxima) a cambio de **+150 % de daño**. | Bastiones (6 %) |
+| **Guantelete eléctrico** | guantes | Cada golpe cuerpo a cuerpo (con o sin arma) **te carga** (hasta 5; se pierde a los 3 s sin golpear) y **electrocuta** al objetivo además del golpe: 1,8 de daño con 1 carga, +0,8 por carga (máx. 5). La descarga **salta en cadena** a 3 enemigos cercanos, cada uno con el 70 % de la anterior. | Bóvedas de las cámaras de desafío (12 %) |
+| **Corazón de creeper cargado** | collar | Al recibir daño, 20 % de que **caiga un rayo** sobre quien te pegó: electrocuta y **aturde 2 s** a los enemigos alrededor, nunca a ti. Recarga de 5 s. | Mazmorras (12 %), pirámides (10 %) |
+| **Carcaj del bosque** | espalda | Tus flechas **enredan**: enredaderas con espinas inmovilizan al objetivo 2 s y lo pinchan. | Templos de la jungla (20 %) |
+| **Carcaj del vigilante** | espalda | Tus flechas **persiguen** al enemigo más cercano delante de ellas, también bajo el agua. | Mansiones del bosque (10 %) |
+| **Concha de nautilus** | collar | Bajo el agua **nadas y caminas mucho más rápido** (gracia del delfín). | Tesoros enterrados (30 %), naufragios (10 %) |
+| **Anillo del berserker** | anillo | Te deja con **1 corazón** (−90 % de vida máxima) a cambio de **+200 % de daño**. | Bastiones (12 %) |
 
 ## Cómo se consiguen
 Como en *Artifacts*, las reliquias **no se fabrican**: se encuentran en cofres, y mientras más fuertes, más difícil la estructura. Solo el **cañón rústico** tiene receta, y las **pociones de hedor** se destilan.

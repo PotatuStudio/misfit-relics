@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/);
 el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecraft como metadato (`0.1.0+26.3`).
 
 ## [Unreleased]
+### Changed
+- Todas las reliquias aparecen el doble de seguido: cada probabilidad de cofre se duplicó, también la del collar del
+  rey murciélago en el warden (10 %).
+- **Anillo del berserker:** +200 % de daño (antes +150 %).
+
 ### Fixed (auditoría del 2026-11-19, ver docs/AUDITORIA.md)
 - La **pata de la suerte** funciona con los cultivos maduros; el jackpot de la maldita ya no pierde ítems en los cofres.
 - Un **zombi portador** sigue siéndolo aunque le vuelva a llegar el Hedor.
