@@ -13,7 +13,9 @@ inglés porque es la audiencia de CurseForge; el mod trae `en_us` y `es_es`.
 | Additional categories | Armor, Tools, and Weapons · Mobs |
 | License | **MIT License** |
 | Logo | `media/icon-512.png` (512×512, CurseForge lo reduce a 400×400) |
-| Issues / Source / Wiki | Vacíos mientras el repo sea privado (un link roto es motivo de rechazo) |
+| Source | `https://github.com/PotatuStudio/misfit-relics` (repo público desde el 2026-11-20) |
+| Issues | `https://github.com/PotatuStudio/misfit-relics/issues` |
+| Wiki | `https://github.com/PotatuStudio/misfit-relics#readme` |
 | Allow comments | Sí |
 | Distribution (modpacks/apps de terceros) | Sí |
 
