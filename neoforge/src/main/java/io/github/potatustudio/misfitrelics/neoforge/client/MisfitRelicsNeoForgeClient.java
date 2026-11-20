@@ -12,5 +12,7 @@ public final class MisfitRelicsNeoForgeClient {
 	public static void init(IEventBus modBus) {
 		MisfitRelicsClient.init();
 		modBus.addListener(FMLClientSetupEvent.class, event -> event.enqueueWork(TrinketsJsonCurioRenderer::registerAll));
+		// Solo con RELIC_TEST=1 (./gradlew :neoforge:runClientTest): prueba automática.
+		NeoForgeClientTest.initIfRequested();
 	}
 }

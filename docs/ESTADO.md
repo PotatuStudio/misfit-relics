@@ -25,7 +25,11 @@ Misfit Relics quedó con la misma arquitectura que Mythic Relics (rama `feat/mul
   con capturas; falla si algo falla). Pasó entera el 2026-11-19. Al cerrar el juego sale un crash «Watchdog (post-main)»
   por hilos de un mod de desarrollo; también pasa en Mythic y no es del mod.
 - NeoForge: `./gradlew :neoforge:runServer` arranca hasta «Done» con el mod cargado (servidor dedicado sin errores).
-  **Sin probar en el juego**: el cliente de NeoForge, en especial cómo se ven las reliquias puestas con Curios.
+- Prueba automática de NeoForge (no trae una como Fabric): `RELIC_TEST=1 ./gradlew :neoforge:runClient`
+  (`neoforge/.../client/NeoForgeClientTest`). Abre una copia de `run/world` (la crea `:neoforge:runServer`), arma los
+  tooltips, pone cada accesorio con Curios comprobando `WornRelics` y saca capturas en `run/screenshots/relic-test`;
+  registro en `run/relic-test/registro.txt`. Pasó entera el 2026-11-19 y las capturas se ven igual que con Trinkets
+  (en Curios los guantes se ven en las dos manos: hay un solo espacio de manos).
 
 ## Auditoría
 [AUDITORIA.md](AUDITORIA.md): corregida el mismo día (el usuario aprobó todo, también lo que cambia el juego). Quedan
