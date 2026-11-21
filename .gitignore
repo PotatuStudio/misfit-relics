@@ -47,6 +47,18 @@ __pycache__/
 .claude/
 CLAUDE.md
 CLAUDE.local.md
+# Otros asistentes de código
+AGENTS.md
+GEMINI.md
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.github/copilot-instructions.md
+.codex/
+.aider*
+.clinerules
+.continue/
 
 # Registros que escribe Minecraft al arrancar en las pruebas unitarias
 logs/
