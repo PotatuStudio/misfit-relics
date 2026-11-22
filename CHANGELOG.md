@@ -4,6 +4,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/);
 el proyecto usa [SemVer](https://semver.org/lang/es/) con la versión de Minecraft como metadato (`0.1.0+26.3`).
 
 ## [Unreleased]
+
+## [0.1.1] - 2026-11-22
+### Fixed
+- **Guantes de seda, guantes de la viuda y guantelete eléctrico** puestos: los dedos apuntan hacia abajo y cada mano
+  es el espejo de la otra (antes se veían al revés y con los dos pulgares al mismo lado).
+
+## [0.1.0] - 2026-11-21
+Primera beta pública.
 ### Changed
 - Todas las reliquias aparecen el doble de seguido: cada probabilidad de cofre se duplicó, también la del collar del
   rey murciélago en el warden (10 %).

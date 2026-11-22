@@ -66,8 +66,8 @@ Un archivo por loader, en el mismo proyecto. Antes: `./gradlew build` y tomar lo
 
 | Campo | Fabric | NeoForge |
 |---|---|---|
-| Archivo | `fabric/build/libs/misfitrelics-fabric-0.1.0+26.3.jar` | `neoforge/build/libs/misfitrelics-neoforge-0.1.0+26.3.jar` |
-| Display name | `Misfit Relics 0.1.0 (Fabric 26.3)` | `Misfit Relics 0.1.0 (NeoForge 26.3)` |
+| Archivo | `fabric/build/libs/misfitrelics-fabric-0.1.1+26.3.jar` | `neoforge/build/libs/misfitrelics-neoforge-0.1.1+26.3.jar` |
+| Display name | `Misfit Relics 0.1.1 (Fabric 26.3)` | `Misfit Relics 0.1.1 (NeoForge 26.3)` |
 | Release type | **Beta** | **Beta** |
 | Game version | 26.3 | 26.3 |
 | Mod loader | Fabric | NeoForge |
