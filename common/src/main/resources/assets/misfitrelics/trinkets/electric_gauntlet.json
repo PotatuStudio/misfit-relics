@@ -23,8 +23,8 @@
           ],
           "left_rotation": {
             "axis": [
-              0,
               1,
+              0,
               0
             ],
             "angle": 3.141
@@ -66,8 +66,8 @@
           "left_rotation": {
             "axis": [
               0,
-              1,
-              0
+              0,
+              1
             ],
             "angle": 3.141
           },
